@@ -567,13 +567,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1883576954}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48f2ef2a6203c6b4e9a3db476d372ceb, type: 3}
+  m_Script: {fileID: 11500000, guid: 4996979b201a34e449bab16b268c9fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UnitRoot: {fileID: 1272283371}
   EnemyModel: {fileID: 1696493937}
   TowerModel: {fileID: 1630094539}
+  EffectRoot: {fileID: 1893273234}
   BulletModel: {fileID: 1389350389}
-  UnitRoot: {fileID: 1272283371}
 --- !u!1 &1893273233
 GameObject:
   m_ObjectHideFlags: 0
