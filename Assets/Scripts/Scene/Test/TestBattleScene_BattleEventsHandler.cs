@@ -29,10 +29,16 @@ public partial class TestBattleScene
             bulletObj.transform.position = attackerObj.transform.position;
 
             // flying process
-            var flyingSpeed = 10f;
+            var flyingSpeed = 100f;
+
+            var targetPos = targetObj.transform.position;
             effets.Add((te) =>
             {
-                var dir = targetObj.transform.position - bulletObj.transform.position;
+                targetObj = GetUnitObj((target as BattleMap.IUnit).UID);
+                if (targetObj != null)
+                    targetPos = targetObj.transform.position;
+
+                var dir = targetPos - bulletObj.transform.position;
                 var dist = dir.magnitude;
                 var distMoved = flyingSpeed * te;
 
@@ -49,6 +55,8 @@ public partial class TestBattleScene
                 return true;
             });
         };
+
+        BattleMap.OnUnitRemoved += (u) => RemoveUnitObj(u.UID);
     }
 
     void UpdateBattleEffect(float te)

@@ -11,6 +11,7 @@ public partial class TestBattleScene : MonoBehaviour
 
     public GameObject EnemyModel;
     public GameObject TowerModel;
+    public GameObject TowerBaseModel;
 
     TestBattle bt;
     readonly Dictionary<string, GameObject> unitObjs = new();
@@ -39,6 +40,8 @@ public partial class TestBattleScene : MonoBehaviour
                 obj = Instantiate(EnemyModel);
             else if (unit is Tower)
                 obj = Instantiate(TowerModel);
+            else if (unit is TowerBase)
+                obj = Instantiate(TowerBaseModel);
             else
                 throw new Exception($"unsupported unit type {unit.GetType().Name}");
 
@@ -59,7 +62,14 @@ public partial class TestBattleScene : MonoBehaviour
 
     GameObject GetUnitObj(string uid)
     {
-        return unitObjs[uid];
+        return unitObjs.ContainsKey(uid) ? unitObjs[uid] : null;
+    }
+
+    void RemoveUnitObj(string uid)
+    {
+        var unitObj = unitObjs[uid];
+        Destroy(unitObj);
+        unitObjs.Remove(uid);
     }
 
     private void Update()
