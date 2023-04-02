@@ -1,16 +1,31 @@
+﻿using Swift;
 using Swift.Math;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace TowerDefance.Game
 {
-    // a tower instance in the tower defence battle
-    public partial class Enemy : BattleMap.IUnit, AIUnitExt.IMovingUnit
+    using ITarget = ISkillAttacking.ITarget;
+
+    public class Enemy : BattleUnit, ITarget
     {
-        public Enemy(string id, Fix64 maxSpeed)
+        public Enemy(string id, Fix64 maxSpeed, Fix64 maxHp, Fix64 defence)
+            : base(id, maxSpeed)
         {
-            UID = id;
-            MaxSpeed = maxSpeed;
+            Defence = defence;
+            MaxHp = maxHp;
+            Hp = maxHp;
+        }
+
+        public Fix64 Defence { get; set; }
+
+        public Fix64 Hp { get; set; }
+
+        public Fix64 MaxHp { get; private set; }
+
+        public StateMachine CreateAI(List<Vec2> movingPath)
+        {
+            return this.AIMove(movingPath, MaxSpeed);
         }
     }
 }

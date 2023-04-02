@@ -9,25 +9,19 @@ namespace TowerDefance
 {
     public static partial class AIUnitExt
     {
-        public interface IMovingUnit : IUnit
-        {
-            Fix64 ForwardDir { get; set; }
-            Fix64 MaxSpeed { get; }
-        }
-
-        public static StateMachine AIMoving(this IMovingUnit u, List<Vec2> path)
+        public static StateMachine AIMove(this IUnit u, List<Vec2> path, Fix64 maxSpeed)
         {
             var sm = new StateMachine(u.UID);
 
             // 沿给定路径移动
-            Func<Fix64, bool> move = Move(u, path, u.MaxSpeed);
+            Func<Fix64, bool> move = Move(u, path, maxSpeed);
             sm.NewState("moving").Run((st, te) => move(te)).AsDefault();
 
             return sm;
         }
 
         // 沿路径移动
-        static Func<Fix64, bool> Move(IMovingUnit u, List<Vec2> path, Fix64 v)
+        static Func<Fix64, bool> Move(IUnit u, List<Vec2> path, Fix64 v)
         {
             Vec2 nowPos = u.Pos;
             return (dt) =>
@@ -37,12 +31,13 @@ namespace TowerDefance
                 var ps = Vec2.Zero;
                 var pe = Vec2.Zero;
                 nowPos = OnPath(nowPos, path, maxDist, out ps, out pe);
+
+                // 更新位置和方向
+                u.Pos = nowPos;
                 var dir = pe - ps;
                 var dist = dir.Length;
-                u.Dir = dist > 0 ? dir.Dir() : u.ForwardDir;
-
-                // 更新位置
-                u.Pos = nowPos;
+                if (dist > 0)
+                    u.Dir = dir.Dir();
 
                 // 是否还有剩余距离可继续移动
                 return path.Count > 0;

@@ -16,9 +16,10 @@ namespace TowerDefance.Game
             string UID { get; }
             public BattleMap Map { get; set; }
             public Vec2 Pos { get; set; }
+            public Fix64 Dir { get; set; }
         }
 
-        List<IUnit> units = new();
+        readonly List<IUnit> units = new();
 
         void InitUnits()
         {
@@ -44,6 +45,7 @@ namespace TowerDefance.Game
             if (units.Contains(unit))
                 throw new Exception($"this unit is already on the map");
 
+            unit.Map = this;
             unit.Pos = new Vec2(x, y);
             units.Add(unit);
         }
@@ -53,5 +55,7 @@ namespace TowerDefance.Game
             foreach (var u in units)
                 f(u);
         }
+
+        public BattleMap.IUnit[] AllUnits { get => units.ToArray(); }
     }
 }

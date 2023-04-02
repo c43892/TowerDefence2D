@@ -5,23 +5,26 @@ using System.Collections.Generic;
 using TowerDefance.Game;
 using UnityEngine;
 
-public class TestBattleScene : MonoBehaviour
+public partial class TestBattleScene : MonoBehaviour
 {
-    public GameObject EnemyModel;
     public Transform UnitRoot;
 
+    public GameObject EnemyModel;
+    public GameObject TowerModel;
+
     TestBattle bt;
-    Dictionary<string, GameObject> unitObjs = new();
+    readonly Dictionary<string, GameObject> unitObjs = new();
 
     private void Start()
     {
         bt = new TestBattle();
         bt.Init();
 
-        RecreateUnits();
+        InitUnits();
+        InitBattleEventsHandler();
     }
 
-    void RecreateUnits()
+    void InitUnits()
     {
         foreach (var obj in unitObjs.Values)
             Destroy(obj);
@@ -34,6 +37,8 @@ public class TestBattleScene : MonoBehaviour
 
             if (unit is Enemy)
                 obj = Instantiate(EnemyModel);
+            else if (unit is Tower)
+                obj = Instantiate(TowerModel);
             else
                 throw new Exception($"unsupported unit type {unit.GetType().Name}");
 
@@ -52,11 +57,17 @@ public class TestBattleScene : MonoBehaviour
         });
     }
 
+    GameObject GetUnitObj(string uid)
+    {
+        return unitObjs[uid];
+    }
+
     private void Update()
     {
         var dt = Time.deltaTime;
         bt.OnTimeElapsed((int)(dt * 1000));
 
         UpdateUnitsModels();
+        UpdateBattleEffect(dt);
     }
 }
