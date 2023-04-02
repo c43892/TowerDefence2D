@@ -64,7 +64,7 @@ namespace TowerDefance
             OnAttacking?.Invoke(this, Owner, target, dHp);
         }
 
-        public void Attack(ITarget[] targets)
+        public virtual void Attack(ITarget[] targets)
         {
             foreach (var t in targets)
                 Attack(t);

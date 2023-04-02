@@ -9,7 +9,7 @@ namespace TowerDefance.Game
 {
 
     // the only map instance in the tower defence battle
-    public partial class BattleMap
+    public partial class BattleMap : IFrameDrived
     {
         // the size of the map
         public int Width { get; private set; }
@@ -22,6 +22,11 @@ namespace TowerDefance.Game
 
             InitGrids(gridType);
             InitUnits();
+        }
+
+        public void OnTimeElapsed(int te)
+        {
+            UpdateAllUnits();
         }
     }
 }

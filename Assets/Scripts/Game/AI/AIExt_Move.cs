@@ -21,8 +21,9 @@ namespace TowerDefance
         }
 
         // 沿路径移动
-        static Func<Fix64, bool> Move(IUnit u, List<Vec2> path, Fix64 v)
+        static Func<Fix64, bool> Move(IUnit u, List<Vec2> srcPath, Fix64 v)
         {
+            var path = new List<Vec2>(srcPath);
             Vec2 nowPos = u.Pos;
             return (dt) =>
             {

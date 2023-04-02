@@ -15,7 +15,7 @@ namespace TowerDefance.Game
     public class Tower : BattleUnit, IAttacker, IAttackerUnit
     {
         public Tower(string id, Fix64 power, Fix64 attackingSpeed)
-            : base(id, 0)
+            : base(id, 0, 1)
         {
             Power = power;
             AttackingSpeed = attackingSpeed;

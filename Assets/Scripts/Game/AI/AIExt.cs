@@ -15,6 +15,7 @@ namespace TowerDefance
             string UID { get; }
             Vec2 Pos { get; set; }
             Fix64 Dir { get; set; }
+            Fix64 Hp { get; set; }
         }
 
         // 保持单一状态

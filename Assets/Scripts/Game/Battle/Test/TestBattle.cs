@@ -21,17 +21,33 @@ namespace TowerDefance.Game
             };
 
             // the enemy
-            var e = new Enemy(RandomUtils.GetRandomString("enemy_"), 2, 10, 0);
-            Map.AddUnitAt(e, 0, 5);
-            smm.Add(e.CreateAI(enemyMovingPath));
+            var e100 = new Enemy(RandomUtils.GetRandomString("enemy_"), 2, 100, 0, 1);
+            var s100 = new SkillAttackingSingleTargetPhysical("PhysicalSingleAttack", 1);
+            e100.Skill = s100;
+            s100.Owner = e100;
+            e100.ValidTargetTypes = new Type[] { typeof(TowerBase) };
+            Map.AddUnitAt(e100, 0, 5);
+            smm.Add(e100.CreateAI(enemyMovingPath));
+
+            var e3 = new Enemy(RandomUtils.GetRandomString("enemy_"), 3, 3, 0, 1);
+            var s3 = new SkillAttackingSingleTargetPhysical("PhysicalSingleAttack", 1);
+            e3.Skill = s3;
+            s3.Owner = e3;
+            e3.ValidTargetTypes = new Type[] { typeof(TowerBase) };
+            Map.AddUnitAt(e3, 0, 5);
+            smm.Add(e3.CreateAI(enemyMovingPath));
 
             // the tower
-            var s = new SkillAttackingSingleTargetPhysical("PhysicalSingleAttack", 8);
-            var t = new Tower(RandomUtils.GetRandomString("tower_"), 3, 1);
-            s.Owner = t;
-            t.Skill = s;
+            var s8 = new SkillAttackingSingleTargetPhysical("PhysicalSingleAttack", 8);
+            var t = new Tower(RandomUtils.GetRandomString("tower_"), 1, 1);
+            s8.Owner = t;
+            t.Skill = s8;
             Map.AddUnitAt(t, 10, 5);
             smm.Add(t.CreateAI());
+
+            // the tower base
+            var b = new TowerBase(RandomUtils.GetRandomString("towerbase_"), 0, 5);
+            Map.AddUnitAt(b, 20, 5);
         }
 
         public override void OnTimeElapsed(int te)

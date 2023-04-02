@@ -17,6 +17,14 @@ namespace TowerDefance.Game
         public virtual void OnTimeElapsed(int te)
         {
             smm.OnTimeElapsed(te);
+
+            Map.AllUnits.Travel(u =>
+            {
+                if (u.Hp <= 0)
+                    smm.Del(u.UID);
+            });
+
+            Map.OnTimeElapsed(te);
         }
     }
 }

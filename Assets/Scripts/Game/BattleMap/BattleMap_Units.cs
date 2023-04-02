@@ -17,6 +17,8 @@ namespace TowerDefance.Game
             public BattleMap Map { get; set; }
             public Vec2 Pos { get; set; }
             public Fix64 Dir { get; set; }
+
+            public Fix64 Hp { get; set; }
         }
 
         readonly List<IUnit> units = new();
@@ -50,12 +52,25 @@ namespace TowerDefance.Game
             units.Add(unit);
         }
 
-        public void ForEachUnit(Action<BattleMap.IUnit> f)
+        public void ForEachUnit(Action<IUnit> f)
         {
             foreach (var u in units)
                 f(u);
         }
 
-        public BattleMap.IUnit[] AllUnits { get => units.ToArray(); }
+        public IUnit[] AllUnits { get => units.ToArray(); }
+
+        public static event Action<IUnit> OnUnitRemoved = null;
+
+        public void UpdateAllUnits()
+        {
+            var toRemove = units.Where(u => u.Hp <= 0).ToArray();
+            toRemove.Travel(u =>
+            {
+                u.Map = null;
+                units.Remove(u);
+                OnUnitRemoved?.Invoke(u);
+            });
+        }
     }
 }
