@@ -8,20 +8,26 @@ using System.Linq;
 namespace TowerDefance.Game
 {
     using ITarget = ISkillAttacking.ITarget;
+    using IAttacker = ISkillAttacking.IAttacker;
     using IUnit = AIUnitExt.IUnit;
+    using IAttackUnit = AIUnitExt.IAttackerUnit;
 
-    public class Enemy : BattleUnit, ITarget, ISkillAttacking.IAttacker, AIUnitExt.IAttackerUnit
+    public class Enemy : BattleUnit, ITarget, IAttacker, IAttackUnit
     {
-        public Enemy(string id, Fix64 maxSpeed, Fix64 maxHp, Fix64 defence, Fix64 power)
+        public Enemy(string id, Fix64 maxSpeed, Fix64 maxHp, Fix64 phyDefence, Fix64 magDefence, Fix64 phyPower, Fix64 magPower)
             : base(id, maxSpeed, maxHp)
         {
-            Defence = defence;
-            Power = power;
+            PhyDefence = phyDefence;
+            MagDefence = magDefence;
+            PhyPower = phyPower;
+            MagPower = magPower;
         }
 
-        public Fix64 Defence { get; set; }
+        public Fix64 PhyDefence { get; set; }
+        public Fix64 MagDefence { get; set; }
 
-        public Fix64 Power { get; set; }
+        public Fix64 PhyPower { get; set; }
+        public Fix64 MagPower { get; set; }
 
         public Fix64 Cooldown { get; set; }
 

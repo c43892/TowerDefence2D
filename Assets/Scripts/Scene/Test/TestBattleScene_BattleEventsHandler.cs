@@ -20,14 +20,15 @@ public partial class TestBattleScene
     {
         BattleMap.OnUnitRemoved += (u) => RemoveUnitObj(u.UID);
 
-        SkillAttackingTargetPhysical.OnAttacking += (skill, attacker, targets, dhp) =>
+        SkillAttackingTargets.OnAttacking += (skill, attacker, attackingResults) =>
         {
             var attackerObj = GetUnitObj((attacker as BattleMap.IUnit).UID);
 
             // flying process
             var flyingSpeed = 100f;
-            FC.ForEach(targets, (i, t) =>
+            FC.ForEach(attackingResults, (i, kv) =>
             {
+                var t = kv.Key;
                 var bulletObj = Instantiate(BulletModel);
 
                 // initial position

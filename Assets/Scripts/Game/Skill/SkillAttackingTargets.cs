@@ -9,17 +9,16 @@ using Unity.VisualScripting;
 
 namespace TowerDefance
 {
-    using static UnityEngine.GraphicsBuffer;
     using IAttacker = ISkillAttacking.IAttacker;
     using ITarget = ISkillAttacking.ITarget;
 
-    public class SkillAttackingTargetPhysical : ISkillAttacking
+    public class SkillAttackingTargets : ISkillAttacking
     {
 
         #region events
 
-        public static Action<SkillAttackingTargetPhysical, IAttacker, ITarget[]> OnTargetSelected = null;
-        public static Action<SkillAttackingTargetPhysical, IAttacker, ITarget[], Fix64[]> OnAttacking = null;
+        public static Action<SkillAttackingTargets, IAttacker, ITarget[]> OnTargetSelected = null;
+        public static Action<SkillAttackingTargets, IAttacker, Dictionary<ITarget, ISkillAttacking.AttackingResult>> OnAttacking = null;
         
         #endregion
 
@@ -31,7 +30,7 @@ namespace TowerDefance
 
         public IAttacker Owner { get; set; }
 
-        public SkillAttackingTargetPhysical(string id, Fix64 range, int maxAttacks = 1)
+        public SkillAttackingTargets(string id, Fix64 range, int maxAttacks = 1)
         {
             ID = id;
             Range = range;
@@ -49,20 +48,25 @@ namespace TowerDefance
 
         public virtual void Attack(ITarget[] targets)
         {
-            var dhpArr = new Fix64[targets.Length];
+            var attackingResults = new Dictionary<ITarget, ISkillAttacking.AttackingResult>();
             FC.ForEach(targets, (i, t) =>
             {
-                var damange = Owner.Power - t.Defence;
+                var phyDamage = SkillFomular.PhyDamage(Owner, t);
+                var magDamage = SkillFomular.MagDamage(Owner, t);
+                var damage = phyDamage + magDamage;
+                var dhp = t.Hp < damage ? -t.Hp : -damage;
 
-                if (damange < 0)
-                    damange = 0;
+                attackingResults[t] = new ISkillAttacking.AttackingResult()
+                {
+                    PhyDamage = phyDamage,
+                    MagDamage = magDamage,
+                    DHp = dhp,
+                };
 
-                var dHp = t.Hp < damange ? -t.Hp : -damange;
-                t.Hp += dHp;
-                dhpArr[i] = dHp;
+                t.Hp += dhp;
             });
 
-            OnAttacking?.Invoke(this, Owner, targets, dhpArr);
+            OnAttacking?.Invoke(this, Owner, attackingResults);
         }
     }
 }

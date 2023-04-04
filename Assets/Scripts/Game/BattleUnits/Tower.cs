@@ -14,16 +14,18 @@ namespace TowerDefance.Game
 
     public class Tower : BattleUnit, IAttacker, IAttackerUnit
     {
-        public Tower(string id, Fix64 power, Fix64 attackingSpeed)
+        public Tower(string id, Fix64 phyPower, Fix64 magPower, Fix64 attackingSpeed)
             : base(id, 0, 1)
         {
-            Power = power;
+            PhyPower = phyPower;
+            MagPower = magPower;
             AttackingSpeed = attackingSpeed;
         }
 
         public ISkillAttacking Skill { get; set; }
 
-        public Fix64 Power { get; private set; }
+        public Fix64 PhyPower { get; private set; }
+        public Fix64 MagPower { get; private set; }
 
         public Fix64 AttackingSpeed { get; private set; }
 

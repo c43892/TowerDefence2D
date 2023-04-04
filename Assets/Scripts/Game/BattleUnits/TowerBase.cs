@@ -12,12 +12,14 @@ namespace TowerDefance.Game
 
     public class TowerBase : BattleUnit, ITarget
     {
-        public TowerBase(string uid, Fix64 defence, Fix64 maxHp)
+        public TowerBase(string uid, Fix64 phyDefence, Fix64 magDefence, Fix64 maxHp)
             : base(uid, 0, maxHp)
         {
-            Defence = defence;
+            PhyDefence = phyDefence;
+            MagDefence = magDefence;
         }
 
-        public Fix64 Defence { get; set; }
+        public Fix64 PhyDefence { get; set; }
+        public Fix64 MagDefence { get; set; }
     }
 }

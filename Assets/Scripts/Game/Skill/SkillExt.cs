@@ -9,7 +9,7 @@ using static TowerDefance.ISkillAttacking;
 
 namespace TowerDefance
 {
-    public static class ISkillExt
+    public static class SkillExt
     {
         public static ITarget[] FindClosestTargets(this IAttacker attacker, ITarget[] candidates, Func<ITarget, bool> filter = null, int maxNum = 1)
         {
