@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using TowerDefance.Game;
 using UnityEngine;
 using TowerDefance;
+using static UnityEngine.GraphicsBuffer;
 
 public partial class TestBattleScene
 {
@@ -17,46 +18,51 @@ public partial class TestBattleScene
 
     void InitBattleEventsHandler()
     {
-        SkillAttackingSingleTargetPhysical.OnAttacking += (skill, attacker, target, dhp) =>
+        BattleMap.OnUnitRemoved += (u) => RemoveUnitObj(u.UID);
+
+        SkillAttackingTargetPhysical.OnAttacking += (skill, attacker, targets, dhp) =>
         {
             var attackerObj = GetUnitObj((attacker as BattleMap.IUnit).UID);
-            var targetObj = GetUnitObj((target as BattleMap.IUnit).UID);
-            var bulletObj = Instantiate(BulletModel);
-
-            // initial position
-            bulletObj.SetActive(true);
-            bulletObj.transform.SetParent(EffectRoot);
-            bulletObj.transform.position = attackerObj.transform.position;
 
             // flying process
             var flyingSpeed = 100f;
-
-            var targetPos = targetObj.transform.position;
-            effets.Add((te) =>
+            FC.ForEach(targets, (i, t) =>
             {
-                targetObj = GetUnitObj((target as BattleMap.IUnit).UID);
-                if (targetObj != null)
-                    targetPos = targetObj.transform.position;
+                var bulletObj = Instantiate(BulletModel);
 
-                var dir = targetPos - bulletObj.transform.position;
-                var dist = dir.magnitude;
-                var distMoved = flyingSpeed * te;
+                // initial position
+                bulletObj.SetActive(true);
+                bulletObj.transform.SetParent(EffectRoot);
+                bulletObj.transform.position = attackerObj.transform.position;
 
-                if (distMoved >= dist)
+                var targetUID = (t as BattleMap.IUnit).UID;
+                var targetObj = GetUnitObj(targetUID);
+                var targetPos = targetObj.transform.position;
+
+                effets.Add((te) =>
                 {
-                    // done
-                    Destroy(bulletObj);
-                    return false;
-                }
+                    targetObj = GetUnitObj(targetUID);
+                    if (targetObj != null)
+                        targetPos = targetObj.transform.position;
 
-                var dPos = dir * distMoved / dist;
-                bulletObj.transform.position += dPos;
+                    var dir = targetPos - bulletObj.transform.position;
+                    var dist = dir.magnitude;
+                    var distMoved = flyingSpeed * te;
 
-                return true;
+                    if (distMoved >= dist)
+                    {
+                        // done
+                        Destroy(bulletObj);
+                        return false;
+                    }
+
+                    var dPos = dir * distMoved / dist;
+                    bulletObj.transform.position += dPos;
+
+                    return true;
+                });
             });
         };
-
-        BattleMap.OnUnitRemoved += (u) => RemoveUnitObj(u.UID);
     }
 
     void UpdateBattleEffect(float te)

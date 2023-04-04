@@ -22,7 +22,7 @@ namespace TowerDefance.Game
 
             // the enemy
             var e100 = new Enemy(RandomUtils.GetRandomString("enemy_"), 2, 100, 0, 1);
-            var s100 = new SkillAttackingSingleTargetPhysical("PhysicalSingleAttack", 1);
+            var s100 = new SkillAttackingTargetPhysical("PhysicalSingleAttack", 1);
             e100.Skill = s100;
             s100.Owner = e100;
             e100.ValidTargetTypes = new Type[] { typeof(TowerBase) };
@@ -30,7 +30,7 @@ namespace TowerDefance.Game
             smm.Add(e100.CreateAI(enemyMovingPath));
 
             var e3 = new Enemy(RandomUtils.GetRandomString("enemy_"), 3, 3, 0, 1);
-            var s3 = new SkillAttackingSingleTargetPhysical("PhysicalSingleAttack", 1);
+            var s3 = new SkillAttackingTargetPhysical("PhysicalSingleAttack", 1);
             e3.Skill = s3;
             s3.Owner = e3;
             e3.ValidTargetTypes = new Type[] { typeof(TowerBase) };
@@ -38,7 +38,7 @@ namespace TowerDefance.Game
             smm.Add(e3.CreateAI(enemyMovingPath));
 
             // the tower
-            var s8 = new SkillAttackingSingleTargetPhysical("PhysicalSingleAttack", 8);
+            var s8 = new SkillAttackingTargetPhysical("PhysicalSingleAttack", 7, 2);
             var t = new Tower(RandomUtils.GetRandomString("tower_"), 1, 1);
             s8.Owner = t;
             t.Skill = s8;

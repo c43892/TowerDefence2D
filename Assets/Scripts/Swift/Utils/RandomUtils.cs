@@ -312,11 +312,7 @@ namespace Swift
                 {
                     int r = comp(arr[i], arr[j]);
                     if (r > 0)
-                    {
-                        T t = arr[i];
-                        arr[i] = arr[j];
-                        arr[j] = t;
-                    }
+                        (arr[j], arr[i]) = (arr[i], arr[j]);
                 }
             }
 
@@ -342,7 +338,7 @@ namespace Swift
             return lst;
         }
 
-        public static List<T> SwiftSort<T>(this List<T> lst, Func<T, int> valueFun)
+        public static List<T> SwiftSort<T>(this List<T> lst, Func<T, Fix64> valueFun)
         {
             T[] arr = lst.ToArray();
             arr.SwiftSort(valueFun);
@@ -361,9 +357,7 @@ namespace Swift
             for (int i = 0; i < arr.Length; i++)
             {
                 int n = RandomUtils.RandomNext(i, arr.Length);
-                T tmp = arr[n];
-                arr[n] = arr[i];
-                arr[i] = tmp;
+                (arr[i], arr[n]) = (arr[n], arr[i]);
             }
 
             return arr;

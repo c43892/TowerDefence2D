@@ -30,26 +30,5 @@ namespace TowerDefance
         ITarget[] FindTargets(ITarget[] targers);
 
         void Attack(ITarget[] targets);
-
-        public static ITarget FindClosestTarget(IAttacker attacker, ITarget[] targets)
-        {
-            var minDist = Fix64.MaxValue;
-            ITarget target = null;
-
-            foreach (var t in targets)
-            {
-                if (t == null)
-                    continue;
-
-                var dist = (t.Pos - attacker.Pos).Length;
-                if (dist < minDist)
-                {
-                    minDist = dist;
-                    target = t;
-                }
-            }
-
-            return target;
-        }
     }
 }
