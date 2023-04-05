@@ -14,16 +14,14 @@ namespace TowerDefance.Game
 
         protected readonly StateMachineManager smm = new();
 
+        public virtual void Init()
+        {
+            BattleMap.OnUnitRemoved += u => smm.Del(u.UID);
+        }
+
         public virtual void OnTimeElapsed(int te)
         {
             smm.OnTimeElapsed(te);
-
-            Map.AllUnits.Travel(u =>
-            {
-                if (u.Hp <= 0)
-                    smm.Del(u.UID);
-            });
-
             Map.OnTimeElapsed(te);
         }
     }

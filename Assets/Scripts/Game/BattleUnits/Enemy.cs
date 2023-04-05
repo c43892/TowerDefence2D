@@ -9,10 +9,9 @@ namespace TowerDefance.Game
 {
     using ITarget = ISkillAttacking.ITarget;
     using IAttacker = ISkillAttacking.IAttacker;
-    using IUnit = AIUnitExt.IUnit;
     using IAttackUnit = AIUnitExt.IAttackerUnit;
 
-    public class Enemy : BattleUnit, ITarget, IAttacker, IAttackUnit
+    public class Enemy : BattleUnit, ITarget, IAttacker, IAttackUnit, IFrameDrived
     {
         public Enemy(string id, Fix64 maxSpeed, Fix64 maxHp, Fix64 phyDefence, Fix64 magDefence, Fix64 phyPower, Fix64 magPower)
             : base(id, maxSpeed, maxHp)
@@ -36,32 +35,19 @@ namespace TowerDefance.Game
         public ISkillAttacking Skill { get; set; } = null;
 
 
-        public StateMachine CreateAI(List<Vec2> movingPath)
+        public StateMachine CreateAI(List<Vec2> movingPath) => this.MoveAndSelfExplode(movingPath, MaxSpeed);
+
+        public void Attack() => Skill.Attack();
+
+        bool IsValidTargetType(Type type) => ValidTargetTypes == null || ValidTargetTypes.FirstIndexOf(type) >= 0;
+
+        public ITarget[] AllTargets => Map.AllUnits.Where((u) => u is ITarget && IsValidTargetType(u.GetType())).Select((u) => u as ITarget).ToArray();
+
+        public bool CanAttack() => Skill.CanAttack();
+
+        public void OnTimeElapsed(int dt)
         {
-            return this.MoveAndSelfExplode(movingPath, MaxSpeed);
-        }
-
-        public void Attack(IUnit[] targets)
-        {
-            if (targets.Length == 0)
-                return;
-
-            Skill.Attack(targets.Select(t => t as ITarget).ToArray());
-        }
-
-        bool IsValidTargetType(Type type)
-        {
-            return ValidTargetTypes == null || ValidTargetTypes.FirstIndexOf(type) >= 0;
-        }
-
-        // 只攻击 base
-        public AIUnitExt.IUnit[] FindTargets()
-        {
-            var targets = Map.AllUnits
-                .Where(u => u is ITarget && IsValidTargetType(u.GetType()))
-                .Select(u => u as ITarget).ToArray();
-
-            return Skill.FindTargets(targets).Select(t => t as IUnit).ToArray();
+            Skill?.OnTimeElapsed(dt);
         }
     }
 }

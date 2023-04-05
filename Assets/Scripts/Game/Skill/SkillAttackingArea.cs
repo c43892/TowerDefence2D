@@ -6,40 +6,49 @@ using System.Threading.Tasks;
 using Swift;
 using Swift.Math;
 using Unity.VisualScripting;
+using static TowerDefance.ISkillAttacking;
 
 namespace TowerDefance
 {
     using IAttacker = ISkillAttacking.IAttacker;
     using ITarget = ISkillAttacking.ITarget;
+    using IArea = ISkillAttacking.IArea;
 
-    public class SkillAttackingTargets : SkillAttacking
+    public class SkillAttackingArea : SkillAttacking
     {
-
         #region events
 
-        public static Action<SkillAttackingTargets, IAttacker, ITarget[]> AboutToAttacking = null;
-        public static Action<SkillAttackingTargets, IAttacker, Dictionary<ITarget, ISkillAttacking.AttackingResult>> OnAttackingDone = null;
+        public static Action<SkillAttackingArea, IAttacker, Vec2> AboutToAttacking = null;
+        public static Action<SkillAttackingArea, IAttacker, Vec2, Dictionary<ITarget, ISkillAttacking.AttackingResult>> OnAttackingDone = null;
         
         #endregion
 
-        public SkillAttackingTargets(string id, Fix64 range, int maxAttacks = 1)
+        public IArea Area { get; private set; }
+
+        public SkillAttackingArea(string id, Fix64 range, IArea area, int maxAttacks = 1)
             : base(id, range, maxAttacks)
         {
+            Area = area;
         }
 
         public override Action AttackImpl(ITarget[] candidates)
         {
-            var targets = Owner.FindClosestTargets(candidates, t => (Owner.Pos - t.Pos).Length <= Range, MaxAttacks);
+            var targets = Owner.FindClosestTargets(candidates, (t) => (t.Pos - Owner.Pos).Length <= Range, 1);
             if (targets.Count() == 0)
                 return null;
 
-            AboutToAttacking?.Invoke(this, Owner, targets);
+            var targetPos = targets[0].Pos;
+            targets = Owner.FindClosestTargets(candidates, (t) => Area.IsInArea(targetPos, t.Pos), MaxAttacks);
+
+            AboutToAttacking?.Invoke(this, Owner, targetPos);
 
             return () =>
             {
                 var attackingResults = new Dictionary<ITarget, ISkillAttacking.AttackingResult>();
                 FC.ForEach(targets, (i, t) =>
                 {
+                    var timeLeft = ATTACKING_DEPLAY;
+
                     var phyDamage = SkillFomular.PhyDamage(Owner, t);
                     var magDamage = SkillFomular.MagDamage(Owner, t);
                     var damage = phyDamage + magDamage;
@@ -53,9 +62,9 @@ namespace TowerDefance
                     };
 
                     t.Hp += dhp;
-                });
 
-                OnAttackingDone?.Invoke(this, Owner, attackingResults);
+                    OnAttackingDone?.Invoke(this, Owner, targetPos, attackingResults);
+                });
             };
         }
     }

@@ -1,12 +1,9 @@
 using Swift;
-using Swift.Math;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using TowerDefance;
 using TowerDefance.Game;
 using UnityEngine;
-using TowerDefance;
-using static UnityEngine.GraphicsBuffer;
 
 public partial class TestBattleScene
 {
@@ -20,15 +17,13 @@ public partial class TestBattleScene
     {
         BattleMap.OnUnitRemoved += (u) => RemoveUnitObj(u.UID);
 
-        SkillAttackingTargets.OnAttacking += (skill, attacker, attackingResults) =>
+        SkillAttackingTargets.AboutToAttacking += (skill, attacker, targets) =>
         {
             var attackerObj = GetUnitObj((attacker as BattleMap.IUnit).UID);
 
             // flying process
-            var flyingSpeed = 100f;
-            FC.ForEach(attackingResults, (i, kv) =>
+            FC.ForEach(targets, (i, t) =>
             {
-                var t = kv.Key;
                 var bulletObj = Instantiate(BulletModel);
 
                 // initial position
@@ -39,6 +34,8 @@ public partial class TestBattleScene
                 var targetUID = (t as BattleMap.IUnit).UID;
                 var targetObj = GetUnitObj(targetUID);
                 var targetPos = targetObj.transform.position;
+
+                var flyingSpeed = (attackerObj.transform.position - targetPos).magnitude / (SkillAttacking.ATTACKING_DEPLAY / 1000f);
 
                 effets.Add((te) =>
                 {
@@ -64,6 +61,8 @@ public partial class TestBattleScene
                 });
             });
         };
+
+        SkillAttackingTargets.OnAttackingDone += (skill, attacker, attackingResults) => { };
     }
 
     void UpdateBattleEffect(float te)

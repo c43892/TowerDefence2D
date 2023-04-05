@@ -8,13 +8,15 @@ using Swift.Math;
 
 namespace TowerDefance
 {
-    public interface ISkillAttacking : ISkill
+    public partial interface ISkillAttacking : ISkill
     {
         public interface IAttacker
         {
             Vec2 Pos { get; }
             Fix64 PhyPower { get; }
             Fix64 MagPower { get; }
+
+            ITarget[] AllTargets { get; }
         }
 
         public interface ITarget
@@ -24,6 +26,11 @@ namespace TowerDefance
 
             Fix64 PhyDefence { get; }
             Fix64 MagDefence { get; }
+        }
+
+        public interface IArea
+        {
+            public bool IsInArea(Vec2 center, Vec2 target);
         }
 
         public class AttackingResult
@@ -37,8 +44,8 @@ namespace TowerDefance
 
         IAttacker Owner { get; }
 
-        ITarget[] FindTargets(ITarget[] targers);
+        bool CanAttack();
 
-        void Attack(ITarget[] targets);
+        void Attack();
     }
 }

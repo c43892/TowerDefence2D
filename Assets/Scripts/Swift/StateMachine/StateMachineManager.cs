@@ -12,7 +12,7 @@ namespace Swift
     public class StateMachineManager : Component, IFrameDrived
     {
         // 所有状态机
-        StableDictionary<string, StateMachine> sms = new StableDictionary<string, StateMachine>();
+        readonly StableDictionary<string, StateMachine> sms = new();
 
         public void OnTimeElapsed(int te)
         {

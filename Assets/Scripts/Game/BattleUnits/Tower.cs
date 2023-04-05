@@ -12,7 +12,7 @@ namespace TowerDefance.Game
     using IUnit = AIUnitExt.IUnit;
     using IAttackerUnit = AIUnitExt.IAttackerUnit;
 
-    public class Tower : BattleUnit, IAttacker, IAttackerUnit
+    public class Tower : BattleUnit, IAttacker, IAttackerUnit, IFrameDrived
     {
         public Tower(string id, Fix64 phyPower, Fix64 magPower, Fix64 attackingSpeed)
             : base(id, 0, 1)
@@ -31,26 +31,23 @@ namespace TowerDefance.Game
 
         public Fix64 Cooldown { get => 1 / AttackingSpeed; }
 
-        public void Attack(IUnit[] targets)
+        public ITarget[] AllTargets
         {
-            if (targets.Length == 0)
-                return;
-
-            Skill.Attack(targets.Select(t => t as ITarget).ToArray());
+            get => Map.AllUnits.Where((u) => u is ITarget && u is Enemy).Select((u) => u as ITarget).ToArray();
         }
 
-        public IUnit[] FindTargets()
-        {
-            var targets = Map.AllUnits
-                .Where(u => u is ITarget && u is IUnit)
-                .Select(u => u as ITarget).ToArray();
+        public bool CanAttack() => Skill.CanAttack();
 
-            return Skill.FindTargets(targets).Select(t => t as IUnit).ToArray();
-        }
+        public void Attack() => Skill.Attack();
 
         public StateMachine CreateAI()
         {
             return this.AIAttackInPlace();
+        }
+
+        public void OnTimeElapsed(int dt)
+        {
+            Skill?.OnTimeElapsed(dt);
         }
     }
 }

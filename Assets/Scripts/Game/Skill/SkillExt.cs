@@ -21,10 +21,10 @@ namespace TowerDefance
                     continue;
 
                 targets.Add(t);
-                targets.SwiftSort((tar) => (t.Pos - attacker.Pos).Length);
+                targets.OrderBy((tar) => (t.Pos - attacker.Pos).Length);
 
                 if (targets.Count > maxNum)
-                    targets.RemoveAt(targets.Count);
+                    targets.RemoveRange(maxNum, targets.Count - maxNum);
             }
 
             return targets.ToArray();

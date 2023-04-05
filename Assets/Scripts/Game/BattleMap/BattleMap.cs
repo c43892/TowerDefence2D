@@ -26,7 +26,7 @@ namespace TowerDefance.Game
 
         public void OnTimeElapsed(int te)
         {
-            UpdateAllUnits();
+            UpdateAllUnits(te);
         }
     }
 }

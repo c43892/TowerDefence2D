@@ -62,8 +62,10 @@ namespace TowerDefance.Game
 
         public static event Action<IUnit> OnUnitRemoved = null;
 
-        public void UpdateAllUnits()
+        public void UpdateAllUnits(int te)
         {
+            units.Where(u => u is IFrameDrived).Cast<IFrameDrived>().Travel(u => u.OnTimeElapsed(te));
+
             var toRemove = units.Where(u => u.Hp <= 0).ToArray();
             toRemove.Travel(u =>
             {

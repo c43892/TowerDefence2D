@@ -11,8 +11,8 @@ namespace TowerDefance
     {
         public interface IAttackerUnit : IUnit
         {
-            IUnit[] FindTargets();
-            void Attack(IUnit[] targets);
+            void Attack();
+            bool CanAttack();
             Fix64 Cooldown { get; }
         }
 
@@ -20,24 +20,13 @@ namespace TowerDefance
         {
             var sm = new StateMachine(attacker.UID);
 
-            IUnit[] targets = null;
-
-            // search for targets
-            sm.NewState("searching").OnRunIn((st) =>
-            {
-                targets = null;
-            }).Run((st, te) =>
-            {
-                targets = attacker.FindTargets();
-            }).AsDefault();
-
             // attack
             var cooldown = Fix64.Zero;
             sm.NewState("attacking").Run((st, te) =>
             {
-                attacker.Attack(targets);
+                attacker.Attack();
                 cooldown = attacker.Cooldown;
-            });
+            }).AsDefault();
 
             // cooldown
             sm.NewState("cooldown").Run((st, te) =>
@@ -45,9 +34,8 @@ namespace TowerDefance
                 cooldown -= te;
             });
 
-            sm.Trans().From("searching").To("attacking").When((st) => targets != null && targets.Length != 0);
             sm.Trans().From("attacking").To("cooldown").When((st) => cooldown > 0);
-            sm.Trans().From("cooldown").To("searching").When((st) => cooldown <= 0);
+            sm.Trans().From("cooldown").To("attacking").When((st) => cooldown <= 0);
 
             return sm;
         }
