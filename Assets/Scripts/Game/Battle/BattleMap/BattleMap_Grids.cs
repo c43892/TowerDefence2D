@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Swift;
+using Swift.Math;
 
 namespace TowerDefance.Game
 {
@@ -16,24 +17,24 @@ namespace TowerDefance.Game
             Block, // which is a block and can't be used as a path
         }
 
-        public Func<int, int, GridType> GridTypeAt { get; private set; }
+        public Func<Vec2, GridType> GridTypeAt { get; private set; }
         GridType[,] grids = null;
 
 
         void InitGrids(Func<int, int, GridType> gridTypeAt)
         {
             grids = new GridType[Width, Height];
-            GridTypeAt = gridTypeAt;
+            GridTypeAt = (pos) => gridTypeAt((int)pos.x, (int)pos.y);
 
             // use filler fill all grids
             FC.For2(Width, Height, (x, y) => grids[x, y] = gridTypeAt(x, y));
         }
 
-        public bool Walkable(int x, int y)
+        public bool Walkable(Vec2 pos)
         {
-            return x >= 0 && x < grids.GetLength(0)
-                && y >= 0 && y < grids.GetLength(1)
-                && GridTypeAt(x, y) == GridType.None;
+            return pos.x >= 0 && pos.x < grids.GetLength(0)
+                && pos.y >= 0 && pos.y < grids.GetLength(1)
+                && GridTypeAt(pos) == GridType.None;
         }
     }
 }

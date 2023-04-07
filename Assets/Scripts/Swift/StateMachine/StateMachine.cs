@@ -12,11 +12,11 @@ namespace Swift
         public string Name { get; private set; }
 
         // 状态集
-        StableDictionary<string, State> states = new StableDictionary<string, State>();
-        List<StateTransition> allTrans = new List<StateTransition>();
+        readonly StableDictionary<string, State> states = new();
+        readonly List<StateTransition> allTrans = new();
 
         // 迁移集
-        StableDictionary<string, List<StateTransition>> trans = new StableDictionary<string, List<StateTransition>>();
+        readonly StableDictionary<string, List<StateTransition>> trans = new();
 
         // 初始状态
         string StartState { get; set; }

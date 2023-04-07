@@ -16,6 +16,8 @@ namespace TowerDefance
             Vec2 Pos { get; set; }
             Fix64 Dir { get; set; }
             Fix64 Hp { get; set; }
+
+            StateMachine CreateAI();
         }
 
         // 保持单一状态

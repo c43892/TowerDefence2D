@@ -13,7 +13,7 @@ namespace TowerDefance
         {
             void Attack();
             bool CanAttack();
-            Fix64 Cooldown { get; }
+            Fix64 AttackingInterval { get; }
         }
 
         public static StateMachine AIAttackInPlace(this IAttackerUnit attacker)
@@ -25,7 +25,7 @@ namespace TowerDefance
             sm.NewState("attacking").Run((st, te) =>
             {
                 attacker.Attack();
-                cooldown = attacker.Cooldown;
+                cooldown = attacker.AttackingInterval;
             }).AsDefault();
 
             // cooldown

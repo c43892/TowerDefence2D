@@ -1,8 +1,8 @@
-using Swift;
+using Swift.Math;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TowerDefance.Game;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public partial class TestBattleScene : MonoBehaviour
@@ -31,25 +31,7 @@ public partial class TestBattleScene : MonoBehaviour
             Destroy(obj);
 
         unitObjs.Clear();
-
-        bt.Map.ForEachUnit((unit) =>
-        {
-            GameObject obj = null;
-
-            if (unit is Enemy)
-                obj = Instantiate(EnemyModel);
-            else if (unit is Tower)
-                obj = Instantiate(TowerModel);
-            else if (unit is TowerBase)
-                obj = Instantiate(TowerBaseModel);
-            else
-                throw new Exception($"unsupported unit type {unit.GetType().Name}");
-
-            obj.transform.SetParent(UnitRoot);
-            obj.transform.localPosition = new Vector3((float)unit.Pos.x, (float)unit.Pos.y, 0);
-            obj.SetActive(true);
-            unitObjs[unit.UID] = obj;
-        });
+        bt.Map.ForEachUnit(AddUnitObj);
     }
 
     void UpdateUnitsModels()
@@ -70,6 +52,24 @@ public partial class TestBattleScene : MonoBehaviour
         var unitObj = unitObjs[uid];
         Destroy(unitObj);
         unitObjs.Remove(uid);
+    }
+
+    void AddUnitObj(BattleMap.IUnit unit)
+    {
+        GameObject obj;
+        if (unit is Enemy)
+            obj = Instantiate(EnemyModel);
+        else if (unit is Tower)
+            obj = Instantiate(TowerModel);
+        else if (unit is TowerBase)
+            obj = Instantiate(TowerBaseModel);
+        else
+            throw new Exception($"unsupported unit type {unit.GetType().Name}");
+
+        obj.transform.SetParent(UnitRoot);
+        obj.transform.localPosition = new Vector3((float)unit.Pos.x, (float)unit.Pos.y, 0);
+        obj.SetActive(true);
+        unitObjs[unit.UID] = obj;
     }
 
     private void Update()

@@ -11,16 +11,25 @@ namespace TowerDefance.Game
     public class TowerDefanceBattle : IFrameDrived
     {
         public BattleMap Map { get; protected set; }
+        public ISpawningPoint SpawningPoint { get; protected set; }
 
         protected readonly StateMachineManager smm = new();
 
         public virtual void Init()
         {
+
             BattleMap.OnUnitRemoved += u => smm.Del(u.UID);
+        }
+
+        public virtual void AddUnitAt(BattleUnit unit, Vec2 pos)
+        {
+            Map.AddUnitAt(unit, pos);
+            smm.Add(unit.CreateAI());
         }
 
         public virtual void OnTimeElapsed(int te)
         {
+            SpawningPoint.OnTimeElapsed(te);
             smm.OnTimeElapsed(te);
             Map.OnTimeElapsed(te);
         }

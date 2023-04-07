@@ -9,7 +9,7 @@ namespace TowerDefance
 {
     public static partial class AIUnitExt
     {
-        public static StateMachine MoveAndSelfExplode(this IAttackerUnit attacker, List<Vec2> path, Fix64 maxSpeed)
+        public static StateMachine MoveAndSelfExplode(this IAttackerUnit attacker, IEnumerable<Vec2> path, Fix64 maxSpeed)
         {
             var sm = new StateMachine(attacker.UID);
 

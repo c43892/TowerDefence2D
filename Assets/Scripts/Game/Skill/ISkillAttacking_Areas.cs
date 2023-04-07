@@ -9,8 +9,6 @@ using Unity.VisualScripting;
 
 namespace TowerDefance
 {
-    using IArea = ISkillAttacking.IArea;
-
     public partial interface ISkillAttacking : ISkill
     {
         public class Circle : IArea

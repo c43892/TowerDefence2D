@@ -39,17 +39,19 @@ namespace TowerDefance.Game
             return lst.ToArray();
         }
 
-        public void AddUnitAt(IUnit unit, int x, int y)
+        public void AddUnitAt(IUnit unit, Vec2 pos)
         {
-            if (!Walkable(x, y))
-                throw new Exception($"it's not empty at ({x}, {y})");
+            if (!Walkable(pos))
+                throw new Exception($"it's not empty at {pos}");
 
             if (units.Contains(unit))
                 throw new Exception($"this unit is already on the map");
 
             unit.Map = this;
-            unit.Pos = new Vec2(x, y);
+            unit.Pos = pos;
             units.Add(unit);
+
+            OnUnitAdded?.Invoke(unit);
         }
 
         public void ForEachUnit(Action<IUnit> f)
@@ -60,6 +62,7 @@ namespace TowerDefance.Game
 
         public IUnit[] AllUnits { get => units.ToArray(); }
 
+        public static event Action<IUnit> OnUnitAdded = null;
         public static event Action<IUnit> OnUnitRemoved = null;
 
         public void UpdateAllUnits(int te)

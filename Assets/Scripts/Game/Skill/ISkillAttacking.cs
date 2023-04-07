@@ -42,7 +42,7 @@ namespace TowerDefance
 
         Fix64 Range { get; }
 
-        IAttacker Owner { get; }
+        IAttacker Owner { get; set; }
 
         bool CanAttack();
 
