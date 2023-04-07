@@ -13,30 +13,28 @@ public partial class TestBattleScene : MonoBehaviour
     public GameObject TowerModel;
     public GameObject TowerBaseModel;
 
-    TestBattle bt;
+    TestBattle Bt { get; set; }
     readonly Dictionary<string, GameObject> unitObjs = new();
 
     private void Start()
     {
-        bt = new TestBattle();
-        bt.Init();
-
-        InitUnits();
         InitBattleEventsHandler();
     }
 
-    void InitUnits()
+    public void Init(TestBattle bt)
     {
         foreach (var obj in unitObjs.Values)
             Destroy(obj);
 
         unitObjs.Clear();
-        bt.Map.ForEachUnit(AddUnitObj);
+
+        Bt = bt;
+        Bt.Map.ForEachUnit(AddUnitObj);
     }
 
     void UpdateUnitsModels()
     {
-        bt.Map.ForEachUnit((unit) =>
+        Bt.Map.ForEachUnit((unit) =>
         {
             unitObjs[unit.UID].transform.localPosition = new Vector3((float)unit.Pos.x, (float)unit.Pos.y, 0);
         });
@@ -74,8 +72,13 @@ public partial class TestBattleScene : MonoBehaviour
 
     private void Update()
     {
+        if (Bt == null)
+            return;
+
         var dt = Time.deltaTime;
-        bt.OnTimeElapsed((int)(dt * 1000));
+
+        if (Bt.Running)
+            Bt.OnTimeElapsed((int)(dt * 1000));
 
         UpdateUnitsModels();
         UpdateBattleEffect(dt);

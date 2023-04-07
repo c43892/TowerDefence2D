@@ -52,6 +52,17 @@ namespace TowerDefance.Game
             units.Add(unit);
 
             OnUnitAdded?.Invoke(unit);
+            OnMapUnitAdded?.Invoke(this,unit);
+        }
+
+        public void RemoveUnit(IUnit unit)
+        {
+            if (!units.Contains(unit))
+                throw new Exception($"unit {unit.UID} is not on the map. can not remove it");
+
+            units.Remove(unit);
+            OnUnitRemoved?.Invoke(unit);
+            OnMapUnitRemoved?.Invoke(this, unit);
         }
 
         public void ForEachUnit(Action<IUnit> f)
@@ -62,20 +73,15 @@ namespace TowerDefance.Game
 
         public IUnit[] AllUnits { get => units.ToArray(); }
 
-        public static event Action<IUnit> OnUnitAdded = null;
-        public static event Action<IUnit> OnUnitRemoved = null;
+        public static event Action<BattleMap, IUnit> OnMapUnitAdded = null;
+        public static event Action<BattleMap, IUnit> OnMapUnitRemoved = null;
+
+        public event Action<IUnit> OnUnitAdded = null;
+        public event Action<IUnit> OnUnitRemoved = null;
 
         public void UpdateAllUnits(int te)
         {
             units.Where(u => u is IFrameDrived).Cast<IFrameDrived>().Travel(u => u.OnTimeElapsed(te));
-
-            var toRemove = units.Where(u => u.Hp <= 0).ToArray();
-            toRemove.Travel(u =>
-            {
-                u.Map = null;
-                units.Remove(u);
-                OnUnitRemoved?.Invoke(u);
-            });
         }
     }
 }

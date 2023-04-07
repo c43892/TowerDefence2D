@@ -28,7 +28,7 @@ namespace TowerDefance
             MaxAttacks = maxAttacks;
         }
 
-        public static readonly int ATTACKING_DEPLAY = 500; // ms
+        public static readonly int ATTACKING_DEPLAY = 200; // ms
         protected readonly List<Func<int, bool>> onGoingAttackingWrappers = new();
         protected readonly List<Func<int, bool>> warpperToRemove = new();
 

@@ -15,8 +15,8 @@ public partial class TestBattleScene
 
     void InitBattleEventsHandler()
     {
-        BattleMap.OnUnitRemoved += (u) => RemoveUnitObj(u.UID);
-        BattleMap.OnUnitAdded += (u) => AddUnitObj(u);
+        BattleMap.OnMapUnitRemoved += (map, u) => RemoveUnitObj(u.UID);
+        BattleMap.OnMapUnitAdded += (map, u) => AddUnitObj(u);
 
         SkillAttackingTargets.AboutToAttacking += (skill, attacker, targets) =>
         {
