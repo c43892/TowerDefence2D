@@ -17,8 +17,8 @@ namespace TowerDefance.Game
             public BattleMap Map { get; set; }
             public Vec2 Pos { get; set; }
             public Fix64 Dir { get; set; }
-
             public Fix64 Hp { get; set; }
+            public string Type { get; }
         }
 
         readonly List<IUnit> units = new();
@@ -27,18 +27,31 @@ namespace TowerDefance.Game
         {
         }
 
-        public IUnit[] GetUnitsAt(int x, int y)
+        public bool IsOccupiedAt(Vec2 pos)
+        {
+            if (!Walkable(pos))
+                return false;
+
+            foreach (var u in units)
+                if (u.Pos == pos)
+                    return false;
+
+            return true;
+        }
+
+        public IUnit[] GetUnitsAt(Vec2 pos)
         {
             var lst = new List<IUnit>();
             foreach (var u in units)
             {
-                if ((int)u.Pos.x <= x && (int)u.Pos.y <= y)
+                if (u.Pos == pos)
                     lst.Add(u);
             }
 
             return lst.ToArray();
         }
 
+        public void AddUnitAt(IUnit unit, int x, int y) => AddUnitAt(unit, new Vec2(x, y));
         public void AddUnitAt(IUnit unit, Vec2 pos)
         {
             if (!Walkable(pos))

@@ -27,43 +27,46 @@ namespace TowerDefance.Game
                 new Enemy(RandomUtils.GetRandomString("enemy_"), 2, 3, 0, 0, 1, 0, enemyMovingPath)
                 {
                     Skill = new SkillAttackingTargets("PhysicalSingleAttack", 1),
-                    ValidTargetTypes = new Type[] { typeof(TowerBase) }
+                    ValidTargetTypes = new Type[] { typeof(TowerBase) },
+                    Type = "e3"
                 },
 
                 new Enemy(RandomUtils.GetRandomString("enemy_"), 2, 3, 0, 0, 1, 0, enemyMovingPath)
                 {
                     Skill = new SkillAttackingTargets("PhysicalSingleAttack", 1),
-                    ValidTargetTypes = new Type[] { typeof(TowerBase) }
+                    ValidTargetTypes = new Type[] { typeof(TowerBase) },
+                    Type = "e3"
                 },
 
                 new Enemy(RandomUtils.GetRandomString("enemy_"), 3, 100, 0, 0, 1, 0, enemyMovingPath)
                 {
                     Skill = new SkillAttackingTargets("PhysicalSingleAttack", 1),
-                    ValidTargetTypes = new Type[] { typeof(TowerBase) }
+                    ValidTargetTypes = new Type[] { typeof(TowerBase) },
+                    Type = "e100"
                 },
 
                 new Enemy(RandomUtils.GetRandomString("enemy_"), 2, 3, 0, 0, 1, 0, enemyMovingPath)
                 {
                     Skill = new SkillAttackingTargets("PhysicalSingleAttack", 1),
-                    ValidTargetTypes = new Type[] { typeof(TowerBase) }
+                    ValidTargetTypes = new Type[] { typeof(TowerBase) },
+                    Type = "e3"
                 },
 
                 new Enemy(RandomUtils.GetRandomString("enemy_"), 2, 3, 0, 0, 1, 0, enemyMovingPath)
                 {
                     Skill = new SkillAttackingTargets("PhysicalSingleAttack", 1),
-                    ValidTargetTypes = new Type[] { typeof(TowerBase) }
+                    ValidTargetTypes = new Type[] { typeof(TowerBase) },
+                    Type = "e3"
                 }
             }, 0.5f);
 
-            // the tower
-            var s7 = new SkillAttackingTargets("SkillAttackingTargets", 7, 2);
-            var t = new Tower(RandomUtils.GetRandomString("tower_"), 1, 0, 1) { Skill = s7 };
-            AddUnitAt(t, new Vec2(10, 5));
-
             // the tower base
-            var b = new TowerBase(RandomUtils.GetRandomString("towerbase_"), 0, 0, 5);
-            AddUnitAt(b, new Vec2(20, 5));
+            AddUnitAt(new TowerBase(RandomUtils.GetRandomString("towerbase_"), 0, 0, 5)
+            {
+                Type = "b5"
+            }, new Vec2(20, 5));
 
+            // start spawning
             SpawningPoint.Start();
         }
     }

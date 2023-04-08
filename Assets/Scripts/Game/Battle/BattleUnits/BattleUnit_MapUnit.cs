@@ -15,5 +15,7 @@ namespace TowerDefance.Game
         public Vec2 Pos { get; set; }
 
         public Fix64 Dir { get; set; }
+
+        public string Type { get; set; } = null;
     }
 }

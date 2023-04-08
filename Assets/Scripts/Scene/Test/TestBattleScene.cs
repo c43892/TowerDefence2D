@@ -8,6 +8,7 @@ using UnityEngine;
 public partial class TestBattleScene : MonoBehaviour
 {
     public Transform UnitRoot;
+    public Transform MapRoot;
 
     public GameObject EnemyModel;
     public GameObject TowerModel;
