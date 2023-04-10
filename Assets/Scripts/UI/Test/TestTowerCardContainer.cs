@@ -20,8 +20,8 @@ public class TestTowerCardContainer : MonoBehaviour, IDragHandler
     public Func<Vector3, Vec2> WorldPos2BattleMapPos = null;
     public Func<Vec2, Vector3> BattleMapPos2UnitObjLocalPos = null;
 
-    public TestTowerCard SelectedCard = null;
-    public Transform SelectedTower = null;
+    public TestTowerCard SelectedCard { get; set; }
+    public Transform SelectedTower { get; set; }
 
     private readonly List<TestTowerCard> AllCardsCreated = new();
 
