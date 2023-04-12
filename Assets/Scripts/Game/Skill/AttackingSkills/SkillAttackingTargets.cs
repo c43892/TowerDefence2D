@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Swift;
 using Swift.Math;
-using Unity.VisualScripting;
 
-namespace TowerDefance
+namespace TowerDefance.Game
 {
     using IAttacker = ISkillAttacking.IAttacker;
     using ITarget = ISkillAttacking.ITarget;

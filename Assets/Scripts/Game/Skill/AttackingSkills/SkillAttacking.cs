@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Swift;
 using Swift.Math;
 
-namespace TowerDefance
+namespace TowerDefance.Game
 {
     using IAttacker = ISkillAttacking.IAttacker;
     using ITarget = ISkillAttacking.ITarget;
@@ -28,9 +26,9 @@ namespace TowerDefance
             MaxAttacks = maxAttacks;
         }
 
-        public static readonly int ATTACKING_DEPLAY = 200; // ms
-        protected readonly List<Func<int, bool>> onGoingAttackingWrappers = new();
-        protected readonly List<Func<int, bool>> warpperToRemove = new();
+        public static readonly Fix64 ATTACKING_DEPLAY = 0.2; // secs
+        protected readonly List<Func<Fix64, bool>> onGoingAttackingWrappers = new();
+        protected readonly List<Func<Fix64, bool>> warpperToRemove = new();
 
         public abstract Action AttackImpl(ITarget[] candidates);
 
@@ -45,7 +43,7 @@ namespace TowerDefance
             if (attacking == null)
                 return;
 
-            var timeLeft = ATTACKING_DEPLAY;
+            Fix64 timeLeft = ATTACKING_DEPLAY;
             onGoingAttackingWrappers.Add((te) =>
             {
                 timeLeft -= te;
@@ -57,7 +55,7 @@ namespace TowerDefance
             });
         }
 
-        public virtual void OnTimeElapsed(int te)
+        public virtual void OnTimeElapsed(Fix64 te)
         {
             FC.ForEach(onGoingAttackingWrappers, (i, w) =>
             {

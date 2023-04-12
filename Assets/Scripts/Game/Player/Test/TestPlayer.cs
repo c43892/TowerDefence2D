@@ -11,7 +11,7 @@ namespace TowerDefance.Game
 {
     public class TestPlayer : ITowerProvider
     {
-        public event Action<string[]> ValidTowerUpdated;
+        public event Action<string[]> ValidTowersUpdated;
 
         private readonly List<string> ValidTower = new();
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Swift;
 using Swift.Math;
 using UnityEditor.Experimental.GraphView;
-using static TowerDefance.ISkillAttacking;
+using static TowerDefance.Game.ISkillAttacking;
 
 namespace TowerDefance.Game
 {
@@ -22,7 +22,7 @@ namespace TowerDefance.Game
                 new Vec2(15, 5), new Vec2(20, 5),
             };
 
-            SpawningPoint = new SpawningPointSequential(this, new Vec2(0, 5), new BattleUnit[]
+            SpawningPoint = new SpawningPointSequential(this, new Vec2(0, 5), new BattleMapUnit[]
             {
                 new Enemy(RandomUtils.GetRandomString("enemy_"), 2, 3, 0, 0, 1, 0, enemyMovingPath)
                 {
@@ -65,6 +65,8 @@ namespace TowerDefance.Game
             {
                 Type = "b5"
             }, new Vec2(20, 5));
+
+            (SpawningPoint as SpawningPointSequential).Units.Travel(u => u.AddBuff(new BuffSpeedReduction(1) { A = 0.1f, Duration = 3 }));
 
             // start spawning
             SpawningPoint.Start();

@@ -24,6 +24,6 @@ namespace TowerDefance.Game
 
         public IEnumerable<Vec2> MovingPath { get; private set; }
 
-        public override StateMachine CreateAI() => this.MoveAndSelfExplode(MovingPath, MaxSpeed);
+        public override StateMachine CreateAI() => this.MoveAndSelfExplode(MovingPath, () => Speed);
     }
 }

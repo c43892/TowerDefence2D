@@ -10,7 +10,7 @@ namespace TowerDefance.Game
     using ITarget = ISkillAttacking.ITarget;
     using IUnit = AIUnitExt.IUnit;
 
-    public class TowerBase : BattleUnit, ITarget
+    public class TowerBase : BattleMapUnit, ITarget
     {
         public TowerBase(string uid, Fix64 phyDefence, Fix64 magDefence, Fix64 maxHp)
             : base(uid, 0, maxHp)

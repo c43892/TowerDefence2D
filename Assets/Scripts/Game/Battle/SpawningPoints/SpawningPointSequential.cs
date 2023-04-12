@@ -8,9 +8,9 @@ namespace TowerDefance.Game
         Fix64 SpawningInterval { get; set; }
         TowerDefanceBattle Bt { get; set; }
         Vec2 StartPos { get; set; }
-        BattleUnit[] Units { get; set; }
+        public BattleMapUnit[] Units { get; private set; }
 
-        public SpawningPointSequential(TowerDefanceBattle bt, Vec2 startPos, BattleUnit[] units, Fix64 spawningInterval)
+        public SpawningPointSequential(TowerDefanceBattle bt, Vec2 startPos, BattleMapUnit[] units, Fix64 spawningInterval)
         {
             SpawningInterval = spawningInterval;
             Bt = bt;
@@ -24,12 +24,12 @@ namespace TowerDefance.Game
         bool started = false;
         int nextUnitIndex = 0;
 
-        public void OnTimeElapsed(int te)
+        public void OnTimeElapsed(Fix64 te)
         {
             if (!started || Done)
                 return;
 
-            timeElapsed -= te / 1000f;
+            timeElapsed -= te;
             if (timeElapsed <= 0)
             {
                 timeElapsed = SpawningInterval;

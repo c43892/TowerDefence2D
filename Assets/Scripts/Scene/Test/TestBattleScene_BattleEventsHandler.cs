@@ -20,7 +20,7 @@ public partial class TestBattleScene
 
         SkillAttackingTargets.AboutToAttacking += (skill, attacker, targets) =>
         {
-            var attackerObj = GetUnitObj((attacker as BattleMap.IUnit).UID);
+            var attackerObj = GetUnitObj((attacker as BattleMapUnit).UID);
 
             // flying process
             FC.ForEach(targets, (i, t) =>
@@ -32,12 +32,11 @@ public partial class TestBattleScene
                 bulletObj.transform.SetParent(EffectRoot);
                 bulletObj.transform.position = attackerObj.transform.position;
 
-                var targetUID = (t as BattleMap.IUnit).UID;
+                var targetUID = (t as BattleMapUnit).UID;
                 var targetObj = GetUnitObj(targetUID);
                 var targetPos = targetObj.transform.position;
 
-                var flyingSpeed = (attackerObj.transform.position - targetPos).magnitude / (SkillAttacking.ATTACKING_DEPLAY / 1000f);
-
+                var flyingTimeLeft = SkillAttacking.ATTACKING_DEPLAY;
                 effets.Add((te) =>
                 {
                     targetObj = GetUnitObj(targetUID);
@@ -46,16 +45,18 @@ public partial class TestBattleScene
 
                     var dir = targetPos - bulletObj.transform.position;
                     var dist = dir.magnitude;
+                    var flyingSpeed = (bulletObj.transform.position - targetPos).magnitude / flyingTimeLeft;
                     var distMoved = flyingSpeed * te;
+                    flyingTimeLeft -= te;
 
-                    if (distMoved >= dist)
+                    if (distMoved >= dist || flyingTimeLeft <= 0)
                     {
                         // done
                         Destroy(bulletObj);
                         return false;
                     }
 
-                    var dPos = dir * distMoved / dist;
+                    var dPos = dir * ((float)distMoved) / dist;
                     bulletObj.transform.position += dPos;
 
                     return true;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Swift;
 using Swift.Math;
 
-namespace TowerDefance
+namespace TowerDefance.Game
 {
     public partial interface ISkillAttacking : ISkill
     {

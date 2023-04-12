@@ -7,7 +7,7 @@ using Swift;
 using Swift.Math;
 using Unity.VisualScripting;
 
-namespace TowerDefance
+namespace TowerDefance.Game
 {
     public partial interface ISkillAttacking : ISkill
     {

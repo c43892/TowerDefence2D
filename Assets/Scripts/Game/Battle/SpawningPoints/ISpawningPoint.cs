@@ -3,7 +3,7 @@ using Swift.Math;
 
 namespace TowerDefance.Game
 {
-    public interface ISpawningPoint : IFrameDrived
+    public interface ISpawningPoint : ITimeDriven
     {
         void Start();
 

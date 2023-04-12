@@ -1,4 +1,4 @@
-﻿using Swift;
+﻿using Swift.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace TowerDefance
 {
-    public interface ISkill : ITimeDriven
+    public interface ITimeDriven
     {
-        string ID { get; }
+        void OnTimeElapsed(Fix64 te);
     }
 }

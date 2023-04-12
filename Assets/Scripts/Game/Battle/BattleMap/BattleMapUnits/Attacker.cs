@@ -11,7 +11,7 @@ namespace TowerDefance.Game
     using IAttacker = ISkillAttacking.IAttacker;
     using IAttackUnit = AIUnitExt.IAttackerUnit;
 
-    public class Attacker : BattleUnit, IAttacker, IAttackUnit, IFrameDrived
+    public class Attacker : BattleMapUnit, IAttacker, IAttackUnit
     {
         public Attacker(string id, Fix64 maxSpeed, Fix64 maxHp, Fix64 phyPower, Fix64 magPower, Fix64 attackingInterval)
             : base(id, maxSpeed, maxHp)
@@ -48,9 +48,10 @@ namespace TowerDefance.Game
 
         public bool CanAttack() => Skill != null && Skill.CanAttack();
 
-        public virtual void OnTimeElapsed(int dt)
+        public override void OnTimeElapsed(Fix64 te)
         {
-            Skill?.OnTimeElapsed(dt);
+            Skill?.OnTimeElapsed(te);
+            base.OnTimeElapsed(te);
         }
     }
 }

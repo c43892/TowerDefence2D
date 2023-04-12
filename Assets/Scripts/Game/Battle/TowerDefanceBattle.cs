@@ -9,35 +9,25 @@ namespace TowerDefance.Game
 {
 
     // for a tower defence battle instance including the map, the towers, the enemies, the player, the game state, etc.
-    public class TowerDefanceBattle : IFrameDrived
+    public class TowerDefanceBattle : ITimeDriven
     {
         public BattleMap Map { get; protected set; }
 
         public ISpawningPoint SpawningPoint { get; protected set; }
 
-        protected readonly StateMachineManager smm = new();
-
-        public virtual void AddUnitAt(BattleUnit unit, Vec2 pos)
+        public virtual void AddUnitAt(BattleMapUnit unit, Vec2 pos)
         {
             Map.AddUnitAt(unit, pos);
-            smm.Add(unit.CreateAI());
         }
 
-        public virtual void OnTimeElapsed(int te)
+        public virtual void OnTimeElapsed(Fix64 te)
         {
             if (!Running)
                 return;
 
             SpawningPoint.OnTimeElapsed(te);
-            smm.OnTimeElapsed(te);
             Map.OnTimeElapsed(te);
-
-            var toRemove = Map.AllUnits.Where(u => u.Hp <= 0).ToArray();
-            toRemove.Travel((u) =>
-            {
-                Map.RemoveUnit(u);
-                smm.Del(u.UID);
-            });
+            Map.AllUnits.Where(u => u.Hp <= 0).ToArray().Travel(Map.RemoveUnit);
 
             CheckEnding();
         }

@@ -1,3 +1,4 @@
+using Swift;
 using Swift.Math;
 using System;
 using System.Collections.Generic;
@@ -30,15 +31,12 @@ public partial class TestBattleScene : MonoBehaviour
         unitObjs.Clear();
 
         Bt = bt;
-        Bt.Map.ForEachUnit(AddUnitObj);
+        Bt.Map.AllUnits.Travel(AddUnitObj);
     }
 
     void UpdateUnitsModels()
     {
-        Bt.Map.ForEachUnit((unit) =>
-        {
-            unitObjs[unit.UID].transform.localPosition = new Vector3((float)unit.Pos.x, (float)unit.Pos.y, 0);
-        });
+        Bt.Map.AllUnits.Travel((unit) => unitObjs[unit.UID].transform.localPosition = new Vector3((float)unit.Pos.x, (float)unit.Pos.y, 0));
     }
 
     GameObject GetUnitObj(string uid)
@@ -53,7 +51,7 @@ public partial class TestBattleScene : MonoBehaviour
         unitObjs.Remove(uid);
     }
 
-    void AddUnitObj(BattleMap.IUnit unit)
+    void AddUnitObj(BattleMapUnit unit)
     {
         GameObject obj;
         if (unit is Enemy)
@@ -79,7 +77,7 @@ public partial class TestBattleScene : MonoBehaviour
         var dt = Time.deltaTime;
 
         if (Bt.Running)
-            Bt.OnTimeElapsed((int)(dt * 1000));
+            Bt.OnTimeElapsed(dt);
 
         UpdateUnitsModels();
         UpdateBattleEffect(dt);

@@ -9,26 +9,26 @@ namespace TowerDefance
 {
     public static partial class AIUnitExt
     {
-        public static StateMachine AIMove(this IUnit u, IEnumerable<Vec2> path, Fix64 maxSpeed)
+        public static StateMachine AIMove(this IUnit u, IEnumerable<Vec2> path, Func<Fix64> speedProvider)
         {
             var sm = new StateMachine(u.UID);
 
             // 沿给定路径移动
-            Func<Fix64, bool> move = Move(u, path, maxSpeed);
+            Func<Fix64, bool> move = Move(u, path, speedProvider);
             sm.NewState("moving").Run((st, te) => move(te)).AsDefault();
 
             return sm;
         }
 
         // 沿路径移动
-        static Func<Fix64, bool> Move(IUnit u, IEnumerable<Vec2> srcPath, Fix64 v)
+        static Func<Fix64, bool> Move(IUnit u, IEnumerable<Vec2> srcPath, Func<Fix64> speedProvider)
         {
             var path = new List<Vec2>(srcPath);
             Vec2 nowPos = u.Pos;
             return (dt) =>
             {
                 // 计算当前位置
-                var maxDist = v * dt;
+                var maxDist = speedProvider() * dt;
                 var ps = Vec2.Zero;
                 var pe = Vec2.Zero;
                 nowPos = OnPath(nowPos, path, maxDist, out ps, out pe);
