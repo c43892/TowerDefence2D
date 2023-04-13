@@ -1,4 +1,4 @@
-using Swift;
+﻿using Swift;
 using System;
 using System.Collections.Generic;
 using TowerDefance;
@@ -61,6 +61,15 @@ public partial class TestBattleScene
 
                     return true;
                 });
+
+                if (attacker is Tower)
+                {
+                    var mainTarget = targets[0];
+                    var mainTargetObj = GetUnitObj((mainTarget as BattleMapUnit).UID);
+                    var flipX = (mainTargetObj.transform.position - attackerObj.transform.position).x > 0;
+                    attackerObj.transform.localRotation = flipX ? Quaternion.AngleAxis(180, Vector3.up) : Quaternion.AngleAxis(0, Vector3.up);
+                    attackerObj.GetComponent<FrameAni>().StartPlay();
+                }
             });
         };
 

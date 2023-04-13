@@ -30,7 +30,7 @@ namespace TowerDefance.Game
             ValidTower.Remove(type);
             return new Tower(RandomUtils.GetRandomString("tower_" + type), 1, 0, 1)
             {
-                Skill = new SkillAttackingTargets("PhysicalSingleAttack", 6, 2),
+                Skill = new SkillAttackingTargets("PhysicalSingleAttack", 6, 1),
                 ValidTargetTypes = new Type[] { typeof(Enemy) },
                 Type = "tower01"
             };

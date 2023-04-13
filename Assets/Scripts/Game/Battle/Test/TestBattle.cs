@@ -66,7 +66,7 @@ namespace TowerDefance.Game
                 Type = "b5"
             }, new Vec2(20, 5));
 
-            (SpawningPoint as SpawningPointSequential).Units.Travel(u => u.AddBuff(new BuffSpeedReduction(1) { A = 0.1f, Duration = 3 }));
+            (SpawningPoint as SpawningPointSequential).Units.Travel(u => u.AddBuff(new BuffSpeedReduction(2) { A = 0.5f, Duration = 3 }));
 
             // start spawning
             SpawningPoint.Start();

@@ -11,7 +11,7 @@ namespace TowerDefance.Game
 {
     public abstract class BuffIntervalBase : IBuff, ITimeDriven
     {
-        public string ID { get; set; }
+        public abstract string ID { get; }
 
         public abstract Fix64 Interval { get; } // in secs
 

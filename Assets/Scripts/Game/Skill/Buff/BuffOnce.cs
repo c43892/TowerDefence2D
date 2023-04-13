@@ -16,7 +16,7 @@ namespace TowerDefance.Game
             waitingLeft = waitingTime;
         }
 
-        public string ID { get; set; }
+        public abstract string ID { get; }
 
         public bool Done { get => waitingLeft < 0; }
 

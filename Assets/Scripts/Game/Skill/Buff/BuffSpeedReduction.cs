@@ -16,6 +16,8 @@ namespace TowerDefance.Game
         {
         }
 
+        public override string ID { get; } = "BuffSpeedReduction";
+
         public interface IBuffSpeedReductionTarget : IBuffOwner
         {
             public Fix64 Speed { get; set; }
@@ -42,6 +44,8 @@ namespace TowerDefance.Game
                 : base(waitingTime)
             {
             }
+
+            public override string ID { get; } = "BuffSpeedReductionEnd";
 
             protected override void OnEffect()
             {
