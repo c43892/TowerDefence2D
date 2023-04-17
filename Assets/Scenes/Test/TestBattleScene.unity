@@ -1089,7 +1089,7 @@ Transform:
   m_GameObject: {fileID: 1389350389}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 826108452}
@@ -1136,7 +1136,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 69410db30ad519946a464cd548d0e211, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1431,7 +1431,7 @@ Transform:
   m_GameObject: {fileID: 1630094539}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.54, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 826108452}
@@ -1478,12 +1478,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a83753265219f254bb25d460fe68bd10, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bc87915c57154fc45a8ca0a58cac05c3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 5.12, y: 5.12}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1502,32 +1502,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sprites:
-  - {fileID: 21300000, guid: a83753265219f254bb25d460fe68bd10, type: 3}
-  - {fileID: 21300000, guid: 43a576755fbb31946af7f269d77ba10e, type: 3}
-  - {fileID: 21300000, guid: 0b2afade5dd23154a807d64d5b92b793, type: 3}
-  - {fileID: 21300000, guid: 094f711bb14ca1c4e85efedb8ae27def, type: 3}
-  - {fileID: 21300000, guid: ed836b715404a584aaa401b63c9362cc, type: 3}
-  - {fileID: 21300000, guid: 5e9ae92b1201c1d4093e4fe4d234bb87, type: 3}
-  - {fileID: 21300000, guid: 832a970000fc29944a4796c2fc3e0655, type: 3}
-  - {fileID: 21300000, guid: 6297decde4f446b43968925cc3a942f5, type: 3}
-  - {fileID: 21300000, guid: 546e9cba9b069d342a488e938be6b7dd, type: 3}
-  - {fileID: 21300000, guid: 0dce291e299fe3a44a0b6c7e427131d5, type: 3}
-  - {fileID: 21300000, guid: 12c141730533fb84c85676e84e2e062a, type: 3}
-  - {fileID: 21300000, guid: 327f03da976b19d4694a7855e9a8a0da, type: 3}
-  - {fileID: 21300000, guid: e45b044dabf0ab24c873265e2e027b48, type: 3}
-  - {fileID: 21300000, guid: 5c9d3750aecadd24c8eefa0d7da0a49a, type: 3}
-  - {fileID: 21300000, guid: 6f10e8f4bf895fe43963bdcebcc053ad, type: 3}
-  - {fileID: 21300000, guid: 501d3808b4b9d4b4fa604710750726a3, type: 3}
-  - {fileID: 21300000, guid: 43186e3f2df6bf74d9555ad0af304425, type: 3}
-  - {fileID: 21300000, guid: 2c7665c4ed2c7474593cdb3e239172cf, type: 3}
-  - {fileID: 21300000, guid: f06019d63751d8543851314ae35715dd, type: 3}
-  - {fileID: 21300000, guid: f8a46733f31d9514ab88eeafdd16cde1, type: 3}
-  - {fileID: 21300000, guid: 1461b6c7143c3fb44b8711f6da6eb954, type: 3}
-  - {fileID: 21300000, guid: 31c82bc6939dfc4429bb8da478a4561d, type: 3}
-  - {fileID: 21300000, guid: 5475d0055c9fedc41b3fdf7a6031c3d8, type: 3}
-  - {fileID: 21300000, guid: 06da6ffaa2fc84e4781d0dae7fcefcaf, type: 3}
-  - {fileID: 21300000, guid: 352b6abda4ae81943996b24a34d44b7b, type: 3}
-  FrameInterval: 0.01
+  - {fileID: 21300000, guid: bc87915c57154fc45a8ca0a58cac05c3, type: 3}
+  - {fileID: 21300000, guid: 4ff28ea96f3de364d974428acba91fb9, type: 3}
+  - {fileID: 21300000, guid: 730c14ffb098cd5498bec8ebcfeec3aa, type: 3}
+  - {fileID: 21300000, guid: f5d2d1260c4067a4ab5be67cc18f73ef, type: 3}
+  - {fileID: 21300000, guid: 4bb973378a85cab41b56c65b718c8347, type: 3}
+  - {fileID: 21300000, guid: 3d50f6e78b70de44bad597953e115825, type: 3}
+  - {fileID: 21300000, guid: b85e66bcb6fa3b14081adc8901c2b2b5, type: 3}
+  - {fileID: 21300000, guid: 2baa354d3499af84aa8a51fd17ceb104, type: 3}
+  - {fileID: 21300000, guid: 37301423079b17b46aa898b75593634f, type: 3}
+  - {fileID: 21300000, guid: 7df9914a8efcb5540abb7166d930a037, type: 3}
+  FrameInterval: 0.12
   AutoPlay: 0
   Loop: 0
 --- !u!1 &1638654640
