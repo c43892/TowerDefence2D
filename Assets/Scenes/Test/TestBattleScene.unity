@@ -646,7 +646,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 760987245}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d73fb6a89baf2e84aa1256941373c21b, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a89bdde6be27fe45bec50e60d607e52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Sprites:
@@ -676,8 +676,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a5d2ee3248c79934cad2e2a9d21b70ab, type: 3}
   - {fileID: 21300000, guid: ec71dfecc08ce154e81765c8126ecc95, type: 3}
   FrameInterval: 0.1
-  AutoPlay: 1
-  Loop: 1
+  AutoPlay: 0
+  Loop: 0
 --- !u!1 &782597636
 GameObject:
   m_ObjectHideFlags: 0
@@ -1478,7 +1478,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: bc87915c57154fc45a8ca0a58cac05c3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3aad181475009d04fb0f8b7187594b78, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1498,21 +1498,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 1630094539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d73fb6a89baf2e84aa1256941373c21b, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a89bdde6be27fe45bec50e60d607e52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Sprites:
-  - {fileID: 21300000, guid: bc87915c57154fc45a8ca0a58cac05c3, type: 3}
-  - {fileID: 21300000, guid: 4ff28ea96f3de364d974428acba91fb9, type: 3}
-  - {fileID: 21300000, guid: 730c14ffb098cd5498bec8ebcfeec3aa, type: 3}
-  - {fileID: 21300000, guid: f5d2d1260c4067a4ab5be67cc18f73ef, type: 3}
-  - {fileID: 21300000, guid: 4bb973378a85cab41b56c65b718c8347, type: 3}
-  - {fileID: 21300000, guid: 3d50f6e78b70de44bad597953e115825, type: 3}
-  - {fileID: 21300000, guid: b85e66bcb6fa3b14081adc8901c2b2b5, type: 3}
-  - {fileID: 21300000, guid: 2baa354d3499af84aa8a51fd17ceb104, type: 3}
-  - {fileID: 21300000, guid: 37301423079b17b46aa898b75593634f, type: 3}
-  - {fileID: 21300000, guid: 7df9914a8efcb5540abb7166d930a037, type: 3}
-  FrameInterval: 0.12
+  - {fileID: 21300000, guid: 3aad181475009d04fb0f8b7187594b78, type: 3}
+  - {fileID: 21300000, guid: 302eefb1393aa5744ae02b188c9f0005, type: 3}
+  - {fileID: 21300000, guid: 2b18f86d8187551448c48f0d0fbce6a2, type: 3}
+  - {fileID: 21300000, guid: b6147b81dfe29ed4fa09cb9cde331a46, type: 3}
+  - {fileID: 21300000, guid: 6c519f064f8f681449b31fb6aae1288e, type: 3}
+  - {fileID: 21300000, guid: 0fa64ffa24c3f6744b8692e596caa7cf, type: 3}
+  - {fileID: 21300000, guid: 8569d0902ce9a014eb67ca9dbcb8786a, type: 3}
+  - {fileID: 21300000, guid: f83133e41611439409808ddaf95bab76, type: 3}
+  - {fileID: 21300000, guid: 76a8fa91a4eb9e1438dd1b6e58665555, type: 3}
+  - {fileID: 21300000, guid: aac027e515478bf48835e590fa6d0133, type: 3}
+  FrameInterval: 0.2
   AutoPlay: 0
   Loop: 0
 --- !u!1 &1638654640
