@@ -8,4 +8,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Test/TestBattleScene.unity
     guid: 442da088bc332e2478268805c255ba1e
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: c5c3f68e6497687429aa96dc875efb63, type: 2}

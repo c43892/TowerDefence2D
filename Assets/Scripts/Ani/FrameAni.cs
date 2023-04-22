@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceLocations;
 using UnityEngine.UI;
 
 public class FrameAni : MonoBehaviour
@@ -18,8 +21,11 @@ public class FrameAni : MonoBehaviour
 
     private void Start()
     {
-        if (AutoPlay)
-            StartPlay();
+    }
+
+    void LoadAni(string aniName)
+    {
+        AsyncOperationHandle<IList<IResourceLocation>> handle = Addressables.LoadResourceLocationsAsync("myFolder");
     }
 
     public void StartPlay()
