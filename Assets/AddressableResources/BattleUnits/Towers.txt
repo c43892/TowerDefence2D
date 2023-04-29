@@ -1,0 +1,8 @@
+{
+	"Archer": {
+		type: "Archer",
+		phyPower: 1,
+		magPower: 0,
+		attackingInterval: 1.5
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"Slime": {
+		type: "Slime",
+        maxSpeed: 1,
+        maxHp: 50,
+        phyDefence: 0,
+        magDefence: 0,
+        phyPower: 1,
+        magPower: 0,
+	}
+}

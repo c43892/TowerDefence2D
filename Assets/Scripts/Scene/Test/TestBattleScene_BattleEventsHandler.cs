@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using TowerDefance;
 using TowerDefance.Game;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public partial class TestBattleScene
@@ -40,7 +41,14 @@ public partial class TestBattleScene
     void InitBattleEventsHandler()
     {
         BattleMap.OnMapUnitRemoved += (map, u) => RemoveUnitObj(u.UID);
-        BattleMap.OnMapUnitAdded += (map, u) => AddUnitObj(u);
+        BattleMap.OnMapUnitAdded += (map, u) =>
+        {
+            var model = AddUnitObj(u);
+            if (u is Enemy)
+                model.Play("Moving");
+            else
+                model.Play("Idle");
+        };
 
         SkillAttackingTargets.AboutToAttacking += (skill, attacker, targets) =>
         {
@@ -50,13 +58,6 @@ public partial class TestBattleScene
             // flying process
             FC.ForEach(targets, (i, t) =>
             {
-                var bulletObj = Instantiate(BulletModel);
-
-                // initial position
-                bulletObj.SetActive(true);
-                bulletObj.transform.SetParent(EffectRoot);
-                bulletObj.transform.position = attackerPos;
-
                 var targetUID = (t as BattleMapUnit).UID;
                 var targetObj = GetUnitObj(targetUID);
                 var targetPos = targetObj.transform.position;
@@ -68,6 +69,16 @@ public partial class TestBattleScene
                 midPos.x = attackerPos.x + (faceLeft ? -d : d);
 
                 var flyingTimeLeft = SkillAttacking.ATTACKING_DEPLAY;
+
+                var bulletObj = Instantiate(BulletModel);
+                bulletObj.SetActive(true);
+                bulletObj.transform.SetParent(EffectRoot);
+                bulletObj.transform.position = attackerPos;
+                var aniCfg = ConfigManager.GetEffectAnimationConfig("ArcherAttacking");
+                var ani = bulletObj.GetComponent<FrameAni>();
+                ani.Data = new AniData() { label = aniCfg.label, interval = aniCfg.interval, loop = aniCfg.loop };
+                ani.Play();
+
                 effets.Add((te) =>
                 {
                     targetObj = GetUnitObj(targetUID);
@@ -75,7 +86,7 @@ public partial class TestBattleScene
                         targetPos = targetObj.transform.position;
 
                     var flyingSpeed = (bulletObj.transform.position - targetPos).magnitude / flyingTimeLeft;
-                    
+
                     var t = (float)((SkillAttacking.ATTACKING_DEPLAY - flyingTimeLeft) / SkillAttacking.ATTACKING_DEPLAY);
                     CalculateParabola(attackerPos, midPos, targetPos, t, out Vector3 pos, out Fix64 tan);
 
@@ -91,12 +102,15 @@ public partial class TestBattleScene
                     return true;
                 });
 
-                if (attacker is Tower)
+                if (attacker is Tower tower)
                 {
                     var mainTarget = targets[0];
                     var mainTargetObj = GetUnitObj((mainTarget as BattleMapUnit).UID);
                     attackerObj.transform.localRotation = faceLeft ? Quaternion.AngleAxis(0, Vector3.up) : Quaternion.AngleAxis(180, Vector3.up);
-                    attackerObj.GetComponent<FrameAni>().StartPlay();
+
+                    var model = attackerObj.GetComponent<BattleMapUnitModel>();
+                    model.Unit = tower;
+                    model.Play("Attacking", () => model.Play("Idle"));
                 }
             });
         };

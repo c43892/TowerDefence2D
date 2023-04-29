@@ -11,7 +11,7 @@ using UnityEngine.EventSystems;
 public class TestTowerCardContainer : MonoBehaviour, IDragHandler
 {
     public Transform TowerContainer;
-    public Transform TowerModel;
+    public BattleMapUnitModel TowerModel;
     public TestTowerCard CardModel;
 
     public Func<string[]> AllValidTowerTypes;
@@ -21,7 +21,7 @@ public class TestTowerCardContainer : MonoBehaviour, IDragHandler
     public Func<Vec2, Vector3> BattleMapPos2UnitObjLocalPos = null;
 
     public TestTowerCard SelectedCard { get; set; }
-    public Transform SelectedTower { get; set; }
+    public BattleMapUnitModel SelectedTower { get; set; }
 
     private readonly List<TestTowerCard> AllCardsCreated = new();
 
@@ -35,8 +35,12 @@ public class TestTowerCardContainer : MonoBehaviour, IDragHandler
         if (SelectedTower == null)
         {
             SelectedTower = Instantiate(TowerModel);
-            SelectedTower.SetParent(TowerContainer);
+            SelectedTower.transform.SetParent(TowerContainer);
             SelectedTower.gameObject.SetActive(true);
+
+            SelectedTower.Unit = Tower.Create(ConfigManager.GetTowerConfig(SelectedCard.Type));
+            SelectedTower.Play("Idle");
+
             SelectedCard.gameObject.SetActive(false);
         }
 
@@ -44,7 +48,7 @@ public class TestTowerCardContainer : MonoBehaviour, IDragHandler
         var towerPos = WorldPos2BattleMapPos(wPos);
 
         SelectedTower.GetComponent<SpriteRenderer>().color = !IsValidTowerPos(towerPos) ? Color.red : Color.white;
-        SelectedTower.transform.localPosition = BattleMapPos2UnitObjLocalPos(towerPos);
+        SelectedTower.Unit.Pos = towerPos;
     }
 
     private void Update()

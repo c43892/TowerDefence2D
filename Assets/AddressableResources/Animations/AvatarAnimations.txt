@@ -1,0 +1,7 @@
+{
+	Archer: {
+		"label": "Avatars/Archer",
+		"interval": 0.1,
+		"loop": true
+	}
+}

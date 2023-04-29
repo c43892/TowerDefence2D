@@ -26,7 +26,7 @@ namespace TowerDefance.Game
             MaxAttacks = maxAttacks;
         }
 
-        public static readonly Fix64 ATTACKING_DEPLAY = 0.2; // secs
+        public static readonly Fix64 ATTACKING_DEPLAY = 2; // secs
         protected readonly List<Func<Fix64, bool>> onGoingAttackingWrappers = new();
         protected readonly List<Func<Fix64, bool>> warpperToRemove = new();
 

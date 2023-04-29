@@ -1,0 +1,7 @@
+{
+	ArcherAttacking: {
+		"label": "Effects/Archer/Attacking",
+		"interval": 0.1,
+		"loop": true
+	}
+}

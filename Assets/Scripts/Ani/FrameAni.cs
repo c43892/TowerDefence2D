@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TowerDefance.Res;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -8,34 +9,32 @@ using UnityEngine.UI;
 
 public class FrameAni : MonoBehaviour
 {
-    public Sprite[] Sprites;
-    public float FrameInterval;
-    public bool AutoPlay;
-    public bool Loop;
-    
+    public AniData Data { get; set; }
+
     private SpriteRenderer SR;
     private Image Img;
+
+    private Sprite[] sprites;
     private int frameIndex = 0;
     private bool playing = false;
     private float timeElepsed = 0;
 
     private void Start()
     {
+        SR = GetComponent<SpriteRenderer>();
+        Img = GetComponent<Image>();        
     }
 
-    void LoadAni(string aniName)
-    {
-        AsyncOperationHandle<IList<IResourceLocation>> handle = Addressables.LoadResourceLocationsAsync("myFolder");
-    }
-
-    public void StartPlay()
+    public void Play()
     {
         frameIndex = 0;
-        playing = true;
         timeElepsed = 0;
 
-        SR = GetComponent<SpriteRenderer>();
-        Img = GetComponent<Image>();
+        StartCoroutine(ResManager.LoadSpritesFromGroup(Data.label, (spriteArr) =>
+        {
+            sprites = spriteArr;
+            playing = true;
+        }));
     }
 
     private void Update()
@@ -44,24 +43,27 @@ public class FrameAni : MonoBehaviour
             return;
 
         timeElepsed += Time.deltaTime;
-        while (timeElepsed >= FrameInterval)
+        while (timeElepsed >= Data.interval)
         {
-            timeElepsed -= FrameInterval;
+            timeElepsed -= Data.interval;
             frameIndex++;
 
-            if (frameIndex >= Sprites.Length)
+            if (frameIndex >= sprites.Length)
             {
-                if (Loop)
-                    frameIndex %= Sprites.Length;
+                if (Data.loop)
+                    frameIndex %= sprites.Length;
                 else
-                    frameIndex = Sprites.Length - 1;
+                {
+                    frameIndex = sprites.Length - 1;
+                    playing = false;
+                }
             }
 
             if (SR != null)
-                SR.sprite = Sprites[frameIndex];
+                SR.sprite = sprites[frameIndex];
 
             if (Img != null)
-                Img.sprite = Sprites[frameIndex];
+                Img.sprite = sprites[frameIndex];
         }
     }
 }

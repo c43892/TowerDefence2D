@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
-  m_DefaultGroup: 8047c656af3868d40a50b657b2491a1d
+  m_DefaultGroup: a2a90bb23b7b74a4696b6a9f75d27a27
   m_CachedHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
@@ -51,39 +51,55 @@ MonoBehaviour:
   m_ProfileSettings:
     m_Profiles:
     - m_InheritedParent: 
-      m_Id: 083f1cc7467ee8f4586cfa75f1007043
+      m_Id: b78ff828efe5c6545a50b3e9a7def07f
       m_ProfileName: Default
       m_Values:
-      - m_Id: 353e7bb4e32626e4fb85ad99eeccf230
+      - m_Id: 42b344f92ad407343aa703c97bedd0bf
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
-      - m_Id: e4354603eb98aca419391656d6bc73d4
+      - m_Id: 0403df6a2e0c44c4ca1af6bbceca2d9f
         m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
-      - m_Id: 771def9e10f7d2c4ab37cb6026068f1c
+      - m_Id: fecee684a6f937349b5392e2bffd42c6
         m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
-      - m_Id: e376f2d00329a5a4d948b24ddabdce1d
+      - m_Id: 204a43360b5e170418613d89414f1fd7
         m_Value: ServerData/[BuildTarget]
-      - m_Id: 721a0ccfbf927354390604fec89e828f
+      - m_Id: a3cac596acf1cbf449825a8679c88fdf
         m_Value: http://[PrivateIpAddress]:[HostingServicePort]
     m_ProfileEntryNames:
-    - m_Id: 353e7bb4e32626e4fb85ad99eeccf230
+    - m_Id: 42b344f92ad407343aa703c97bedd0bf
       m_Name: BuildTarget
       m_InlineUsage: 0
-    - m_Id: e4354603eb98aca419391656d6bc73d4
+    - m_Id: 0403df6a2e0c44c4ca1af6bbceca2d9f
       m_Name: Local.BuildPath
       m_InlineUsage: 0
-    - m_Id: 771def9e10f7d2c4ab37cb6026068f1c
+    - m_Id: fecee684a6f937349b5392e2bffd42c6
       m_Name: Local.LoadPath
       m_InlineUsage: 0
-    - m_Id: e376f2d00329a5a4d948b24ddabdce1d
+    - m_Id: 204a43360b5e170418613d89414f1fd7
       m_Name: Remote.BuildPath
       m_InlineUsage: 0
-    - m_Id: 721a0ccfbf927354390604fec89e828f
+    - m_Id: a3cac596acf1cbf449825a8679c88fdf
       m_Name: Remote.LoadPath
       m_InlineUsage: 0
     m_ProfileVersion: 1
   m_LabelTable:
     m_LabelNames:
-    - default
+    - Avatar/Archer
+    - Enemy/Slime/Moving
+    - Tower/Archer/Attacking
+    - Tower/Archer/Idle
+    - Effect/Archer/Attacking
+    - Animations
+    - Avatars/Archer
+    - Enemies/Slime/Moving
+    - Towers/Archer/Attacking
+    - Towers/Archer/Idle
+    - Effects/Archer/Attacking
+    - Towers
+    - Battles
+    - Enemies
+    - AvatarAnimations
+    - UnitAnimations
+    - EffectAnimations
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 087bf419cf5b7fa4cbff96f6358699fb, type: 2}
@@ -97,7 +113,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 61389caed5702dd4183861537aa9aac0, type: 2}
   - {fileID: 11400000, guid: 3a9465e650f8e46419c684359e9bfab6, type: 2}
   - {fileID: 11400000, guid: a7446b51183114a488e6689d9104f171, type: 2}
-  m_ActiveProfileId: 083f1cc7467ee8f4586cfa75f1007043
+  m_ActiveProfileId: b78ff828efe5c6545a50b3e9a7def07f
   m_HostingServicesManager:
     m_HostingServiceInfos: []
     m_Settings: {fileID: 11400000}

@@ -12,8 +12,8 @@ namespace TowerDefance.Game
 
     public class TowerBase : BattleMapUnit, ITarget
     {
-        public TowerBase(string uid, Fix64 phyDefence, Fix64 magDefence, Fix64 maxHp)
-            : base(uid, 0, maxHp)
+        public TowerBase(string uid, string type, Fix64 phyDefence, Fix64 magDefence, Fix64 maxHp)
+            : base(uid, type, 0, maxHp)
         {
             PhyDefence = phyDefence;
             MagDefence = magDefence;

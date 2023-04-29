@@ -38,11 +38,13 @@ namespace TowerDefance.Game
 
         public void Start()
         {
+            SpawningPoint.Start();
             Running = true;
         }
 
         public void Stop()
         {
+            SpawningPoint.Stop();
             Running = false;
         }
 
@@ -58,6 +60,23 @@ namespace TowerDefance.Game
                 OnWon?.Invoke(this);
                 Stop();
             }
+        }
+
+        public static TowerDefanceBattle Create(BattleConfig cfg)
+        {
+            var bt = new TowerDefanceBattle();
+
+            var path = cfg.path.Select(p => new Vec2(p.x, p.y)).ToArray();
+
+            bt.Map = new BattleMap(cfg.size.x, cfg.size.y, (x, y) => BattleMap.GridType.None);
+
+            bt.AddUnitAt(new TowerBase(BattleMapUnit.IdGen("TowerBase"), "TowerBase", cfg.baseInfo.phyDefence, cfg.baseInfo.magDefence, cfg.baseInfo.maxHp), new Vec2(cfg.baseInfo.pos.x, cfg.baseInfo.pos.y));
+
+            var enemies = cfg.enemies.Select(cfg => Enemy.Create(ConfigManager.GetEnemyConfig(cfg), path)).ToArray();
+            var spawningPt = new SpawningPointSequential(bt, cfg.spawningPos.ToVec2(), enemies, cfg.spawningInterval);
+            bt.SpawningPoint = spawningPt;
+
+            return bt;
         }
     }
 }

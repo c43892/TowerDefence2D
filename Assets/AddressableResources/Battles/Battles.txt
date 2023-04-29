@@ -1,0 +1,28 @@
+{
+	"TestBattle": {
+		size: {
+			x: 21,
+			y: 11
+		},
+		baseInfo: {
+			pos: {x:20, y:5},
+			phyDefence: 0,
+			magDefence: 0,
+			maxHp: 10
+		},
+		path: [
+			{x:0, y:5},
+			{x:5, y:5},
+			{x:5, y:8},
+			{x:15, y:8},
+			{x:15, y:5},
+			{x:20, y:5}
+		],
+
+		spawningPos: {x:0, y:5},
+		spawningInterval: 1,
+		enemies: ["Slime", "Slime", "Slime"],
+
+		towers: ["Archer"],
+	}
+}

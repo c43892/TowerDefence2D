@@ -13,8 +13,8 @@ namespace TowerDefance.Game
 
     public class Attacker : BattleMapUnit, IAttacker, IAttackUnit
     {
-        public Attacker(string id, Fix64 maxSpeed, Fix64 maxHp, Fix64 phyPower, Fix64 magPower, Fix64 attackingInterval)
-            : base(id, maxSpeed, maxHp)
+        public Attacker(string id, string type, Fix64 maxSpeed, Fix64 maxHp, Fix64 phyPower, Fix64 magPower, Fix64 attackingInterval)
+            : base(id, type, maxSpeed, maxHp)
         {
             PhyPower = phyPower;
             MagPower = magPower;

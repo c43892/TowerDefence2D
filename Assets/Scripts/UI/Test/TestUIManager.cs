@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using TowerDefance.Game;
 using UnityEngine;
 using Swift.Math;
+using TowerDefance.Res;
+using TowerDefance;
+using Swift;
+using System;
 
 public class TestUIManager : MonoBehaviour
 {
@@ -14,10 +18,12 @@ public class TestUIManager : MonoBehaviour
     public TestTowerCardContainer CardContainer;
     public ITowerProvider TowerProvider;
 
-    TestBattle bt = null;
+    TowerDefanceBattle bt = null;
 
-    public void Start()
+    public IEnumerator Start()
     {
+        yield return ConfigManager.Init();
+
         StartScreen.gameObject.SetActive(true);
         WinnerScreen.gameObject.SetActive(false);
         LoserScreen.gameObject.SetActive(false);
@@ -39,7 +45,10 @@ public class TestUIManager : MonoBehaviour
 
         CardContainer.OnCreatingTower += (type, pos) =>
         {
-            var tower = TowerProvider.CreateTower(type);
+            var tower = Tower.Create(ConfigManager.GetTowerConfig(type));
+            tower.Skill = new SkillAttackingTargets("PhysicalSingleAttack", 6, 1);
+            tower.ValidTargetTypes = new Type[] { typeof(Enemy) };
+
             bt.AddUnitAt(tower, pos);
             CardContainer.Refresh();
         };
@@ -66,12 +75,25 @@ public class TestUIManager : MonoBehaviour
 
     void StartBattle()
     {
-        bt = new TestBattle();
-        bt.Init();
+        var btCfg = ConfigManager.GetBattleConfig("TestBattle");
+        bt = TowerDefanceBattle.Create(btCfg);
 
         BtScene.Init(bt);
 
-        bt.OnWon += (bt) => WinnerScreen.gameObject.SetActive(true);
+        bt.OnWon += (bt) =>
+        {
+            WinnerScreen.gameObject.SetActive(true);
+            var aniCfg = ConfigManager.GetAvatarAnimationConfig("Archer");
+            var ani = WinnerScreen.GetComponentInChildren<FrameAni>();
+            ani.Data = new AniData()
+            {
+                label = aniCfg.label,
+                interval = aniCfg.interval,
+                loop = aniCfg.loop,
+            };
+            ani.Play();
+        };
+
         bt.OnFailed += (bt) => LoserScreen.gameObject.SetActive(true);
 
         bt.Start();

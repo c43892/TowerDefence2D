@@ -9,8 +9,6 @@ namespace TowerDefance.Game
 {
     public interface ITowerProvider
     {
-        public event Action<string[]> ValidTowersUpdated;
         public string[] AllValidTowerTypes { get; }
-        public Tower CreateTower(string type);
     }
 }
