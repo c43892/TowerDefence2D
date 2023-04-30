@@ -1,20 +1,20 @@
 {
 	Archer: {
 		Idle: {
-			"label": "Tower/Archer/Idle",
+			"label": "Towers/Archer/Idle",
 			"interval": 0.1,
 			"loop": true
 		}, 
 		Attacking: {
-			"label": "Tower/Archer/Attacking",
-			"interval": 0.075,
+			"label": "Towers/Archer/Attacking",
+			"interval": 0.015,
 			"loop": false
 		}
 	},
 
 	Slime: {
 		Moving: {
-			"label": "Enemy/Slime/Moving",
+			"label": "Enemies/Slime/Moving",
 			"interval": 0.1,
 			"loop": true
 		}
@@ -22,7 +22,7 @@
 
 	TowerBase: {
 		Idle: {
-			"label": "Enemy/Slime/Moving",
+			"label": "Enemies/Slime/Moving",
 			"interval": 0.1,
 			"loop": true
 		}
