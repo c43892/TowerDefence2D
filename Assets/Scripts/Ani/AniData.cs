@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
-using TowerDefance;
-using TowerDefance.Res;
+using GalPanic;
+using GalPanic.Res;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;

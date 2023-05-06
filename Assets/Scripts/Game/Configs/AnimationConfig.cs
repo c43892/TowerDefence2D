@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TowerDefance
+namespace GalPanic
 {
     public class AnimationConfig
     {

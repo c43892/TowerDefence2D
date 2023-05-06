@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TowerDefance;
-using TowerDefance.Res;
+using GalPanic;
+using GalPanic.Res;
 using Swift;
 using UnityEngine;
 

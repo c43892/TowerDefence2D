@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Swift;
 using Swift.Math;
 
-namespace TowerDefance
+namespace GalPanic
 {
     /// <summary>
     /// 扩展 Unit 的 AI 行为

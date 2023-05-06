@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using TowerDefance.Res;
+using GalPanic.Res;
+using Swift;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -11,7 +12,8 @@ public class FrameAni : MonoBehaviour
 {
     public AniData Data { get; set; }
 
-    private SpriteRenderer SR;
+    public SpriteRenderer[] SRs;
+
     private Image Img;
 
     private Sprite[] sprites;
@@ -21,7 +23,6 @@ public class FrameAni : MonoBehaviour
 
     private void Start()
     {
-        SR = GetComponent<SpriteRenderer>();
         Img = GetComponent<Image>();        
     }
 
@@ -59,8 +60,7 @@ public class FrameAni : MonoBehaviour
                 }
             }
 
-            if (SR != null)
-                SR.sprite = sprites[frameIndex];
+            SRs.Travel(sr => sr.sprite = sprites[frameIndex]);
 
             if (Img != null)
                 Img.sprite = sprites[frameIndex];

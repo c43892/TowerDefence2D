@@ -9,11 +9,11 @@ using UnityEditor.AddressableAssets.Settings;
 using Swift;
 using Codice.CM.WorkspaceServer.Tree.GameUI.HeadTree;
 
-namespace TowerDefance.Editor.Res
+namespace GalPanic.Editor.Res
 {
     public class ResManager : MonoBehaviour
     {
-        [MenuItem("TowerDefenceTools/Update Resource Groups")]
+        [MenuItem("GalPanic/Update Resource Groups")]
         public static void CreateAddressableResourceGroups()
         {
             // Load the AddressableAssetSettings

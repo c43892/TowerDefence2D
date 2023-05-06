@@ -11,7 +11,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
 using static UnityEditor.FilePathAttribute;
 
-namespace TowerDefance.Res
+namespace GalPanic.Res
 {
     public class ResManager
     {
