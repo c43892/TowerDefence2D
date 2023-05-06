@@ -17,21 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: a2a90bb23b7b74a4696b6a9f75d27a27
   m_SerializeEntries:
-  - m_GUID: fdb06aecf6f71b34fab64b8e3f61742f
-    m_Address: Battles
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Battles
-  - m_GUID: 324da23c04c6af449817b144d135c7ea
-    m_Address: Enemies
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Enemies
-  - m_GUID: 3e44a68f4da73a24da16e2f6deea0491
-    m_Address: Towers
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Towers
   - m_GUID: 1e926f48103bd44428ce826bcde75365
     m_Address: EffectAnimations
     m_ReadOnly: 0
@@ -47,21 +32,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - UnitAnimations
-  - m_GUID: bb4ef44588d880649ac41d67903f7aaa
-    m_Address: Effects/Archer/Attacking
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Effects/Archer/Attacking
-  - m_GUID: 271522a2444af26469b2cd7a8b863124
-    m_Address: Towers/Archer/Idle
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Towers/Archer/Idle
-  - m_GUID: 4cc1ffd514ab45d4bbb24647fc7a58f4
-    m_Address: Towers/Archer/Attacking
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Towers/Archer/Attacking
   - m_GUID: ea971b3f9639e5747a8ac2c580b4ce13
     m_Address: Enemies/Slime/Moving
     m_ReadOnly: 0

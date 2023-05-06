@@ -1,17 +1,4 @@
 {
-	Archer: {
-		Idle: {
-			"label": "Towers/Archer/Idle",
-			"interval": 0.1,
-			"loop": true
-		}, 
-		Attacking: {
-			"label": "Towers/Archer/Attacking",
-			"interval": 0.015,
-			"loop": false
-		}
-	},
-
 	Slime: {
 		Moving: {
 			"label": "Enemies/Slime/Moving",
