@@ -7,6 +7,7 @@ using Swift.Math;
 using System.Linq;
 using GalPanic.Res;
 using UnityEngine.UI;
+using Unity.Collections;
 
 public class BattleMapRenderer : MonoBehaviour
 {
@@ -22,14 +23,24 @@ public class BattleMapRenderer : MonoBehaviour
         if (Map == null)
             return;
 
-        MaskTex = new Texture2D(Map.Width, Map.Height);
-        MaskColors = new Color[Map.Width * Map.Height];
+        if (MaskTex == null || MaskColors == null)
+        {
+            MaskTex = new Texture2D(Map.Width, Map.Height);
+            MaskColors = new Color[Map.Width * Map.Height];
+            BackgroundAni.MaskTex = MaskTex;
+        }
 
-        Color Covered = new(0, 0, 0, 0);
-        Color Uncovered = new(1, 1, 1, 1);
+        Color32 Covered = new(0, 0, 0, 0);
+        Color32 Uncovered = new(255, 255, 255, 255);
 
-        FC.For2(Map.Width, Map.Height, (x, y) => MaskColors[y * Map.Width + x] = (y >= Map.Height / 2 ? Covered : Uncovered));
-        MaskTex.SetPixelData(MaskColors, 0);
+        NativeArray<Color32> pixels = new(Map.Width * Map.Height, Allocator.Temp);
+        FC.For2(Map.Width, Map.Height, (x, y) => pixels[y * Map.Width + x] = Map[x, y] == BattleMap.GridType.Uncovered ? Uncovered : Covered);
+
+        // Use SetPixelData to apply the pixel data to the texture.
+        MaskTex.SetPixelData(pixels, 0);
+        MaskTex.Apply();
+
+        pixels.Dispose();
 
         var cfg = ConfigManager.GetAvatarAnimationConfig("Archer");
         BackgroundAni.Data = new AniData()
