@@ -13,7 +13,7 @@ namespace GalPanic
         {
             yield return ConfigManager.Init();
 
-            BattleMap map = new BattleMap(700, 400);
+            BattleMap map = new BattleMap(800, 600);
             MapRenderer.Map = map;
             MapRenderer.UpdateMap();
         }

@@ -12,9 +12,9 @@ public class FrameAni : MonoBehaviour
 {
     public AniData Data { get; set; }
 
-    public SpriteRenderer[] SRs;
+    public SpriteRenderer SR;
 
-    private Image Img;
+    public Texture2D MaskTex;
 
     private Sprite[] sprites;
     private int frameIndex = 0;
@@ -23,7 +23,7 @@ public class FrameAni : MonoBehaviour
 
     private void Start()
     {
-        Img = GetComponent<Image>();        
+        SR = GetComponent<SpriteRenderer>();
     }
 
     public void Play()
@@ -60,10 +60,9 @@ public class FrameAni : MonoBehaviour
                 }
             }
 
-            SRs.Travel(sr => sr.sprite = sprites[frameIndex]);
+            SR.sprite = sprites[frameIndex];
 
-            if (Img != null)
-                Img.sprite = sprites[frameIndex];
+            SR.material.SetTexture("_MaskTex", MaskTex);
         }
     }
 }
