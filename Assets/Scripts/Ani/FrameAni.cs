@@ -8,13 +8,13 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class FrameAni : MonoBehaviour
 {
     public AniData Data { get; set; }
-
-    public SpriteRenderer SR;
-
     public Texture2D MaskTex;
+
+    private SpriteRenderer sr;
 
     private Sprite[] sprites;
     private int frameIndex = 0;
@@ -23,7 +23,7 @@ public class FrameAni : MonoBehaviour
 
     private void Start()
     {
-        SR = GetComponent<SpriteRenderer>();
+        sr = GetComponent<SpriteRenderer>();
     }
 
     public void Play()
@@ -60,9 +60,9 @@ public class FrameAni : MonoBehaviour
                 }
             }
 
-            SR.sprite = sprites[frameIndex];
+            sr.sprite = sprites[frameIndex];
 
-            SR.material.SetTexture("_MaskTex", MaskTex);
+            sr.material.SetTexture("_MaskTex", MaskTex);
         }
     }
 }
