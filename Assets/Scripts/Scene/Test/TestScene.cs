@@ -13,10 +13,11 @@ namespace GalPanic
         {
             yield return ConfigManager.Init();
 
-            BattleMap map = new BattleMap(80, 60);
+            BattleMap map = new(80, 100);
             MapRenderer.Map = map;
 
-            map.CompeteFilling(map.Width / 2, map.Height / 2, 1, 1);
+            map.FillArea(0, map.Width, 20, 1, BattleMap.GridType.Uncovered);
+            map.CompeteFilling(map.Width / 2, 19, map.Width / 2, 21);
 
             MapRenderer.UpdateMap();
         }

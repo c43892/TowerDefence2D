@@ -29,6 +29,11 @@ namespace GalPanic
 
         public GridType this[int x, int y] { get => grids[x, y]; }
 
+        public void FillArea(int left, int width, int top, int height, GridType fillType)
+        {
+            FC.For2(left, left + width, top, top + height, (x, y) => grids[x, y] = fillType);
+        }
+
         public void CompeteFilling(int cx1, int cy1, int cx2, int cy2)
         {
             bool fillable(int x, int y) => x >= 0 && x < Width && y >= 0 && y < Height && grids[x, y] == GridType.Covered;
@@ -50,10 +55,7 @@ namespace GalPanic
             while (filler1.MoveNext() && filler2.MoveNext())
                 ;
 
-            var cnt1 = filler1.Current;
-            var cnt2 = filler2.Current;
-
-            var toRevert = cnt1.Count > cnt2.Count ? cnt1 : cnt2;
+            var toRevert = filler1.MoveNext() ? filler1.Current : filler2.Current;
             foreach (var pt in toRevert)
                 grids[pt.Key, pt.Value] = GridType.Covered;
         }
