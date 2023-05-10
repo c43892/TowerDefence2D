@@ -25,6 +25,10 @@ namespace GalPanic
             Width = width;
             Height = height;
             grids = new GridType[width, height];
+
+            // fill borders
+            FC.For(Width, (x) => grids[x, 0] = grids[x, height - 1] = GridType.Uncovered);
+            FC.For(Height, (y) => grids[0, y] = grids[width - 1, y] = GridType.Uncovered);
         }
 
         public GridType this[int x, int y] { get => grids[x, y]; }

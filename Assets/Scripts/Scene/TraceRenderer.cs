@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Swift;
 
 [RequireComponent(typeof(LineRenderer))]
 public class TraceRenderer : MonoBehaviour
@@ -16,7 +18,6 @@ public class TraceRenderer : MonoBehaviour
     {
         lineRenderer.positionCount = points.Count;
 
-        for (int i = 0; i < points.Count; i++)
-            lineRenderer.SetPosition(i, transform.TransformPoint(points[i]));
+        FC.For(points.Count, (i) => lineRenderer.SetPosition(i, transform.TransformPoint(points[i])));
     }
 }

@@ -20,15 +20,6 @@ namespace GalPanic
             SceneRenderer.MapRenderer.Map = map;
 
             SceneRenderer.UpdateMap();
-
-            var points = new List<Vector3>();
-
-            points.Add(new(0, 0, 0));
-            points.Add(new(1, 0, 0));
-            points.Add(new(1, 1, 0));
-            points.Add(new(0, 1, 0));
-
-            SceneRenderer.Trace.UpdateLine(points);
         }
 
         // Update is called once per frame

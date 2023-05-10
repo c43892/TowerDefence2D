@@ -20,6 +20,12 @@ namespace GalPanic
             CursorX = CursorY = 0;
         }
 
+        public void ForceCursor(KeyValuePair<int, int> pt) => ForceCursor(pt.Key, pt.Value);
+        public void ForceCursor(int x, int y)
+        {
+            CursorX = x;
+            CursorY = y;
+        }
 
         public bool TryMovingCursor(int dx, int dy)
         {
@@ -29,15 +35,20 @@ namespace GalPanic
                 return false;
 
             // not on the inside of uncoverd areas
-            var insideUncovered = true;
+            var onEdge = tx == 0 || tx == Map.Width - 1 || ty == 0 || ty == Map.Height - 1;
+
+            var insideUncovered = !onEdge;
             FC.For2(-1, 2, -1, 2, (offsetX, offsetY) =>
             {
                 var x = tx + offsetX;
                 var y = ty + offsetY;
-                insideUncovered = x == 0 || x == Map.Width || y == 0 || y == Map.Height || Map[x, y] == BattleMap.GridType.Covered;
-            }, () => !insideUncovered);
+                if (offsetX == 0 && offsetY == 0)
+                    return;
 
-            // can move to the target position
+                insideUncovered = Map[x, y] == BattleMap.GridType.Uncovered;
+            }, () => insideUncovered);
+
+            // can move to the target positionc
             if (!insideUncovered)
             {
                 CursorX = tx;
