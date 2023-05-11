@@ -127,14 +127,38 @@ public class BattleSceneRender : MonoBehaviour
                     }
                     else if (traceLine.Count > 0)
                     {
+
+                        // find a straight line at least having 3 pts
+                        var onX = 0;
+                        var onY = 0;
+                        var middlePt = traceLine[0];
+                        for (var i = 1; i < traceLine.Count - 1; i++)
+                        {
+                            var pt0 = traceLine[i - 1];
+                            var pt1 = traceLine[i];
+                            var pt2 = traceLine[i + 1];
+
+                            if (pt2.Key - pt1.Key == pt1.Key - pt0.Key) onX = pt1.Key - pt0.Key;
+                            if (pt2.Value - pt1.Value == pt1.Value - pt0.Value) onY = pt1.Value - pt0.Value;
+
+                            if (onX != 0 || onY != 0)
+                            {
+                                middlePt = pt1;
+                                break;
+                            }
+                        }
+
                         bt.Map.FillPts(traceLine, BattleMap.GridType.Uncovered);
-
-
-
-                        MapRenderer.UpdateMap();
 
                         traceLine.Clear();
                         UpdateLineRender();
+
+                        if (onX != 0)
+                            bt.Map.CompeteFilling(middlePt.Key, middlePt.Value - 1, middlePt.Key, middlePt.Value + 1);
+                        else if (onY != 0)
+                            bt.Map.CompeteFilling(middlePt.Key - 1, middlePt.Value, middlePt.Key + 1, middlePt.Value);
+
+                        MapRenderer.UpdateMap();
                     }
                 }
             }
