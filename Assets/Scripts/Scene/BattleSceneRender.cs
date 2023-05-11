@@ -127,6 +127,7 @@ public class BattleSceneRender : MonoBehaviour
                     }
                     else if (traceLine.Count > 0)
                     {
+                        traceLine.Add(new(bt.CursorX, bt.CursorY));
 
                         // find a straight line at least having 3 pts
                         var onX = 0;
