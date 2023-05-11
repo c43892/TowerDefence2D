@@ -11,6 +11,7 @@ using Unity.Collections;
 
 public class BattleSceneRender : MonoBehaviour
 {
+    public float TracingSpeed = 1;
     public BattleMapRenderer MapRenderer;
     public Transform Cursor;
     public TraceRenderer Trace;
@@ -54,9 +55,16 @@ public class BattleSceneRender : MonoBehaviour
     }
 
     private KeyValuePair<int, int> startPt = new(0, 0);
-    private readonly List<KeyValuePair<int, int>> traceLine = new(); 
+    private readonly List<KeyValuePair<int, int>> traceLine = new();
+    private float tracingDelayTimer = 0;
     void CheckArrowKeysUpDown()
     {
+        tracingDelayTimer += Time.deltaTime;
+        if (tracingDelayTimer < 1 / TracingSpeed)
+            return;
+
+        tracingDelayTimer -= 1 / TracingSpeed;
+
         var dx = 0;
         var dy = 0;
 
@@ -90,12 +98,6 @@ public class BattleSceneRender : MonoBehaviour
         }
         else
         {
-            if (traceLine.Count == 0)
-            {
-                startPt = new(bt.CursorX, bt.CursorY);
-                traceLine.Add(startPt);
-            }
-
             var x = bt.CursorX + dx;
             var y = bt.CursorY + dy;
             var pt = new KeyValuePair<int, int>(x, y);
@@ -108,10 +110,33 @@ public class BattleSceneRender : MonoBehaviour
                 UpdateLineRender();
                 bt.ForceCursor(traceLine.Count > 0 ? traceLine[^1] : startPt);
             }
-            else if (n < 0 && bt.TryMovingCursor(dx, dy))
+            else if (n < 0)
             {
-                traceLine.Add(new(bt.CursorX, bt.CursorY));
-                UpdateLineRender();
+                var oldX = bt.CursorX;
+                var oldY = bt.CursorY;
+
+                if (bt.TryMovingCursor(dx, dy))
+                {
+                    if (bt.Map[x, y] == BattleMap.GridType.Covered)
+                    {
+                        if (traceLine.Count == 0)
+                            startPt = new(oldX, oldY);
+
+                        traceLine.Add(new(bt.CursorX, bt.CursorY));
+                        UpdateLineRender();
+                    }
+                    else if (traceLine.Count > 0)
+                    {
+                        bt.Map.FillPts(traceLine, BattleMap.GridType.Uncovered);
+
+
+
+                        MapRenderer.UpdateMap();
+
+                        traceLine.Clear();
+                        UpdateLineRender();
+                    }
+                }
             }
         }
     }
