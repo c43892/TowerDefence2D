@@ -11,7 +11,7 @@ using Unity.Collections;
 
 public class BattleSceneRender : MonoBehaviour
 {
-    public float TracingSpeed = 1;
+    public float TracingSpeed = 100;
     public BattleMapRenderer MapRenderer;
     public Transform Cursor;
     public TraceRenderer Trace;

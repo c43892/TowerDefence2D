@@ -1327,7 +1327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d57e65d4f467844085db4e5963060ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TracingSpeed: 0.01
+  TracingSpeed: 100
   MapRenderer: {fileID: 1893273235}
   Cursor: {fileID: 879862330}
   Trace: {fileID: 1272117715}
