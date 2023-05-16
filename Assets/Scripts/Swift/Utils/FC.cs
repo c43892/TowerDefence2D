@@ -236,13 +236,15 @@ namespace Swift
             return lst;
         }
 
-        public static void Travel<T>(this IEnumerable<T> src, Action<T> fun)
+        public static IEnumerable<T> Travel<T>(this IEnumerable<T> src, Action<T> fun)
         {
             if (src == null || fun == null)
-                return;
+                return src;
 
             foreach (var e in src)
                 fun(e);
+
+            return src;
         }
 
         #endregion

@@ -7,7 +7,7 @@ using System;
 
 namespace GalPanic
 {
-    public class Battle
+    public class Battle : ITimeDriven
     {
         public BattleMap Map { get; private set; }
 
@@ -56,6 +56,11 @@ namespace GalPanic
             }
 
             return !insideUncovered;
+        }
+
+        public void OnTimeElapsed(Fix64 te)
+        {
+            Map.OnTimeElapsed(te);
         }
     }
 }

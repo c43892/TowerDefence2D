@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using GalPanic;
 using GalPanic.Res;
 using Swift;
+using Swift.Math;
 using UnityEngine;
 
 public class ConfigManager
@@ -22,4 +23,9 @@ public class ConfigManager
     public static Dictionary<string, AnimationConfig> GetUnitAnimationConfigs(string name) => aniConfigs[name];
     public static AnimationConfig GetAvatarAnimationConfig(string name) => avatarAniConfigs[name];
     public static AnimationConfig GetEffectAnimationConfig(string name) => effectAniConfigs[name];
+
+    public class SpawnUnitIntervallyCfg
+    {
+        public Fix64 Interval;
+    }
 }

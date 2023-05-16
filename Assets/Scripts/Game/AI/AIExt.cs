@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Serialization;
 using Swift;
 using Swift.Math;
 
@@ -14,10 +15,7 @@ namespace GalPanic
         {
             string UID { get; }
             Vec2 Pos { get; set; }
-            Fix64 Dir { get; set; }
-            Fix64 Hp { get; set; }
-
-            StateMachine CreateAI();
+            Vec2 Dir { get; set; }
         }
 
         // 保持单一状态
@@ -44,6 +42,55 @@ namespace GalPanic
             sm.NewState("ended").Run(null);
             sm.Trans().From("waiting").To("ended").When((st) => time <= 0);
             sm.Trans().From("ended").To("ended").When(null);
+            return sm;
+        }
+
+        public static StateMachine MoveAndReflect(this IUnit u, Vec2 initDir, Func<int, int, bool> validPos)
+        {
+            var dir = initDir;
+            return u.SimpleState((st, te) =>
+            {
+                var newPos = u.Pos + dir * te;
+                var x = (int)newPos.x;
+                var y = (int)newPos.y;
+
+                if (validPos(x, y))
+                    u.Pos = newPos;
+                else
+                {
+                    // check reflecting direction
+
+                    var h = !validPos(x - 1, y) && !validPos(x + 1, y);
+                    var v = !validPos(x, y - 1) && !validPos(x, y + 1);
+
+                    if (h && !v)
+                        dir = new Vec2(dir.x, -dir.y);
+                    else if (!h && v)
+                        dir = new Vec2(-dir.x, dir.y);
+                    else
+                        dir = new Vec2(-dir.x, -dir.y);
+                }
+            });
+        }
+
+        public static StateMachine RunInternally(this IUnit u, Fix64 interval, Action run)
+        {
+            var sm = new StateMachine("UnitManager");
+
+            var waiting = interval;
+            sm.NewState("waiting")
+                .Run((_, te) => waiting -= te);
+
+            sm.NewState("run")
+                .Run((_, te) =>
+                {
+                    run();
+                    waiting = interval;
+                });
+
+            sm.Trans().From("waiting").To("run").When((_) => waiting <= 0);
+            sm.Trans().From("run").To("waiting").When((_) => waiting > 0);
+
             return sm;
         }
     }

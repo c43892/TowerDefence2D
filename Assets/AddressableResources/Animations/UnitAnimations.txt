@@ -3,15 +3,8 @@
 		Moving: {
 			"label": "Enemies/Slime/Moving",
 			"interval": 0.1,
-			"loop": true
-		}
-	},
-
-	TowerBase: {
-		Idle: {
-			"label": "Enemies/Slime/Moving",
-			"interval": 0.1,
-			"loop": true
+			"loop": true,
+			"scale": 0.2
 		}
 	}
 }

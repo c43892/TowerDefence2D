@@ -8,16 +8,18 @@ using System.Linq;
 using GalPanic.Res;
 using UnityEngine.UI;
 using Unity.Collections;
+using System;
 
-public class BattleSceneRender : MonoBehaviour
+public partial class BattleSceneRender : MonoBehaviour
 {
-    public float TracingSpeed = 100;
     public BattleMapRenderer MapRenderer;
     public Transform Cursor;
     public TraceRenderer Trace;
 
     public Transform RectTopLeft;
     public Transform RectRightBottom;
+
+    public Func<float> GetCursorSpeed = null;
 
     private Battle bt;
     public Battle Bt
@@ -28,6 +30,11 @@ public class BattleSceneRender : MonoBehaviour
             bt = value;
             MapRenderer.Map = bt.Map;
         }
+    }
+
+    private void Awake()
+    {
+        InitBattleEvents();
     }
 
     private void Start()
@@ -47,11 +54,27 @@ public class BattleSceneRender : MonoBehaviour
 
         CheckArrowKeysUpDown();
 
-        var divX = (float)bt.CursorX / bt.Map.Width;
-        var divY = (float)bt.CursorY / bt.Map.Height;
+        UpdateCursor();
+
+        UpdateUnits();
+
+        bt.OnTimeElapsed(Time.deltaTime);
+    }
+
+    #region cursor controlling
+
+    void SetPos(Transform t, Vec2 pos)
+    {
+        var divX = (float)pos.x / bt.Map.Width;
+        var divY = (float)pos.y / bt.Map.Height;
         var x = RectTopLeft.localPosition.x + (RectRightBottom.localPosition.x - RectTopLeft.localPosition.x) * divX;
         var y = RectTopLeft.localPosition.y + (RectRightBottom.localPosition.y - RectTopLeft.localPosition.y) * divY;
-        Cursor.localPosition = new Vector3(x, y, 0);
+        t.localPosition = new Vector3(x, y, 0);
+    }
+
+    void UpdateCursor()
+    {
+        SetPos(Cursor, new Vec2(bt.CursorX, bt.CursorY));
     }
 
     private KeyValuePair<int, int> startPt = new(0, 0);
@@ -59,11 +82,13 @@ public class BattleSceneRender : MonoBehaviour
     private float tracingDelayTimer = 0;
     void CheckArrowKeysUpDown()
     {
+        var cursorSpeed = GetCursorSpeed == null ? 0 : GetCursorSpeed();
+
         tracingDelayTimer += Time.deltaTime;
-        if (tracingDelayTimer < 1 / TracingSpeed)
+        if (tracingDelayTimer < 1 / cursorSpeed)
             return;
 
-        tracingDelayTimer -= 1 / TracingSpeed;
+        tracingDelayTimer -= 1 / cursorSpeed;
 
         var dx = 0;
         var dy = 0;
@@ -164,5 +189,8 @@ public class BattleSceneRender : MonoBehaviour
                 }
             }
         }
+
+        #endregion
+
     }
 }

@@ -27,8 +27,8 @@ namespace GalPanic.Editor.Res
 
             
             AddAnimations();
-            AddBattleUnits();
-            AddBattles();
+            // AddBattleUnits();
+            // AddBattles();
 
             // Save the AddressableAssetSettings
             EditorUtility.SetDirty(addressableSettings);
@@ -38,7 +38,6 @@ namespace GalPanic.Editor.Res
         public static void AddBattleUnits()
         {
             const string RootPath = "Assets/AddressableResources/BattleUnits";
-            AddFile(RootPath, "Towers.txt");
             AddFile(RootPath, "Enemies.txt");
         }
 
@@ -55,7 +54,6 @@ namespace GalPanic.Editor.Res
 
             AddSubfoldersAsGroups(ResRootPath, "Avatars");
             AddSubfoldersAsGroups2(ResRootPath, "Enemies");
-            AddSubfoldersAsGroups2(ResRootPath, "Towers");
             AddSubfoldersAsGroups2(ResRootPath, "Effects");
 
             AddFile(RootPath, "UnitAnimations.txt");

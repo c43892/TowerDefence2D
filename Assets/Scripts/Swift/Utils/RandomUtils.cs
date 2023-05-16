@@ -15,7 +15,7 @@ namespace Swift
     public class RandomUtils
     {
         // 获取一个不重复的随机字符串
-        public static string GetRandomString(string prefix)
+        public static string RandomString(string prefix)
         {
             if (prefix != null)
                 return prefix + r.Next(0, int.MaxValue) + seq++;
@@ -107,13 +107,23 @@ namespace Swift
         }
 
         // 获取一个随机数，区间为 [min, max)
-        public static int RandomNext(int min, int max)
+        public static int RandomNext(int min, int max, bool randomNegative = false)
         {
-            return r.Next(min, max);
+            return randomNegative ? r.Next(min, max) * RandomNOrP() : r.Next(min, max);
         }
         public static int Random0Or1()
         {
             return RandomNext(0, 2);
+        }
+
+        public static int RandomNOrP()
+        {
+            return RandomNext(0, 2) == 0 ? -1 : 1;
+        }
+
+        public static bool RandomTOrF()
+        {
+            return Random0Or1() == 0;
         }
 
         // r 是[0,100]的一个数，表示一个概率
@@ -173,9 +183,10 @@ namespace Swift
         }
 
         // 随机一个 [min, max) 的浮点数，最小粒度为 0.0001
-        public static Fix64 RandomNext(Fix64 min, Fix64 max)
+        public static Fix64 RandomNext(Fix64 min, Fix64 max, bool randomNegative = false)
         {
-            return r.Next((int)(min * 10000), (int)(max * 10000)) * 0.0001f;
+            var v = r.Next((int)(min * 10000), (int)(max * 10000)) * 0.0001f;
+            return randomNegative ? v * RandomNOrP() : v;
         }
 
         // 计算两个集合是否有任何重复的元素

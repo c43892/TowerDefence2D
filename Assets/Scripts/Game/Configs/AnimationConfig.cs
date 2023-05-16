@@ -7,6 +7,9 @@ namespace GalPanic
 {
     public class AnimationConfig
     {
+        [JsonProperty("scale")]
+        public float scale = 1;
+
         [JsonProperty("label")]
         public string label;
 
@@ -14,6 +17,6 @@ namespace GalPanic
         public float interval;
 
         [JsonProperty("loop")]
-        public bool loop;
+        public bool loop = false;
     }
 }

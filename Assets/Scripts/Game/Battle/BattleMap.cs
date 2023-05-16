@@ -7,8 +7,15 @@ using System;
 
 namespace GalPanic
 {
-    public class BattleMap
+    public class BattleMap : ITimeDriven
     {
+        #region static external events notifiers
+
+        public static Action<BattleUnit> OnUnitAdded = null;
+        public static Action<BattleUnit> OnUnitRemoved = null;
+
+        #endregion
+
         public enum GridType
         {
             Covered,
@@ -17,6 +24,8 @@ namespace GalPanic
 
         public int Width { get; private set; }
         public int Height { get; private set; }
+
+        private readonly Dictionary<string, BattleUnit> units = new();
 
         private readonly GridType[,] grids;
 
@@ -31,7 +40,19 @@ namespace GalPanic
             FC.For(Height, (y) => grids[0, y] = grids[width - 1, y] = GridType.Uncovered);
         }
 
+        public void AddUnit(BattleUnit u)
+        {
+            if (units.ContainsKey(u.UID))
+                throw new Exception("unit already exists");
+
+            units.Add(u.UID, u);
+
+            OnUnitAdded?.Invoke(u);
+        }
+
         public GridType this[int x, int y] { get => grids[x, y]; }
+
+        public bool IsBlocked(int x, int y) => x < 0 || x >= Width || y < 0 || y >= Height || grids[x, y] == GridType.Uncovered;
 
         public void FillArea(int left, int width, int top, int height, GridType fillType)
         {
@@ -68,6 +89,16 @@ namespace GalPanic
             var toRevert = filler1.MoveNext() ? filler1.Current : filler2.Current;
             foreach (var pt in toRevert)
                 grids[pt.Key, pt.Value] = GridType.Covered;
+        }
+
+        public void OnTimeElapsed(Fix64 te)
+        {
+            var deadUnits = units.Values.Travel(u => u.OnTimeElapsed(te)).Select(u => u.Hp <= 0);
+            deadUnits.Travel(u =>
+            {
+                units.Remove(u.UID);
+                OnUnitRemoved?.Invoke(u);
+            });
         }
     }
 }
