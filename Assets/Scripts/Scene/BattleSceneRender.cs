@@ -28,18 +28,26 @@ public partial class BattleSceneRender : MonoBehaviour
         set
         {
             bt = value;
-            MapRenderer.Map = bt.Map;
-        }
-    }
+            if (bt == null)
+                return;
 
-    private void Awake()
-    {
-        InitBattleEvents();
+            MapRenderer.Map = bt.Map;
+            InitBattleEvents(bt);
+            bt.OnCompletionChanged += UpdateMap;
+        }
     }
 
     private void Start()
     {
         Trace.transform.localPosition = RectTopLeft.localPosition;
+    }
+
+    public void Clear()
+    {
+        MapRenderer.Clear();
+        traceLine.Clear();
+        UpdateLineRender();
+        ClearUnits();
     }
 
     public void UpdateMap()
@@ -77,6 +85,15 @@ public partial class BattleSceneRender : MonoBehaviour
         SetPos(Cursor, new Vec2(bt.CursorX, bt.CursorY));
     }
 
+    void UpdateLineRender()
+    {
+        var rectSize = RectRightBottom.localPosition - RectTopLeft.localPosition;
+        Trace.UpdateLine(traceLine.Select((pt) => new Vector3(
+            pt.Key * rectSize.x / bt.Map.Width,
+            pt.Value * rectSize.y / bt.Map.Height,
+            0)).ToList());
+    }
+
     private KeyValuePair<int, int> startPt = new(0, 0);
     private readonly List<KeyValuePair<int, int>> traceLine = new();
     private float tracingDelayTimer = 0;
@@ -85,7 +102,7 @@ public partial class BattleSceneRender : MonoBehaviour
         var cursorSpeed = GetCursorSpeed == null ? 0 : GetCursorSpeed();
 
         tracingDelayTimer += Time.deltaTime;
-        if (tracingDelayTimer < 1 / cursorSpeed)
+        if (bt.Ended || tracingDelayTimer < 1 / cursorSpeed)
             return;
 
         tracingDelayTimer -= 1 / cursorSpeed;
@@ -101,15 +118,6 @@ public partial class BattleSceneRender : MonoBehaviour
             dy = 1;
         else if (Input.GetKey(KeyCode.DownArrow))
             dy = -1;
-
-        void UpdateLineRender()
-        {
-            var rectSize = RectRightBottom.localPosition - RectTopLeft.localPosition;
-            Trace.UpdateLine(traceLine.Select((pt) => new Vector3(
-                pt.Key * rectSize.x / bt.Map.Width,
-                pt.Value * rectSize.y / bt.Map.Height,
-                0)).ToList());
-        };
 
         if (dx == 0 && dy == 0)
         {
@@ -183,8 +191,6 @@ public partial class BattleSceneRender : MonoBehaviour
                             bt.Map.CompeteFilling(middlePt.Key, middlePt.Value - 1, middlePt.Key, middlePt.Value + 1);
                         else if (onY != 0)
                             bt.Map.CompeteFilling(middlePt.Key - 1, middlePt.Value, middlePt.Key + 1, middlePt.Value);
-
-                        MapRenderer.UpdateMap();
                     }
                 }
             }

@@ -18,10 +18,16 @@ public partial class BattleSceneRender : MonoBehaviour
 
     readonly Dictionary<string, BattleUnitRenderer> unitObjs = new();
 
-    void InitBattleEvents()
+    void InitBattleEvents(Battle bt)
     {
-        BattleMap.OnUnitAdded += OnUnitAdded;
-        BattleMap.OnUnitRemoved += OnUnitRemoved;
+        bt.Map.OnUnitAdded += OnUnitAdded;
+        bt.Map.OnUnitRemoved += OnUnitRemoved;
+    }
+
+    private void ClearUnits()
+    {
+        unitObjs.Values.Travel(u => Destroy(u.gameObject));
+        unitObjs.Clear();
     }
 
     private void OnUnitAdded(BattleUnit u)
@@ -36,7 +42,7 @@ public partial class BattleSceneRender : MonoBehaviour
 
     private void OnUnitRemoved(BattleUnit u)
     {
-        var obj = unitObjs[u.UID];
+        var obj = unitObjs[u.UID].gameObject;
         unitObjs.Remove(u.UID);
         Destroy(obj);
     }

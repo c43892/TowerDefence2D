@@ -4,20 +4,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using Swift;
 using System;
+using System.Linq;
 
 namespace GalPanic
 {
     public class Battle : ITimeDriven
     {
+        #region static external events notifiers
+
+        public Action OnWon = null;
+        public Action OnLost = null;
+        public Action OnCompletionChanged = null;
+
+        #endregion
+
         public BattleMap Map { get; private set; }
 
         public int CursorX { get; private set; } = 0;
         public int CursorY { get; private set; } = 0;
+        public float WinPrecentage { get; private set; } = 1;
+        public bool Ended { get; private set; } = false;
 
-        public Battle(int mapWidth, int mapHeight)
+        public Battle(int mapWidth, int mapHeight, float winPrecent = 0.5f)
         {
             Map = new BattleMap(mapWidth, mapHeight);
             CursorX = CursorY = 0;
+            WinPrecentage = winPrecent;
+            Ended = false;
+
+            Map.OnCompletionChanged += () => OnCompletionChanged();
         }
 
         public void ForceCursor(KeyValuePair<int, int> pt) => ForceCursor(pt.Key, pt.Value);
@@ -60,7 +75,24 @@ namespace GalPanic
 
         public void OnTimeElapsed(Fix64 te)
         {
+            if (Ended)
+                return;
+
             Map.OnTimeElapsed(te);
+
+            var deadUnits = Map.AllUnits.Where(u => Map.IsBlocked(u.Pos));
+            deadUnits.ToArray().Travel(Map.RemoveUnit);
+
+            if (Map.Completion >= WinPrecentage)
+            {
+                Ended = true;
+                OnWon?.Invoke();
+            }
+            else if (Map.AllUnits.Any(u => (int)u.Pos.x == CursorX && (int)u.Pos.y == CursorY))
+            {
+                Ended = true;
+                OnLost?.Invoke();
+            }
         }
     }
 }

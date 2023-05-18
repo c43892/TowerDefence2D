@@ -18,6 +18,10 @@ public class BattleMapRenderer : MonoBehaviour
     private Texture2D MaskTex;
     private Color[] MaskColors;
 
+    public void Clear()
+    {
+    }
+
     public void UpdateMap()
     {
         if (Map == null)
