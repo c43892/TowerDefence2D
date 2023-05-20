@@ -62,11 +62,10 @@ public partial class BattleSceneRender : MonoBehaviour
 
         CheckArrowKeysUpDown();
 
-        UpdateCursor();
-
-        UpdateUnits();
-
         bt.OnTimeElapsed(Time.deltaTime);
+
+        UpdateCursor();
+        UpdateUnitObjs();
     }
 
     #region cursor controlling

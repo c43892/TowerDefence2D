@@ -9,13 +9,9 @@ namespace GalPanic
 {
     public class BattleMap : ITimeDriven
     {
-        #region static external events notifiers
-
         public Action<BattleUnit> OnUnitAdded = null;
         public Action<BattleUnit> OnUnitRemoved = null;
         public Action OnCompletionChanged = null;
-
-        #endregion
 
         public enum GridType
         {
@@ -26,14 +22,16 @@ namespace GalPanic
         public int Width { get; private set; }
         public int Height { get; private set; }
         public float Completion => (float)completionCounter / (Width * Height);
+        public Battle Battle { get; private set; }
 
 
         private int completionCounter = 0;
         private readonly Dictionary<string, BattleUnit> units = new();
         private readonly GridType[,] grids;
 
-        public BattleMap(int width, int height)
+        public BattleMap(Battle bt, int width, int height)
         {
+            Battle = bt;
             Width = width;
             Height = height;
             grids = new GridType[width, height];

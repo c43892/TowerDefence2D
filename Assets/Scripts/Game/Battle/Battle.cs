@@ -10,29 +10,42 @@ namespace GalPanic
 {
     public class Battle : ITimeDriven
     {
-        #region static external events notifiers
-
         public Action OnWon = null;
         public Action OnLost = null;
         public Action OnCompletionChanged = null;
 
-        #endregion
-
         public BattleMap Map { get; private set; }
 
+        public Vec2 CursorPos => new(CursorX, CursorY);
         public int CursorX { get; private set; } = 0;
         public int CursorY { get; private set; } = 0;
         public float WinPrecentage { get; private set; } = 1;
         public bool Ended { get; private set; } = false;
+        public BattleConfig Cfg { get; private set; } = null;
 
         public Battle(int mapWidth, int mapHeight, float winPrecent = 0.5f)
         {
-            Map = new BattleMap(mapWidth, mapHeight);
+            Map = new BattleMap(this, mapWidth, mapHeight);
             CursorX = CursorY = 0;
             WinPrecentage = winPrecent;
             Ended = false;
 
             Map.OnCompletionChanged += () => OnCompletionChanged();
+        }
+
+        public static Battle Create(string cfgName) => Create(ConfigManager.GetBattleConfig(cfgName));
+
+        public static Battle Create(BattleConfig cfg)
+        {
+            return new Battle(cfg.width, cfg.height, cfg.winPercent)
+            {
+                Cfg = cfg
+            };
+        }
+
+        public void Load()
+        {
+            Cfg.units.Travel(u => this.AddUnitAt(u.type, new Vec2(u.x, u.y)));
         }
 
         public void ForceCursor(KeyValuePair<int, int> pt) => ForceCursor(pt.Key, pt.Value);
@@ -88,11 +101,14 @@ namespace GalPanic
                 Ended = true;
                 OnWon?.Invoke();
             }
-            else if (Map.AllUnits.Any(u => (int)u.Pos.x == CursorX && (int)u.Pos.y == CursorY))
-            {
-                Ended = true;
-                OnLost?.Invoke();
-            }
+        }
+
+        public bool IsCursorSafe => Map.IsBlocked(CursorPos);
+
+        public void KillCursor()
+        {
+            Ended = true;
+            OnLost?.Invoke();
         }
     }
 }

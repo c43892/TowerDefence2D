@@ -5,6 +5,8 @@ using UnityEngine;
 using Swift;
 using System;
 using static GalPanic.AIUnitExt;
+using System.Linq;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace GalPanic
 {
@@ -14,31 +16,31 @@ namespace GalPanic
 
         public BattleMap Map { get; private set; }
 
+        public Battle Battle => Map.Battle;
+
         public string Type { get; private set; }
 
         public string UID { get; private set; }
 
-        public int Hp { get; set; }
+        public Fix64 Radius { get; private set; }
 
         public Vec2 Pos { get; set; }
 
         public Vec2 Dir { get; set; }
 
-        public string CurrentAIStatus => sm?.CurrentState;
+        private readonly StateMachine[] sms = null;
 
-        private readonly StateMachine sm = null;
-
-        public BattleUnit(BattleMap map, string type, string aiType, Vec2 pos, Vec2 dir)
+        public BattleUnit(BattleMap map, string type, string[] aiTypes, Fix64 radius, Vec2 pos, Vec2 dir)
         {
             Type = type;
             Map = map;
             UID = IDGen(IDGen($"unit_{type}_"));
+            Radius = radius;
             Pos = pos;
             Dir = dir;
-            Hp = 1;
 
-            sm = CreateAI(aiType);
-            sm.Start();
+            sms = aiTypes.Select(ai => CreateAI(ai)).ToArray();
+            sms.Travel(sm => sm.Start());
         }
 
         StateMachine CreateAI(string aiType)
@@ -46,7 +48,12 @@ namespace GalPanic
             return aiType switch
             {
                 "MoveAndReflect" => this.MoveAndReflect(Dir, (x, y) => !Map.IsBlocked(x, y)),
-                "SpawnUnitIntervally" => this.RunInternally(1, () =>
+                "KillUnsafeCursorOnCollision" => this.OnCollide(() => Map.Battle.CursorPos, () =>
+                {
+                    if (!Map.Battle.IsCursorSafe)
+                        Map.Battle.KillCursor();
+                }),
+                "SpawnUnitPeriodically" => this.RunPeriodically(1, () =>
                 {
                     // var u = new BattleUnit(map, "Slime", )
                 }),
@@ -56,7 +63,7 @@ namespace GalPanic
 
         public void OnTimeElapsed(Fix64 te)
         {
-            sm.Run(te);
+            sms.Travel(sm => sm.Run(te));
         }
     }
 }

@@ -18,27 +18,19 @@ namespace GalPanic
             BattleUnit.IDGen = (prefix) => RandomUtils.RandomString(prefix);
             void StartNewGame()
             {
-                var bt = new Battle(80, 100);
-                var map = bt.Map;
+                var bt = Battle.Create("Test01");
 
-                SceneRenderer.Bt = bt;
-                SceneRenderer.MapRenderer.Map = map;
-                SceneRenderer.GetCursorSpeed = () => 50;
-
-                SceneRenderer.UpdateMap();
-
+                // register win/lose events
                 bt.OnWon += () => UIManager.ShowResult(true);
                 bt.OnLost += () => UIManager.ShowResult(false);
 
-                map.AddUnit(new BattleUnit(
-                    map,
-                    "Slime",
-                    "MoveAndReflect",
-                    new Vec2(map.Width / 2, map.Height / 2),
-                    new Vec2(
-                        RandomUtils.RandomNext(5, 20, true),
-                        RandomUtils.RandomNext(5, 20, true))
-                    ));
+                // setup scene renderer
+                SceneRenderer.Bt = bt;
+                SceneRenderer.UpdateMap();
+                SceneRenderer.GetCursorSpeed = () => 30;
+                
+                // load units
+                bt.Load();
             };
 
             UIManager.OnRestartClicked += () =>

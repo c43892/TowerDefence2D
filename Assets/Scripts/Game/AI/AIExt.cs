@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Newtonsoft.Json.Serialization;
 using Swift;
 using Swift.Math;
@@ -16,6 +17,7 @@ namespace GalPanic
             string UID { get; }
             Vec2 Pos { get; set; }
             Vec2 Dir { get; set; }
+            Fix64 Radius { get; }
         }
 
         // 保持单一状态
@@ -73,9 +75,9 @@ namespace GalPanic
             });
         }
 
-        public static StateMachine RunInternally(this IUnit u, Fix64 interval, Action run)
+        public static StateMachine RunPeriodically(this IUnit u, Fix64 interval, Action run)
         {
-            var sm = new StateMachine("UnitManager");
+            var sm = new StateMachine(u.UID);
 
             var waiting = interval;
             sm.NewState("waiting")
@@ -92,6 +94,25 @@ namespace GalPanic
             sm.Trans().From("run").To("waiting").When((_) => waiting > 0);
 
             return sm;
+        }
+
+        public static StateMachine OnCollide(this IUnit u, Func<Vec2> checkPos, Action onCollide)
+        {
+            return u.SimpleState((st, te) =>
+            {
+                var pos = u.Pos;
+                var x = (int)pos.x;
+                var y = (int)pos.y;
+
+                var targetPos = checkPos();
+                var l = (int)(targetPos.x - u.Radius);
+                var r = (int)(targetPos.x + u.Radius);
+                var t = (int)(targetPos.y - u.Radius);
+                var b = (int)(targetPos.y + u.Radius);
+
+                if (x >= l && x <= r && y >= t && y <= b)
+                    onCollide?.Invoke();
+            });
         }
     }
 }

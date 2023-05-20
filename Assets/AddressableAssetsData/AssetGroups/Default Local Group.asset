@@ -42,6 +42,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Avatars/Archer
+  - m_GUID: c4bffa439f4a7ea4f981ecb23cc9907e
+    m_Address: BattleUnits
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - BattleUnits
+  - m_GUID: 83a9972f7b9f0a743bb43e529e93f41e
+    m_Address: Battles
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Battles
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 17dde0708cdf829499a7785f0a3b095a, type: 2}
   m_SchemaSet:

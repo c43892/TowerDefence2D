@@ -1,0 +1,11 @@
+﻿{
+	Test01: {
+        width: 100,
+        height: 100,
+        winPercent: 0.7,
+        units: [
+			{ type: "Slime01", x: 40, y: 40 },
+			{ type: "Slime02", x: 40, y: 40 }
+		]
+	}
+}

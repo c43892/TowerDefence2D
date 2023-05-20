@@ -1,0 +1,17 @@
+﻿{
+	Slime01: {
+		type: "SmallSlime",
+		ai: ["MoveAndReflect", "KillUnsafeCursorOnCollision"],
+		vx: -15,
+		vy: -15,
+		r: 3	
+	},
+
+	Slime02: {
+		type: "BigSlime",
+		ai: ["MoveAndReflect", "KillUnsafeCursorOnCollision"],
+		vx: 7,
+		vy: 7,
+		r: 8	
+	}
+}

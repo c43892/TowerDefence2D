@@ -26,21 +26,24 @@ public class FrameAni : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
     }
 
-    public void Play()
+    public void Play(bool restart = false)
     {
-        frameIndex = 0;
-        timeElepsed = 0;
-
-        StartCoroutine(ResManager.LoadSpritesFromGroup(Data.label, (spriteArr) =>
+        if (!playing || restart)
         {
-            sprites = spriteArr;
+            frameIndex = 0;
+            timeElepsed = 0;
+        }
+
+        if (!playing)
+        {
             playing = true;
-        }));
+            StartCoroutine(ResManager.LoadSpritesFromGroup(Data.label, (spriteArr) => sprites = spriteArr));
+        }
     }
 
     private void Update()
     {
-        if (!playing)
+        if (!playing || sprites == null /* may not loaded yet */)
             return;
 
         timeElepsed += Time.deltaTime;
