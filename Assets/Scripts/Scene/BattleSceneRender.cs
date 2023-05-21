@@ -13,7 +13,7 @@ using System;
 public partial class BattleSceneRender : MonoBehaviour
 {
     public BattleMapRenderer MapRenderer;
-    public Transform Cursor;
+    public MultiFrameAni Cursor;
     public TraceRenderer Trace;
 
     public Transform RectTopLeft;
@@ -81,7 +81,7 @@ public partial class BattleSceneRender : MonoBehaviour
 
     void UpdateCursor()
     {
-        SetPos(Cursor, new Vec2(bt.CursorX, bt.CursorY));
+        SetPos(Cursor.transform, new Vec2(bt.CursorX, bt.CursorY));
     }
 
     void UpdateLineRender()
@@ -96,8 +96,10 @@ public partial class BattleSceneRender : MonoBehaviour
     private KeyValuePair<int, int> startPt = new(0, 0);
     private readonly List<KeyValuePair<int, int>> traceLine = new();
     private float tracingDelayTimer = 0;
+    public bool SafeMode { get; private set; } = false;
     void CheckArrowKeysUpDown()
     {
+        var SafeMode = Input.GetKey(KeyCode.Space);
         var cursorSpeed = GetCursorSpeed == null ? 0 : GetCursorSpeed();
 
         tracingDelayTimer += Time.deltaTime;
@@ -109,14 +111,15 @@ public partial class BattleSceneRender : MonoBehaviour
         var dx = 0;
         var dy = 0;
 
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
             dx = -1;
-        else if (Input.GetKey(KeyCode.RightArrow))
+        else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
             dx = 1;
-        else if (Input.GetKey(KeyCode.UpArrow))
+        else if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
             dy = 1;
-        else if (Input.GetKey(KeyCode.DownArrow))
+        else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
             dy = -1;
+            
 
         if (dx == 0 && dy == 0)
         {
@@ -147,7 +150,7 @@ public partial class BattleSceneRender : MonoBehaviour
                 var oldX = bt.CursorX;
                 var oldY = bt.CursorY;
 
-                if (bt.TryMovingCursor(dx, dy))
+                if (bt.TryMovingCursor(dx, dy, forceUnsafe))
                 {
                     if (bt.Map[x, y] == BattleMap.GridType.Covered)
                     {

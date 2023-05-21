@@ -55,11 +55,14 @@ namespace GalPanic
             CursorY = y;
         }
 
-        public bool TryMovingCursor(int dx, int dy)
+        public bool TryMovingCursor(int dx, int dy, bool forceUnsafe = false)
         {
             var tx = CursorX + dx;
             var ty = CursorY + dy;
             if (tx < 0 || tx >= Map.Width || ty < 0 || ty >= Map.Height)
+                return false;
+
+            if (!forceUnsafe && Map[tx, ty] != BattleMap.GridType.Uncovered)
                 return false;
 
             // not on the inside of uncoverd areas
