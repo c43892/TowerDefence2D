@@ -34,11 +34,17 @@ public partial class BattleSceneRender : MonoBehaviour
             MapRenderer.Map = bt.Map;
             InitBattleEvents(bt);
             bt.OnCompletionChanged += UpdateMap;
+
+            var leftTop = new Vector3(-bt.Map.Width / 2, -bt.Map.Height / 2, 0) / 10;
+            var rightBottom = new Vector3(bt.Map.Width / 2, bt.Map.Height / 2, 0) / 10;
+            SetRectArea(leftTop, rightBottom);
         }
     }
 
-    private void Start()
+    private void SetRectArea(Vector3 topLeft, Vector3 rightBottom)
     {
+        RectTopLeft.localPosition = topLeft;
+        RectRightBottom.localPosition = rightBottom;
         Trace.transform.localPosition = RectTopLeft.localPosition;
     }
 
@@ -72,8 +78,8 @@ public partial class BattleSceneRender : MonoBehaviour
 
     void SetPos(Transform t, Vec2 pos)
     {
-        var divX = (float)pos.x / bt.Map.Width;
-        var divY = (float)pos.y / bt.Map.Height;
+        var divX = (float)(pos.x) / (bt.Map.Width - 1);
+        var divY = (float)(pos.y) / (bt.Map.Height - 1);
         var x = RectTopLeft.localPosition.x + (RectRightBottom.localPosition.x - RectTopLeft.localPosition.x) * divX;
         var y = RectTopLeft.localPosition.y + (RectRightBottom.localPosition.y - RectTopLeft.localPosition.y) * divY;
         t.localPosition = new Vector3(x, y, 0);
@@ -158,7 +164,10 @@ public partial class BattleSceneRender : MonoBehaviour
                     if (bt.Map[x, y] == BattleMap.GridType.Covered)
                     {
                         if (traceLine.Count == 0)
+                        {
                             startPt = new(oldX, oldY);
+                            traceLine.Add(startPt);
+                        }
 
                         traceLine.Add(new(bt.CursorX, bt.CursorY));
                         UpdateLineRender();

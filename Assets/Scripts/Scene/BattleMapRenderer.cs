@@ -29,7 +29,7 @@ public class BattleMapRenderer : MonoBehaviour
 
         if (MaskTex == null || MaskColors == null)
         {
-            MaskTex = new Texture2D(Map.Width, Map.Height);
+            MaskTex = new Texture2D(Map.Width, Map.Height, TextureFormat.ARGB32, 0, false);
             MaskColors = new Color[Map.Width * Map.Height];
             BackgroundAni.MaskTex = MaskTex;
         }

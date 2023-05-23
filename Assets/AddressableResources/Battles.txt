@@ -1,7 +1,7 @@
 ﻿{
 	Test01: {
-        width: 100,
-        height: 100,
+        width: 79,
+        height: 104,
         winPercent: 0.7,
         units: [
 			{ type: "Slime01", x: 40, y: 40 },

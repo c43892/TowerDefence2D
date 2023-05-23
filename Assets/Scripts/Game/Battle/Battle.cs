@@ -21,7 +21,7 @@ namespace GalPanic
         public int CursorY { get; private set; } = 0;
         public float WinPrecentage { get; private set; } = 1;
         public bool Ended { get; private set; } = false;
-        public BattleConfig Cfg { get; private set; } = null;
+
 
         public Battle(int mapWidth, int mapHeight, float winPrecent = 0.5f)
         {
@@ -33,19 +33,14 @@ namespace GalPanic
             Map.OnCompletionChanged += () => OnCompletionChanged();
         }
 
+        public void Load() => UnitsLoader?.Invoke();
+        private Action UnitsLoader = null;
         public static Battle Create(string cfgName) => Create(ConfigManager.GetBattleConfig(cfgName));
-
         public static Battle Create(BattleConfig cfg)
         {
-            return new Battle(cfg.width, cfg.height, cfg.winPercent)
-            {
-                Cfg = cfg
-            };
-        }
-
-        public void Load()
-        {
-            Cfg.units.Travel(u => this.AddUnitAt(u.type, new Vec2(u.x, u.y)));
+            var bt = new Battle(cfg.width, cfg.height, cfg.winPercent);
+            bt.UnitsLoader = () => cfg.units.Travel(u => bt.AddUnitAt(u.type, new Vec2(u.x, u.y)));
+            return bt;
         }
 
         public void ForceCursor(KeyValuePair<int, int> pt) => ForceCursor(pt.Key, pt.Value);
