@@ -26,14 +26,7 @@ public class BattleUnitRenderer : MonoBehaviour
             return;
 
         var cfgs = ConfigManager.GetUnitAnimationConfigs(Unit.Type);
-        var cfg = cfgs.Values.ToArray()[0];
-        Ani.Data = new AniData()
-        {
-            label = cfg.label,
-            interval = cfg.interval,
-            loop = cfg.loop
-        };
+        Ani.Data = cfgs.Values.ToArray()[0].ToData();
         Ani.Play();
-        transform.localScale = Vector3.one * cfg.scale;
     }
 }

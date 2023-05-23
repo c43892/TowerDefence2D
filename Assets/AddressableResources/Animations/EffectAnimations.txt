@@ -1,3 +1,15 @@
 {
+	SafeCursor: {
+		"label": "Effects/SafeCursor",
+		"interval": 0.1,
+		"loop": true,
+		"scale": 0.03
+	},
 
+	UnsafeCursor: {
+		"label": "Effects/UnsafeCursor",
+		"interval": 0.1,
+		"loop": true,
+		"scale": 0.05
+	}
 }

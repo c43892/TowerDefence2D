@@ -32,11 +32,13 @@ public class FrameAni : MonoBehaviour
         {
             frameIndex = 0;
             timeElepsed = 0;
+            playing = false;
         }
 
         if (!playing)
         {
             playing = true;
+            transform.localScale = Data.scale * Vector3.one;
             StartCoroutine(ResManager.LoadSpritesFromGroup(Data.label, (spriteArr) => sprites = spriteArr));
         }
     }
@@ -51,21 +53,20 @@ public class FrameAni : MonoBehaviour
         {
             timeElepsed -= Data.interval;
             frameIndex++;
-
-            if (frameIndex >= sprites.Length)
-            {
-                if (Data.loop)
-                    frameIndex %= sprites.Length;
-                else
-                {
-                    frameIndex = sprites.Length - 1;
-                    playing = false;
-                }
-            }
-
-            sr.sprite = sprites[frameIndex];
-
-            sr.material.SetTexture("_MaskTex", MaskTex);
         }
+
+        if (frameIndex >= sprites.Length)
+        {
+            if (Data.loop)
+                frameIndex %= sprites.Length;
+            else
+            {
+                frameIndex = sprites.Length - 1;
+                playing = false;
+            }
+        }
+
+        sr.sprite = sprites[frameIndex];
+        sr.material.SetTexture("_MaskTex", MaskTex);
     }
 }

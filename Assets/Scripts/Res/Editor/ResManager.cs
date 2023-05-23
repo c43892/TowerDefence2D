@@ -54,7 +54,7 @@ namespace GalPanic.Editor.Res
 
             AddSubfoldersAsGroups(ResRootPath, "Avatars");
             AddSubfoldersAsGroups2(ResRootPath, "Enemies");
-            AddSubfoldersAsGroups2(ResRootPath, "Effects");
+            AddSubfoldersAsGroups(ResRootPath, "Effects");
 
             AddFile(RootPath, "UnitAnimations.txt");
             AddFile(RootPath, "AvatarAnimations.txt");

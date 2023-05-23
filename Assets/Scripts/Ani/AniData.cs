@@ -16,4 +16,6 @@ public class AniData
     public float interval;
 
     public bool loop;
+
+    public float scale;
 }

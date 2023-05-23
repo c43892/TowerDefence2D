@@ -52,6 +52,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Battles
+  - m_GUID: 437193c997f2ea244a0feae1aadf4461
+    m_Address: Effects/SafeCursor
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Effects/SafeCursor
+  - m_GUID: 3497cd6fee572e04eb7ce4f0814732a2
+    m_Address: Effects/UnsafeCursor
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Effects/UnsafeCursor
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 17dde0708cdf829499a7785f0a3b095a, type: 2}
   m_SchemaSet:

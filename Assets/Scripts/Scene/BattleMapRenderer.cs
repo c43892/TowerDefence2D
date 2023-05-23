@@ -46,13 +46,7 @@ public class BattleMapRenderer : MonoBehaviour
 
         pixels.Dispose();
 
-        var cfg = ConfigManager.GetAvatarAnimationConfig("Archer");
-        BackgroundAni.Data = new AniData()
-        {
-            label = cfg.label,
-            interval = cfg.interval,
-            loop = cfg.loop
-        };
+        BackgroundAni.Data = ConfigManager.GetAvatarAnimationConfig("Archer").ToData();
 
         BackgroundAni.Play();
     }

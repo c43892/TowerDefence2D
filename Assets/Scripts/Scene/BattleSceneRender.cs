@@ -13,7 +13,7 @@ using System;
 public partial class BattleSceneRender : MonoBehaviour
 {
     public BattleMapRenderer MapRenderer;
-    public MultiFrameAni Cursor;
+    public FrameAni Cursor;
     public TraceRenderer Trace;
 
     public Transform RectTopLeft;
@@ -96,10 +96,13 @@ public partial class BattleSceneRender : MonoBehaviour
     private KeyValuePair<int, int> startPt = new(0, 0);
     private readonly List<KeyValuePair<int, int>> traceLine = new();
     private float tracingDelayTimer = 0;
-    public bool SafeMode { get; private set; } = false;
+
     void CheckArrowKeysUpDown()
     {
-        var SafeMode = Input.GetKey(KeyCode.Space);
+        var forceUnsafe = Input.GetKey(KeyCode.Space);
+        Cursor.Data = ConfigManager.GetEffectAnimationConfig(bt.IsCursorSafe ? "SafeCursor" : "UnsafeCursor").ToData();
+        Cursor.Play(true);
+
         var cursorSpeed = GetCursorSpeed == null ? 0 : GetCursorSpeed();
 
         tracingDelayTimer += Time.deltaTime;
