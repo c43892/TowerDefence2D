@@ -51,7 +51,7 @@ namespace GalPanic
                 "KillUnsafeCursorOnCollision" => this.OnCollide(() => Map.Battle.CursorPos, () =>
                 {
                     if (!Map.Battle.IsCursorSafe)
-                        Map.Battle.KillCursor();
+                        Map.Battle.CursorHurt();
                 }),
                 "SpawnUnitPeriodically" => this.RunPeriodically(1, () =>
                 {

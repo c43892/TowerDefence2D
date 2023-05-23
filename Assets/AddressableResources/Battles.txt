@@ -3,6 +3,7 @@
         width: 79,
         height: 104,
         winPercent: 0.7,
+		cursorHp: 3,
         units: [
 			{ type: "Slime01", x: 40, y: 40 },
 			{ type: "Slime02", x: 40, y: 40 }

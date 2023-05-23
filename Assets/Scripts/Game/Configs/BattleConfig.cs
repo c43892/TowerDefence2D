@@ -29,6 +29,9 @@ namespace GalPanic
         [JsonProperty("winPercent")]
         public float winPercent;
 
+        [JsonProperty("cursorHp")]
+        public int cursorHp;
+
         [JsonProperty("units")]
         public BattleConfigUnit[] units;
     }

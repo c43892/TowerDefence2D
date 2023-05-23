@@ -5,6 +5,8 @@ using UnityEngine;
 using Swift;
 using System;
 using System.Linq;
+using Unity.VisualScripting;
+using System.Diagnostics;
 
 namespace GalPanic
 {
@@ -12,25 +14,35 @@ namespace GalPanic
     {
         public Action OnWon = null;
         public Action OnLost = null;
+        public Action OnCursorHurt = null;
         public Action OnCompletionChanged = null;
 
         public BattleMap Map { get; private set; }
 
         public Vec2 CursorPos => new(CursorX, CursorY);
+        public KeyValuePair<int, int> CursorStartPos => TraceLine[0];
+        public List<KeyValuePair<int, int>> TraceLine { get; } = new();
         public int CursorX { get; private set; } = 0;
         public int CursorY { get; private set; } = 0;
         public float WinPrecentage { get; private set; } = 1;
         public bool Ended { get; private set; } = false;
+        public int CursorHp { get; private set; } = 0;
 
 
-        public Battle(int mapWidth, int mapHeight, float winPrecent = 0.5f)
+        public Battle(int mapWidth, int mapHeight, int cursorHp = 1, float winPrecent = 0.5f)
         {
             Map = new BattleMap(this, mapWidth, mapHeight);
             CursorX = CursorY = 0;
+            CursorHp = cursorHp;
             WinPrecentage = winPrecent;
             Ended = false;
 
             Map.OnCompletionChanged += () => OnCompletionChanged();
+        }
+
+        public void StartAt(int x, int y)
+        {
+            TraceLine.Add(new(x, y));
         }
 
         public void Load() => UnitsLoader?.Invoke();
@@ -38,7 +50,7 @@ namespace GalPanic
         public static Battle Create(string cfgName) => Create(ConfigManager.GetBattleConfig(cfgName));
         public static Battle Create(BattleConfig cfg)
         {
-            var bt = new Battle(cfg.width, cfg.height, cfg.winPercent);
+            var bt = new Battle(cfg.width, cfg.height, cfg.cursorHp, cfg.winPercent);
             bt.UnitsLoader = () => cfg.units.Travel(u => bt.AddUnitAt(u.type, new Vec2(u.x, u.y)));
             return bt;
         }
@@ -103,10 +115,21 @@ namespace GalPanic
 
         public bool IsCursorSafe => Map.IsBlocked(CursorPos);
 
-        public void KillCursor()
+        public void CursorHurt(int dhp = -1)
         {
-            Ended = true;
-            OnLost?.Invoke();
+            CursorHp += dhp;
+
+            var startPos = CursorStartPos;
+            TraceLine.Clear();
+            ForceCursor(startPos);
+
+            OnCursorHurt?.Invoke();
+
+            if (CursorHp <= 0)
+            {
+                Ended = true;
+                OnLost?.Invoke();
+            }
         }
     }
 }
