@@ -62,6 +62,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Effects/UnsafeCursor
+  - m_GUID: 569708ad198608f4b82696e472c0abe7
+    m_Address: Effects/CoolDown
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Effects/CoolDown
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 17dde0708cdf829499a7785f0a3b095a, type: 2}
   m_SchemaSet:

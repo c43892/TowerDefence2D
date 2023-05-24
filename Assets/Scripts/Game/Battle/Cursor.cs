@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 namespace GalPanic
 {
-    public class Cursor
+    public class Cursor : ITimeDriven
     {
         public Vec2 Pos { get; private set; }
         public Vec2 StartPos { get; set; }
@@ -18,6 +18,7 @@ namespace GalPanic
         public int X => (int)Pos.x;
         public int Y => (int)Pos.y;
         public int Hp { get; private set; } = 0;
+        public Fix64 CoolDown { get; set; }
 
         public Cursor(int maxHp)
         {
@@ -46,6 +47,11 @@ namespace GalPanic
             var startPos = StartPos;
             TraceLine.Clear();
             Pos = startPos;
+        }
+
+        public void OnTimeElapsed(Fix64 te)
+        {
+            CoolDown = CoolDown <= te ? 0 : CoolDown - te;
         }
     }
 }

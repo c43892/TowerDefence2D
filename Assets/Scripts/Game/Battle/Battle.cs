@@ -82,6 +82,7 @@ namespace GalPanic
                 return;
 
             Map.OnTimeElapsed(te);
+            Cursor.OnTimeElapsed(te);
 
             var deadUnits = Map.AllUnits.Where(u => Map.IsBlocked(u.Pos));
             deadUnits.ToArray().Travel(Map.RemoveUnit);
@@ -93,17 +94,17 @@ namespace GalPanic
             }
         }
 
-        public bool IsCursorSafe => Map.IsBlocked(Cursor.Pos);
+        public bool IsCursorSafe => Map.IsBlocked(Cursor.Pos) || Cursor.CoolDown > 0;
 
         public void CursorHurt(int dhp = -1)
         {
             Cursor.CursorHurt(dhp);
             Cursor.Reset2StartPos();
-
-
             OnCursorHurt?.Invoke();
 
-            if (Cursor.Hp <= 0)
+            if (Cursor.Hp > 0)
+                Cursor.CoolDown = 1;
+            else
             {
                 Ended = true;
                 OnLost?.Invoke();

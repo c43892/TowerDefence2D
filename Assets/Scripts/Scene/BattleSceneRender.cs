@@ -65,7 +65,7 @@ public partial class BattleSceneRender : MonoBehaviour
         if (Bt == null)
             return;
 
-        CheckArrowKeysUpDown();
+        CheckCursorAction();
 
         bt.OnTimeElapsed(Time.deltaTime);
 
@@ -84,33 +84,37 @@ public partial class BattleSceneRender : MonoBehaviour
         t.localPosition = new Vector3(x, y, 0);
     }
 
+    string oldCursorStatus = "";
     void UpdateCursor()
     {
-        SetPos(Cursor.transform, new Vec2(bt.Cursor.X, bt.Cursor.Y));
+        SetPos(Cursor.transform, bt.Cursor.Pos);
+
+        var cursorStatus = bt.Cursor.CoolDown > 0 ? "CoolDown" : (bt.Map.IsBlocked(bt.Cursor.Pos) ? "SafeCursor" : "UnsafeCursor");
+        if (oldCursorStatus == cursorStatus)
+            return;
+
+        oldCursorStatus = cursorStatus;
+        Cursor.Data = ConfigManager.GetEffectAnimationConfig(cursorStatus).ToData();
+        Cursor.Play(true);
     }
 
     void UpdateLineRender()
     {
         var rectSize = RectRightBottom.localPosition - RectTopLeft.localPosition;
         Vector3 Pos2V3(Vec2 pt) => new((float)pt.x * rectSize.x / bt.Map.Width, (float)pt.y * rectSize.y / bt.Map.Height, 0);
-        Trace.UpdateLine(
-            Pos2V3(bt.Cursor.StartPos), 
-            TraceLine.ToList().Select(Pos2V3).ToList());
+        Trace.UpdateLine(Pos2V3(bt.Cursor.StartPos), TraceLine.ToList().Select(Pos2V3).ToList());
     }
 
     private List<Vec2> TraceLine => bt.Cursor.TraceLine;
     private float tracingDelayTimer = 0;
 
-    void CheckArrowKeysUpDown()
+    void CheckCursorAction()
     {
         var forceUnsafe = Input.GetKey(KeyCode.Space);
-        Cursor.Data = ConfigManager.GetEffectAnimationConfig(bt.IsCursorSafe ? "SafeCursor" : "UnsafeCursor").ToData();
-        Cursor.Play(true);
-
         var cursorSpeed = GetCursorSpeed == null ? 0 : GetCursorSpeed();
 
         tracingDelayTimer += Time.deltaTime;
-        if (bt.Ended || tracingDelayTimer < 1 / cursorSpeed)
+        if (bt.Cursor.CoolDown > 0 || bt.Ended || tracingDelayTimer < 1 / cursorSpeed)
             return;
 
         tracingDelayTimer %= 1 / cursorSpeed;
@@ -144,7 +148,6 @@ public partial class BattleSceneRender : MonoBehaviour
             else if (n < 0)
             {
                 var oldPos = bt.Cursor.Pos;
-
                 if (bt.TryMovingCursor(dx, dy, out int tx, out int ty, forceUnsafe))
                 {
                     bt.Cursor.SetPos(tx, ty);

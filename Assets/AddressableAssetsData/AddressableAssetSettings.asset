@@ -103,6 +103,7 @@ MonoBehaviour:
     - BattleUnits
     - Effects/SafeCursor
     - Effects/UnsafeCursor
+    - Effects/CoolDown
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 087bf419cf5b7fa4cbff96f6358699fb, type: 2}

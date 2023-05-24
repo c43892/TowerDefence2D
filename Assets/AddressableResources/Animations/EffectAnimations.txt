@@ -11,5 +11,12 @@
 		"interval": 0.1,
 		"loop": true,
 		"scale": 0.05
+	},
+
+	CoolDown: {
+		"label": "Effects/CoolDown",
+		"interval": 0.1,
+		"loop": true,
+		"scale": 0.05
 	}
 }
