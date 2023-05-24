@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GalPanic;
@@ -86,20 +86,19 @@ public partial class BattleSceneRender : MonoBehaviour
 
     void UpdateCursor()
     {
-        SetPos(Cursor.transform, new Vec2(bt.CursorX, bt.CursorY));
+        SetPos(Cursor.transform, new Vec2(bt.Cursor.X, bt.Cursor.Y));
     }
 
     void UpdateLineRender()
     {
         var rectSize = RectRightBottom.localPosition - RectTopLeft.localPosition;
-        Trace.UpdateLine(TraceLine.Select((pt) => new Vector3(
-            pt.Key * rectSize.x / bt.Map.Width,
-            pt.Value * rectSize.y / bt.Map.Height,
-            0)).ToList());
+        Vector3 Pos2V3(Vec2 pt) => new((float)pt.x * rectSize.x / bt.Map.Width, (float)pt.y * rectSize.y / bt.Map.Height, 0);
+        Trace.UpdateLine(
+            Pos2V3(bt.Cursor.StartPos), 
+            TraceLine.ToList().Select(Pos2V3).ToList());
     }
 
-    private KeyValuePair<int, int> StartPt => bt.CursorStartPos;
-    private List<KeyValuePair<int, int>> TraceLine => bt.TraceLine;
+    private List<Vec2> TraceLine => bt.Cursor.TraceLine;
     private float tracingDelayTimer = 0;
 
     void CheckArrowKeysUpDown()
@@ -114,7 +113,7 @@ public partial class BattleSceneRender : MonoBehaviour
         if (bt.Ended || tracingDelayTimer < 1 / cursorSpeed)
             return;
 
-        tracingDelayTimer -= 1 / cursorSpeed;
+        tracingDelayTimer %= 1 / cursorSpeed;
 
         var dx = 0;
         var dy = 0;
@@ -131,47 +130,34 @@ public partial class BattleSceneRender : MonoBehaviour
 
         if (dx == 0 && dy == 0)
         {
-            if (TraceLine.Count > 1)
-            {
-                TraceLine.RemoveAt(TraceLine.Count - 1);
-                var pt = TraceLine.Count > 1 ? TraceLine[^1] : StartPt;
-                bt.ForceCursor(pt.Key, pt.Value);
-                UpdateLineRender();
-            }
+            if (TraceLine.Count > 0)
+                bt.Cursor.StepBack();
         }
         else
         {
-            var x = bt.CursorX + dx;
-            var y = bt.CursorY + dy;
-            var pt = new KeyValuePair<int, int>(x, y);
-            var n = TraceLine.IndexOf(pt);
+            var x = bt.Cursor.X + dx;
+            var y = bt.Cursor.Y + dy;
+            var n = TraceLine.IndexOf(new(x, y));
 
-            if (n >= 0 && n == TraceLine.Count - 2)
-            {
-                // go back 1 step
-                TraceLine.RemoveAt(TraceLine.Count - 1);
-                UpdateLineRender();
-                bt.ForceCursor(TraceLine.Count > 0 ? TraceLine[^1] : StartPt);
-            }
+            if (n >= 0 && n == TraceLine.Count - 1)
+                bt.Cursor.StepBack();
             else if (n < 0)
             {
-                var oldX = bt.CursorX;
-                var oldY = bt.CursorY;
+                var oldPos = bt.Cursor.Pos;
 
-                if (bt.TryMovingCursor(dx, dy, forceUnsafe))
+                if (bt.TryMovingCursor(dx, dy, out int tx, out int ty, forceUnsafe))
                 {
+                    bt.Cursor.SetPos(tx, ty);
+
                     if (bt.Map[x, y] == BattleMap.GridType.Covered)
                     {
                         if (TraceLine.Count == 0)
-                            bt.StartAt(oldX, oldY);
+                            bt.Cursor.StartPos = oldPos;
 
-                        TraceLine.Add(new(bt.CursorX, bt.CursorY));
-                        UpdateLineRender();
+                        bt.Cursor.AddTracePos(tx, ty);
                     }
-                    else if (TraceLine.Count > 0)
+                    else if (TraceLine.Count > 2)
                     {
-                        TraceLine.Add(new(bt.CursorX, bt.CursorY));
-
                         // find a straight line at least having 3 pts
                         var onX = 0;
                         var onY = 0;
@@ -182,8 +168,9 @@ public partial class BattleSceneRender : MonoBehaviour
                             var pt1 = TraceLine[i];
                             var pt2 = TraceLine[i + 1];
 
-                            if (pt2.Key - pt1.Key == pt1.Key - pt0.Key) onX = pt1.Key - pt0.Key;
-                            if (pt2.Value - pt1.Value == pt1.Value - pt0.Value) onY = pt1.Value - pt0.Value;
+                            // check the changes on x&y directions
+                            if (pt2.x - pt1.x == pt1.x - pt0.x) onX = (int)(pt1.x - pt0.x);
+                            if (pt2.y - pt1.y == pt1.y - pt0.y) onY = (int)(pt1.y - pt0.y);
 
                             if (onX != 0 || onY != 0)
                             {
@@ -195,18 +182,18 @@ public partial class BattleSceneRender : MonoBehaviour
                         bt.Map.FillPts(TraceLine, BattleMap.GridType.Uncovered);
 
                         TraceLine.Clear();
-                        UpdateLineRender();
 
                         if (onX != 0)
-                            bt.Map.CompeteFilling(middlePt.Key, middlePt.Value - 1, middlePt.Key, middlePt.Value + 1);
+                            bt.Map.CompeteFilling((int)middlePt.x, (int)middlePt.y - 1, (int)middlePt.x, (int)middlePt.y + 1);
                         else if (onY != 0)
-                            bt.Map.CompeteFilling(middlePt.Key - 1, middlePt.Value, middlePt.Key + 1, middlePt.Value);
+                            bt.Map.CompeteFilling((int)middlePt.x - 1, (int)middlePt.y, (int)middlePt.x + 1, (int)middlePt.y);
                     }
                 }
             }
         }
 
-        #endregion
+        UpdateLineRender();
 
+        #endregion
     }
 }

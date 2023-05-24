@@ -18,31 +18,18 @@ namespace GalPanic
         public Action OnCompletionChanged = null;
 
         public BattleMap Map { get; private set; }
-
-        public Vec2 CursorPos => new(CursorX, CursorY);
-        public KeyValuePair<int, int> CursorStartPos => TraceLine[0];
-        public List<KeyValuePair<int, int>> TraceLine { get; } = new();
-        public int CursorX { get; private set; } = 0;
-        public int CursorY { get; private set; } = 0;
         public float WinPrecentage { get; private set; } = 1;
         public bool Ended { get; private set; } = false;
-        public int CursorHp { get; private set; } = 0;
-
+        public Cursor Cursor;
 
         public Battle(int mapWidth, int mapHeight, int cursorHp = 1, float winPrecent = 0.5f)
         {
             Map = new BattleMap(this, mapWidth, mapHeight);
-            CursorX = CursorY = 0;
-            CursorHp = cursorHp;
+            Cursor = new(cursorHp);
             WinPrecentage = winPrecent;
             Ended = false;
 
             Map.OnCompletionChanged += () => OnCompletionChanged();
-        }
-
-        public void StartAt(int x, int y)
-        {
-            TraceLine.Add(new(x, y));
         }
 
         public void Load() => UnitsLoader?.Invoke();
@@ -55,17 +42,10 @@ namespace GalPanic
             return bt;
         }
 
-        public void ForceCursor(KeyValuePair<int, int> pt) => ForceCursor(pt.Key, pt.Value);
-        public void ForceCursor(int x, int y)
+        public bool TryMovingCursor(int dx, int dy, out int toX, out int toY, bool forceUnsafe = false)
         {
-            CursorX = x;
-            CursorY = y;
-        }
-
-        public bool TryMovingCursor(int dx, int dy, bool forceUnsafe = false)
-        {
-            var tx = CursorX + dx;
-            var ty = CursorY + dy;
+            var tx = toX = Cursor.X + dx;
+            var ty = toY = Cursor.Y + dy;
             if (tx < 0 || tx >= Map.Width || ty < 0 || ty >= Map.Height)
                 return false;
 
@@ -86,11 +66,11 @@ namespace GalPanic
                 insideUncovered = Map[x, y] == BattleMap.GridType.Uncovered;
             }, () => insideUncovered);
 
-            // can move to the target positionc
+            // can move to the target position
             if (!insideUncovered)
             {
-                CursorX = tx;
-                CursorY = ty;
+                toX = tx;
+                toY = ty;
             }
 
             return !insideUncovered;
@@ -113,19 +93,17 @@ namespace GalPanic
             }
         }
 
-        public bool IsCursorSafe => Map.IsBlocked(CursorPos);
+        public bool IsCursorSafe => Map.IsBlocked(Cursor.Pos);
 
         public void CursorHurt(int dhp = -1)
         {
-            CursorHp += dhp;
+            Cursor.CursorHurt(dhp);
+            Cursor.Reset2StartPos();
 
-            var startPos = CursorStartPos;
-            TraceLine.Clear();
-            ForceCursor(startPos);
 
             OnCursorHurt?.Invoke();
 
-            if (CursorHp <= 0)
+            if (Cursor.Hp <= 0)
             {
                 Ended = true;
                 OnLost?.Invoke();

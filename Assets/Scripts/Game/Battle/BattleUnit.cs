@@ -48,14 +48,10 @@ namespace GalPanic
             return aiType switch
             {
                 "MoveAndReflect" => this.MoveAndReflect(Dir, (x, y) => !Map.IsBlocked(x, y)),
-                "KillUnsafeCursorOnCollision" => this.OnCollide(() => Map.Battle.CursorPos, () =>
+                "KillUnsafeCursorOnCollision" => this.OnCollide(() => Battle.Cursor.Pos, () =>
                 {
                     if (!Map.Battle.IsCursorSafe)
                         Map.Battle.CursorHurt();
-                }),
-                "SpawnUnitPeriodically" => this.RunPeriodically(1, () =>
-                {
-                    // var u = new BattleUnit(map, "Slime", )
                 }),
                 _ => null
             };

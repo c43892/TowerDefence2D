@@ -14,10 +14,11 @@ public class TraceRenderer : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
     }
 
-    public void UpdateLine(List<Vector3> points)
+    public void UpdateLine(Vector3 startPos, List<Vector3> points)
     {
-        lineRenderer.positionCount = points.Count;
+        lineRenderer.positionCount = points.Count + 1;
 
-        FC.For(points.Count, (i) => lineRenderer.SetPosition(i, transform.TransformPoint(points[i])));
+        lineRenderer.SetPosition(0, transform.TransformPoint(startPos));
+        FC.For(points.Count, (i) => lineRenderer.SetPosition(i + 1, transform.TransformPoint(points[i])));
     }
 }

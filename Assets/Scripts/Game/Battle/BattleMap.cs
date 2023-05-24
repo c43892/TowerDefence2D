@@ -71,10 +71,10 @@ namespace GalPanic
             FC.For2(left, left + width, top, top + height, (x, y) => grids[x, y] = fillType);
         }
 
-        public void FillPts(IEnumerable<KeyValuePair<int, int>> pts, GridType fillType)
+        public void FillPts(IEnumerable<Vec2> pts, GridType fillType)
         {
             foreach (var pt in pts)
-                grids[pt.Key, pt.Value] = fillType;
+                grids[(int)pt.x, (int)pt.y] = fillType;
         }
 
         public void CompeteFilling(int cx1, int cy1, int cx2, int cy2)
