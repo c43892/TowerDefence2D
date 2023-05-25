@@ -6,6 +6,7 @@ Shader "GalPanic/Sprite"
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         [PerRendererData] _MaskTex ("Sprite Texture", 2D) = "white" {}
+        [PerRendererData] _MaskColor ("RendererColor", Color) = (0,0,0,0)
         _Color ("Tint", Color) = (1,1,1,1)
         [MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
         [HideInInspector] _RendererColor ("RendererColor", Color) = (1,1,1,1)
@@ -37,13 +38,14 @@ Shader "GalPanic/Sprite"
             #include "UnitySprites.cginc"
 
             sampler2D _MaskTex;
+            float4 _MaskColor;
 
             fixed4 GalPanicSprite(v2f IN) : SV_Target
             {
                 fixed4 ma = tex2D(_MaskTex, IN.texcoord).a;
                 fixed4 c = SampleSpriteTexture (IN.texcoord) * IN.color;
 
-                c.rgb *= ma > 0.5 ? c.a : 0;
+                c.rgba = ma > 0.5 ? c.rgba : _MaskColor;
                 return c;
             }
 

@@ -13,6 +13,7 @@ public class FrameAni : MonoBehaviour
 {
     public AniData Data { get; set; }
     public Texture2D MaskTex;
+    public Color MaskColor;
 
     private SpriteRenderer sr;
 
@@ -68,5 +69,6 @@ public class FrameAni : MonoBehaviour
 
         sr.sprite = sprites[frameIndex];
         sr.material.SetTexture("_MaskTex", MaskTex);
+        sr.material.SetColor("_MaskColor", MaskColor);
     }
 }

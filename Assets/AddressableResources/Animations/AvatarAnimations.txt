@@ -3,5 +3,19 @@
 		"label": "Avatars/Archer",
 		"interval": 0.1,
 		"loop": true
+	},
+
+	1b: {
+		"label": "Avatars/1b",
+		"interval": 0.1,
+		"loop": true,
+		"scale": 0.5
+	},
+
+	1f: {
+		"label": "Avatars/1f",
+		"interval": 0.1,
+		"loop": true,
+		"scale": 0.5
 	}
 }

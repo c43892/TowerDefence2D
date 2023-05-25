@@ -1,7 +1,7 @@
 ﻿{
 	Test01: {
-        width: 79,
-        height: 104,
+        width: 103,
+        height: 103,
         winPercent: 0.7,
 		cursorHp: 3,
         units: [

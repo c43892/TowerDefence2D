@@ -11,6 +11,7 @@ using Unity.Collections;
 
 public class BattleMapRenderer : MonoBehaviour
 {
+    public FrameAni ForegroundAni;
     public FrameAni BackgroundAni;
 
     public BattleMap Map { get; set; }
@@ -32,6 +33,7 @@ public class BattleMapRenderer : MonoBehaviour
             MaskTex = new Texture2D(Map.Width, Map.Height, TextureFormat.ARGB32, 0, false);
             MaskColors = new Color[Map.Width * Map.Height];
             BackgroundAni.MaskTex = MaskTex;
+            ForegroundAni.MaskTex = MaskTex;
         }
 
         Color32 Covered = new(0, 0, 0, 0);
@@ -46,9 +48,11 @@ public class BattleMapRenderer : MonoBehaviour
 
         pixels.Dispose();
 
-        BackgroundAni.Data = ConfigManager.GetAvatarAnimationConfig("Archer").ToData();
+        BackgroundAni.Data = ConfigManager.GetAvatarAnimationConfig("1b").ToData();
+        ForegroundAni.Data = ConfigManager.GetAvatarAnimationConfig("1f").ToData();
 
         BackgroundAni.Play();
+        ForegroundAni.Play();
     }
 
     // Update is called once per frame
