@@ -13,5 +13,13 @@
 		vx: 7,
 		vy: 7,
 		r: 15
+	},
+
+	Tentacle01: {
+		type: "Tentacle",
+		ai: ["MoveAndReflect", "KillUnsafeCursorOnCollision"],
+		vx: 7,
+		vy: 7,
+		r: 15
 	}
 }

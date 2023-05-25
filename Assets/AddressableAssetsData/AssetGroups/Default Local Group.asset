@@ -77,6 +77,36 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Avatars/1f
+  - m_GUID: 07f3bacb282383045b7aea0531a2cf16
+    m_Address: Avatars/char1img1back
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Avatars/char1img1back
+  - m_GUID: ad2c1e05fe47d2c4686c99c595dc468e
+    m_Address: Avatars/char1img1front
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Avatars/char1img1front
+  - m_GUID: ee026e0017874c94c876606dd7a30609
+    m_Address: Avatars/char1img2back
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Avatars/char1img2back
+  - m_GUID: 4b592eb3b1386e349b04394e9d6ffb79
+    m_Address: Avatars/char1img2front
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Avatars/char1img2front
+  - m_GUID: 482656ac61df50e40af08705843f6c89
+    m_Address: Avatars/char1img3all
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Avatars/char1img3all
+  - m_GUID: 09d1b048bf10b634d8897ed9b2a99439
+    m_Address: Enemies/Tentacle/Moving
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Enemies/Tentacle/Moving
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 17dde0708cdf829499a7785f0a3b095a, type: 2}
   m_SchemaSet:

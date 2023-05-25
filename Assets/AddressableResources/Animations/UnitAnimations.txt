@@ -15,5 +15,14 @@
 			"loop": true,
 			"scale": 0.6
 		}
+	},
+
+	Tentacle: {
+		Moving: {
+			"label": "Enemies/Tentacle/Moving",
+			"interval": 0.1,
+			"loop": true,
+			"scale": 1
+		}
 	}
 }

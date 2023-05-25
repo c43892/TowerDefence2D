@@ -5,16 +5,37 @@
 		"loop": true
 	},
 
-	1b: {
-		"label": "Avatars/1b",
+	char1img1back: {
+		"label": "Avatars/char1img1back",
 		"interval": 0.1,
 		"loop": true,
 		"scale": 1
 	},
 
-	1f: {
-		"label": "Avatars/1f",
+	char1img1front: {
+		"label": "Avatars/char1img1front",
+		"interval": 0.05,
+		"loop": true,
+		"scale": 1
+	},
+
+	char1img2back: {
+		"label": "Avatars/char1img2back",
 		"interval": 0.1,
+		"loop": true,
+		"scale": 1
+	},
+
+	char1img2front: {
+		"label": "Avatars/char1img2front",
+		"interval": 0.05,
+		"loop": true,
+		"scale": 1
+	},
+
+	char1img3all: {
+		"label": "Avatars/char1img3all",
+		"interval": 0.05,
 		"loop": true,
 		"scale": 1
 	}
