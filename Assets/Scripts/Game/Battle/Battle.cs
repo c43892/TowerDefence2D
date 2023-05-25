@@ -49,6 +49,7 @@ namespace GalPanic
             if (tx < 0 || tx >= Map.Width || ty < 0 || ty >= Map.Height)
                 return false;
 
+
             if (!forceUnsafe && Map[tx, ty] != BattleMap.GridType.Uncovered)
                 return false;
 

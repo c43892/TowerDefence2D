@@ -45,7 +45,7 @@ Shader "GalPanic/Sprite"
                 fixed4 ma = tex2D(_MaskTex, IN.texcoord).a;
                 fixed4 c = SampleSpriteTexture (IN.texcoord) * IN.color;
 
-                c.rgba = ma > 0.5 ? c.rgba : _MaskColor;
+                c.rgba = ma > 0 ? c.rgba : _MaskColor;
                 return c;
             }
 

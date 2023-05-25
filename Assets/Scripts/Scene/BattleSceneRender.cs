@@ -152,7 +152,9 @@ public partial class BattleSceneRender : MonoBehaviour
                 {
                     bt.Cursor.SetPos(tx, ty);
 
-                    if (bt.Map[x, y] == BattleMap.GridType.Covered)
+                    if (bt.Map[x, y] == BattleMap.GridType.Covered &&
+                        x != 0 && x != bt.Map.Width - 1 &&
+                        y != 0 && y != bt.Map.Height - 1)
                     {
                         if (TraceLine.Count == 0)
                             bt.Cursor.StartPos = oldPos;
@@ -161,6 +163,8 @@ public partial class BattleSceneRender : MonoBehaviour
                     }
                     else if (TraceLine.Count > 2)
                     {
+                        bt.Cursor.AddTracePos(tx, ty);
+
                         // find a straight line at least having 3 pts
                         var onX = 0;
                         var onY = 0;

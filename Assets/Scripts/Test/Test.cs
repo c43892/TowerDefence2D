@@ -19,6 +19,10 @@ namespace GalPanic
             void StartNewGame()
             {
                 var bt = Battle.Create("Test01");
+                bt.Map.FillArea(0, 10, 0, 10, BattleMap.GridType.Uncovered);
+                bt.Cursor.StartPos = new(9, 9);
+                bt.Cursor.SetPos(9, 9);
+
 
                 // register win/lose events
                 bt.OnWon += () => UIManager.ShowResult(true);
