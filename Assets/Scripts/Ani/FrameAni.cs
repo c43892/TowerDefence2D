@@ -27,6 +27,7 @@ public class FrameAni : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
     }
 
+    private IEnumerator loadingProcess = null;
     public void Play(bool restart = false)
     {
         if (!playing || restart)
@@ -40,7 +41,17 @@ public class FrameAni : MonoBehaviour
         {
             playing = true;
             transform.localScale = Data.scale * Vector3.one;
-            StartCoroutine(ResManager.LoadSpritesFromGroup(Data.label, (spriteArr) => sprites = spriteArr));
+
+            if (loadingProcess != null)
+                StopCoroutine(loadingProcess);
+
+            loadingProcess = ResManager.LoadSpritesFromGroup(Data.label, (spriteArr) =>
+            {
+                sprites = spriteArr;
+                loadingProcess = null;
+            });
+
+            StartCoroutine(loadingProcess);
         }
     }
 

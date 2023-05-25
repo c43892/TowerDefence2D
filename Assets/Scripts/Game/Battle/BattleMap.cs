@@ -34,10 +34,6 @@ namespace GalPanic
             Width = width;
             Height = height;
             grids = new GridType[width, height];
-
-            // fill borders
-            // FC.For(Width, (x) => grids[x, 0] = grids[x, height - 1] = GridType.Uncovered);
-            // FC.For(Height, (y) => grids[0, y] = grids[width - 1, y] = GridType.Uncovered);
         }
 
         public IEnumerable<BattleUnit> AllUnits => units.Values;
@@ -68,12 +64,16 @@ namespace GalPanic
         public void FillArea(int left, int width, int top, int height, GridType fillType)
         {
             FC.For2(left, left + width, top, top + height, (x, y) => grids[x, y] = fillType);
+            completionCounter += width * height;
         }
 
         public void FillPts(IEnumerable<Vec2> pts, GridType fillType)
         {
-            foreach (var pt in pts)
+            pts.Travel(pt =>
+            {
                 grids[(int)pt.x, (int)pt.y] = fillType;
+                completionCounter++;
+            });
         }
 
         public void CompeteFilling(int cx1, int cy1, int cx2, int cy2)
@@ -100,10 +100,10 @@ namespace GalPanic
             var toRevert = filler1.MoveNext() ? filler1.Current : filler2.Current;
             var toComplete = toRevert == filler1 ? filler2 : filler1;
 
-            foreach (var pt in toRevert)
-                grids[pt.Key, pt.Value] = GridType.Covered;
+            toRevert?.Travel(pt => grids[pt.Key, pt.Value] = GridType.Covered);
 
-            completionCounter += toComplete.Current.Count;
+            if (toComplete.Current != null)
+                completionCounter += toComplete.Current.Count;
 
             OnCompletionChanged?.Invoke();
         }

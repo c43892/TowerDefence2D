@@ -34,7 +34,6 @@ namespace GalPanic
 
         public void Load() => UnitsLoader?.Invoke();
         private Action UnitsLoader = null;
-        public static Battle Create(string cfgName) => Create(ConfigManager.GetBattleConfig(cfgName));
         public static Battle Create(BattleConfig cfg)
         {
             var bt = new Battle(cfg.width, cfg.height, cfg.cursorHp, cfg.winPercent);

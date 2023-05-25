@@ -4,7 +4,7 @@
 			"label": "Enemies/Slime/Moving",
 			"interval": 0.1,
 			"loop": true,
-			"scale": 0.1
+			"scale": 0.4
 		}
 	},
 
@@ -13,7 +13,7 @@
 			"label": "Enemies/Slime/Moving",
 			"interval": 0.1,
 			"loop": true,
-			"scale": 0.3
+			"scale": 0.6
 		}
 	}
 }

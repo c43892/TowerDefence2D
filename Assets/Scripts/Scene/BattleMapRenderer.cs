@@ -23,6 +23,15 @@ public class BattleMapRenderer : MonoBehaviour
     {
     }
 
+    public void SetAvatar(string frontAni, string backAni)
+    {
+        BackgroundAni.Data = ConfigManager.GetAvatarAnimationConfig(backAni).ToData();
+        ForegroundAni.Data = ConfigManager.GetAvatarAnimationConfig(frontAni).ToData();
+
+        BackgroundAni.Play();
+        ForegroundAni.Play();
+    }
+
     public void UpdateMap()
     {
         if (Map == null)
@@ -30,7 +39,10 @@ public class BattleMapRenderer : MonoBehaviour
 
         if (MaskTex == null || MaskColors == null)
         {
-            MaskTex = new Texture2D(Map.Width, Map.Height, TextureFormat.ARGB32, 0, false);
+            MaskTex = new(Map.Width, Map.Height, TextureFormat.ARGB32, 0, false)
+            {
+                wrapMode = TextureWrapMode.Clamp
+            };
             MaskColors = new Color[Map.Width * Map.Height];
             BackgroundAni.MaskTex = MaskTex;
             ForegroundAni.MaskTex = MaskTex;
@@ -47,12 +59,6 @@ public class BattleMapRenderer : MonoBehaviour
         MaskTex.Apply();
 
         pixels.Dispose();
-
-        BackgroundAni.Data = ConfigManager.GetAvatarAnimationConfig("1b").ToData();
-        ForegroundAni.Data = ConfigManager.GetAvatarAnimationConfig("1f").ToData();
-
-        BackgroundAni.Play();
-        ForegroundAni.Play();
     }
 
     // Update is called once per frame

@@ -18,7 +18,9 @@ namespace GalPanic
             BattleUnit.IDGen = (prefix) => RandomUtils.RandomString(prefix);
             void StartNewGame()
             {
-                var bt = Battle.Create("Test01");
+                var btCfg = ConfigManager.GetBattleConfig("Test01");
+
+                var bt = Battle.Create(btCfg);
                 bt.Map.FillArea(0, 10, 0, 10, BattleMap.GridType.Uncovered);
                 bt.Cursor.StartPos = new(9, 9);
                 bt.Cursor.SetPos(9, 9);
@@ -30,6 +32,7 @@ namespace GalPanic
 
                 // setup scene renderer
                 SceneRenderer.Bt = bt;
+                SceneRenderer.SetAvatar(btCfg.frontAni, btCfg.backAni);
                 SceneRenderer.UpdateMap();
                 SceneRenderer.GetCursorSpeed = () => 30;
                 

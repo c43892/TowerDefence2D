@@ -4,7 +4,7 @@
 		ai: ["MoveAndReflect", "KillUnsafeCursorOnCollision"],
 		vx: -15,
 		vy: -15,
-		r: 3	
+		r: 6
 	},
 
 	Slime02: {
@@ -12,6 +12,6 @@
 		ai: ["MoveAndReflect", "KillUnsafeCursorOnCollision"],
 		vx: 7,
 		vy: 7,
-		r: 8	
+		r: 15
 	}
 }

@@ -55,10 +55,8 @@ public partial class BattleSceneRender : MonoBehaviour
         ClearUnits();
     }
 
-    public void UpdateMap()
-    {
-        MapRenderer.UpdateMap();
-    }
+    public void UpdateMap() => MapRenderer.UpdateMap();
+    public void SetAvatar(string frontAni, string backAni) => MapRenderer.SetAvatar(frontAni, backAni);
 
     private void Update()
     {
@@ -147,54 +145,36 @@ public partial class BattleSceneRender : MonoBehaviour
                 bt.Cursor.StepBack();
             else if (n < 0)
             {
-                var oldPos = bt.Cursor.Pos;
-                if (bt.TryMovingCursor(dx, dy, out int tx, out int ty, forceUnsafe))
+                var inMoving = bt.TryMovingCursor(dx, dy, out int tx, out int ty, forceUnsafe);
+
+                if (inMoving)
                 {
+                    if (bt.Cursor.TraceLine.Count == 0)
+                        bt.Cursor.StartPos = bt.Cursor.Pos;
+
                     bt.Cursor.SetPos(tx, ty);
-
-                    if (bt.Map[x, y] == BattleMap.GridType.Covered &&
-                        x != 0 && x != bt.Map.Width - 1 &&
-                        y != 0 && y != bt.Map.Height - 1)
-                    {
-                        if (TraceLine.Count == 0)
-                            bt.Cursor.StartPos = oldPos;
-
+                    if (bt.Map[x, y] == BattleMap.GridType.Covered)
                         bt.Cursor.AddTracePos(tx, ty);
-                    }
-                    else if (TraceLine.Count > 2)
-                    {
-                        bt.Cursor.AddTracePos(tx, ty);
+                }
 
-                        // find a straight line at least having 3 pts
-                        var onX = 0;
-                        var onY = 0;
-                        var middlePt = TraceLine[0];
-                        for (var i = 1; i < TraceLine.Count - 1; i++)
-                        {
-                            var pt0 = TraceLine[i - 1];
-                            var pt1 = TraceLine[i];
-                            var pt2 = TraceLine[i + 1];
+                if ((!inMoving || bt.Map[x, y] == BattleMap.GridType.Uncovered) && forceUnsafe && TraceLine.Count > 0)
+                {
+                    // find a straight line at least having 3 pts
+                    var pt0 = TraceLine.Count > 1 ? TraceLine[^2] : bt.Cursor.StartPos;
+                    var pt1 = TraceLine[^1];
 
-                            // check the changes on x&y directions
-                            if (pt2.x - pt1.x == pt1.x - pt0.x) onX = (int)(pt1.x - pt0.x);
-                            if (pt2.y - pt1.y == pt1.y - pt0.y) onY = (int)(pt1.y - pt0.y);
+                    // check the changes on x&y directions
+                    var onX = (int)(pt1.x - pt0.x);
+                    var onY = (int)(pt1.y - pt0.y);
 
-                            if (onX != 0 || onY != 0)
-                            {
-                                middlePt = pt1;
-                                break;
-                            }
-                        }
+                    bt.Map.FillPts(TraceLine, BattleMap.GridType.Uncovered);
 
-                        bt.Map.FillPts(TraceLine, BattleMap.GridType.Uncovered);
+                    TraceLine.Clear();
 
-                        TraceLine.Clear();
-
-                        if (onX != 0)
-                            bt.Map.CompeteFilling((int)middlePt.x, (int)middlePt.y - 1, (int)middlePt.x, (int)middlePt.y + 1);
-                        else if (onY != 0)
-                            bt.Map.CompeteFilling((int)middlePt.x - 1, (int)middlePt.y, (int)middlePt.x + 1, (int)middlePt.y);
-                    }
+                    if (onX != 0)
+                        bt.Map.CompeteFilling((int)pt1.x, (int)pt1.y - 1, (int)pt1.x, (int)pt1.y + 1);
+                    else if (onY != 0)
+                        bt.Map.CompeteFilling((int)pt1.x - 1, (int)pt1.y, (int)pt1.x + 1, (int)pt1.y);
                 }
             }
         }

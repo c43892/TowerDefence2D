@@ -26,6 +26,12 @@ namespace GalPanic
         [JsonProperty("height")]
         public int height;
 
+        [JsonProperty("frontAni")]
+        public string frontAni;
+
+        [JsonProperty("backAni")]
+        public string backAni;
+
         [JsonProperty("winPercent")]
         public float winPercent;
 

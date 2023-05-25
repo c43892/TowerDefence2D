@@ -1,7 +1,9 @@
 ﻿{
 	Test01: {
-        width: 103,
-        height: 103,
+        width: 204,
+        height: 204,
+		frontAni: "1f",
+		backAni: "1b",
         winPercent: 0.7,
 		cursorHp: 3,
         units: [
