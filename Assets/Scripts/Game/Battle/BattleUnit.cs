@@ -22,39 +22,28 @@ namespace GalPanic
 
         public string UID { get; private set; }
 
-        public Fix64 Radius { get; private set; }
-
         public Vec2 Pos { get; set; }
-
-        public Vec2 Dir { get; set; }
 
         private readonly StateMachine[] sms = null;
 
-        public BattleUnit(BattleMap map, string type, string[] aiTypes, Fix64 radius, Vec2 pos, Vec2 dir)
+        public BattleUnit(BattleMap map, string type, Dictionary<string, string> aiTypes)
         {
             Type = type;
             Map = map;
             UID = IDGen(IDGen($"unit_{type}_"));
-            Radius = radius;
-            Pos = pos;
-            Dir = dir;
 
-            sms = aiTypes.Select(ai => CreateAI(ai)).ToArray();
+            sms = aiTypes.Select(ai => CreateAI(ai.Key, ai.Value)).ToArray();
             sms.Travel(sm => sm.Start());
         }
 
-        StateMachine CreateAI(string aiType)
+        StateMachine CreateAI(string aiType, string args)
         {
             return aiType switch
             {
-                "MoveAndReflect" => this.MoveAndReflect(Dir, (x, y) => !Map.IsBlocked(x, y)),
-                "KillUnsafeCursorOnCollision" => this.OnCollide(() => Battle.Cursor.Pos, () =>
-                {
-                    if (!Map.Battle.IsCursorSafe)
-                        Map.Battle.CursorHurt();
-                }),
+                "MoveAndReflect" => this.AIMoveAndReflect(args),
+                "KillUnsafeCursorOnCollision" => this.AIKillUnsafeCursorOnCollision(args),
                 _ => null
-            };
+            }; ;
         }
 
         public void OnTimeElapsed(Fix64 te)

@@ -16,8 +16,6 @@ namespace GalPanic
         {
             string UID { get; }
             Vec2 Pos { get; set; }
-            Vec2 Dir { get; set; }
-            Fix64 Radius { get; }
         }
 
         // 保持单一状态
@@ -96,23 +94,31 @@ namespace GalPanic
             return sm;
         }
 
-        public static StateMachine OnCollide(this IUnit u, Func<Vec2> checkPos, Action onCollide)
+        public static StateMachine MoveOnPts(this IUnit u, IEnumerator<Vec2> pts, int speed, Action onEnd)
         {
-            return u.SimpleState((st, te) =>
+            var sm = new StateMachine(u.UID);
+
+            var ended = false;
+            sm.NewState("moving").Run((st, te) =>
             {
-                var pos = u.Pos;
-                var x = (int)pos.x;
-                var y = (int)pos.y;
+                var i = 0;
+                while (i < speed && !ended)
+                {
+                    ended = !pts.MoveNext();
+                    i++;
+                }
 
-                var targetPos = checkPos();
-                var l = (int)(targetPos.x - u.Radius);
-                var r = (int)(targetPos.x + u.Radius);
-                var t = (int)(targetPos.y - u.Radius);
-                var b = (int)(targetPos.y + u.Radius);
+                u.Pos = pts.Current;
+            }).AsDefault();
 
-                if (x >= l && x <= r && y >= t && y <= b)
-                    onCollide?.Invoke();
+            sm.NewState("ended").OnRunIn((st) =>
+            {
+                onEnd?.Invoke();
             });
+
+            sm.Trans().From("moving").To("ended").When((st) => ended);
+
+            return sm;
         }
     }
 }

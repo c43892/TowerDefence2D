@@ -1,25 +1,25 @@
 ﻿{
 	Slime01: {
 		type: "SmallSlime",
-		ai: ["MoveAndReflect", "KillUnsafeCursorOnCollision"],
-		vx: -15,
-		vy: -15,
-		r: 6
+		ai: {
+			"MoveAndReflect": "-15, -15",
+			"KillUnsafeCursorOnCollision": "6"
+		}
 	},
 
 	Slime02: {
 		type: "BigSlime",
-		ai: ["MoveAndReflect", "KillUnsafeCursorOnCollision"],
-		vx: 7,
-		vy: 7,
-		r: 15
+		ai: {
+			"MoveAndReflect": "7, 7",
+			"KillUnsafeCursorOnCollision": "15"
+		}
 	},
 
 	Tentacle01: {
 		type: "Tentacle",
-		ai: ["MoveAndReflect", "KillUnsafeCursorOnCollision"],
-		vx: 7,
-		vy: 7,
-		r: 15
+		ai: {
+			"MoveAndReflect": "7, 7",
+			"KillUnsafeCursorOnCollision": "15"
+		}
 	}
 }
