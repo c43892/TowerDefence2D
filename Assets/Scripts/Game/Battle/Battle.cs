@@ -84,14 +84,16 @@ namespace GalPanic
             Map.OnTimeElapsed(te);
             Cursor.OnTimeElapsed(te);
 
-            var deadUnits = Map.AllUnits.Where(u => Map.IsBlocked(u.Pos));
-            deadUnits.ToArray().Travel(Map.RemoveUnit);
-
             if (Map.Completion >= WinPrecentage)
             {
                 Ended = true;
                 OnWon?.Invoke();
             }
+        }
+
+        public void KillUnit(BattleUnit u)
+        {
+            Map.RemoveUnit(u);
         }
 
         public bool IsCursorSafe => Map.IsBlocked(Cursor.Pos) || Cursor.CoolDown > 0;

@@ -34,7 +34,7 @@ namespace GalPanic
                 SceneRenderer.Bt = bt;
                 SceneRenderer.SetAvatar(btCfg.frontAni, btCfg.backAni);
                 SceneRenderer.UpdateMap();
-                SceneRenderer.GetCursorSpeed = () => 30;
+                SceneRenderer.GetCursorSpeed = () => 50;
                 
                 // load units
                 bt.Load();

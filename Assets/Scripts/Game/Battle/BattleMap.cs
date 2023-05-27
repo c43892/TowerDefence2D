@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Swift;
 using System;
+using System.Linq;
 
 namespace GalPanic
 {
     public class BattleMap : ITimeDriven
     {
         public Action<BattleUnit> OnUnitAdded = null;
+        public Action<BattleUnit> OnAbortToAddUnit = null;
         public Action<BattleUnit> OnUnitRemoved = null;
+        public Action<BattleUnit> OnAbortToRemoveUnit = null;
         public Action OnCompletionChanged = null;
 
         public enum GridType
@@ -110,7 +113,12 @@ namespace GalPanic
 
         public void OnTimeElapsed(Fix64 te)
         {
-            AllUnits.Travel(u => u.OnTimeElapsed(te));
+            AllUnits.ToList().Travel(u =>
+            {
+                // the unit may be removed in this process
+                if (units.ContainsKey(u.UID))
+                    u.OnTimeElapsed(te);
+            });
         }
     }
 }

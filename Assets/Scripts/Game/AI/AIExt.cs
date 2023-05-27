@@ -94,21 +94,24 @@ namespace GalPanic
             return sm;
         }
 
-        public static StateMachine MoveOnPts(this IUnit u, IEnumerator<Vec2> pts, int speed, Action onEnd)
+        public static StateMachine MoveOnPtsList(this IUnit u, Func<List<Vec2>> ptsProvider, Func<Fix64> speed, Action onEnd)
         {
             var sm = new StateMachine(u.UID);
 
-            var ended = false;
+            var dist = Fix64.Zero;
+            var ndx = ptsProvider().IndexOf(u.Pos);
+
             sm.NewState("moving").Run((st, te) =>
             {
-                var i = 0;
-                while (i < speed && !ended)
+                var pst = ptsProvider();
+                dist += speed() * te;
+                while (dist > 1 && ndx < pst.Count)
                 {
-                    ended = !pts.MoveNext();
-                    i++;
+                    dist -= 1;
+                    ndx++;
                 }
 
-                u.Pos = pts.Current;
+                u.Pos = ndx >= pst.Count ? pst[pst.Count - 1] : pst[ndx];
             }).AsDefault();
 
             sm.NewState("ended").OnRunIn((st) =>
@@ -116,7 +119,7 @@ namespace GalPanic
                 onEnd?.Invoke();
             });
 
-            sm.Trans().From("moving").To("ended").When((st) => ended);
+            sm.Trans().From("moving").To("ended").When((st) => ndx >= ptsProvider().Count);
 
             return sm;
         }

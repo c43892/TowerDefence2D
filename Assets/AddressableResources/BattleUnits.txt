@@ -3,7 +3,8 @@
 		type: "SmallSlime",
 		ai: {
 			"MoveAndReflect": "-15, -15",
-			"KillUnsafeCursorOnCollision": "6"
+			"KillUnsafeCursorOnCollision": "6",
+			"ReleaseUnitWhenCollisionOnTraceLine": "6, SlimeOnPath, 5"
 		}
 	},
 
@@ -11,7 +12,8 @@
 		type: "BigSlime",
 		ai: {
 			"MoveAndReflect": "7, 7",
-			"KillUnsafeCursorOnCollision": "15"
+			"KillUnsafeCursorOnCollision": "15",
+			"ReleaseUnitWhenCollisionOnTraceLine": "15, SlimeOnPath, 5"
 		}
 	},
 
@@ -19,7 +21,16 @@
 		type: "Tentacle",
 		ai: {
 			"MoveAndReflect": "7, 7",
-			"KillUnsafeCursorOnCollision": "15"
+			"KillUnsafeCursorOnCollision": "15",
+			"ReleaseUnitWhenCollisionOnTraceLine": "15, SlimeOnPath, 5"
 		}
-	}
+	},
+
+	SlimeOnPath: {
+		type: "TinySlime",
+		ai: {
+			"KillUnsafeCursorOnCollision": "2",
+			"ChaseOnLineAndKillUnsafeCursor": "50"
+		}
+	},
 }

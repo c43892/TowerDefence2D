@@ -1,4 +1,13 @@
 {
+	TinySlime: {
+		Moving: {
+			"label": "Enemies/Slime/Moving",
+			"interval": 0.1,
+			"loop": true,
+			"scale": 0.1
+		}
+	},
+
 	SmallSlime: {
 		Moving: {
 			"label": "Enemies/Slime/Moving",

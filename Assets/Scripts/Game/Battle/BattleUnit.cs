@@ -24,16 +24,29 @@ namespace GalPanic
 
         public Vec2 Pos { get; set; }
 
-        private readonly StateMachine[] sms = null;
+        private List<StateMachine> sms = null;
 
-        public BattleUnit(BattleMap map, string type, Dictionary<string, string> aiTypes)
+        public BattleUnit(BattleMap map, string type)
         {
             Type = type;
             Map = map;
             UID = IDGen(IDGen($"unit_{type}_"));
 
-            sms = aiTypes.Select(ai => CreateAI(ai.Key, ai.Value)).ToArray();
-            sms.Travel(sm => sm.Start());
+            sms = new();
+        }
+
+        public void BuildAI(Dictionary<string, string> ai)
+        {
+            ai?.Travel(ai => AddAI(CreateAI(ai.Key, ai.Value)));
+        }
+
+        public void AddAI(StateMachine ai)
+        {
+            if (ai == null)
+                return;
+
+            sms.Add(ai);
+            ai.Start();
         }
 
         StateMachine CreateAI(string aiType, string args)
@@ -42,8 +55,10 @@ namespace GalPanic
             {
                 "MoveAndReflect" => this.AIMoveAndReflect(args),
                 "KillUnsafeCursorOnCollision" => this.AIKillUnsafeCursorOnCollision(args),
+                "ReleaseUnitWhenCollisionOnTraceLine" => this.AIReleaseUnitWhenCollisionOnTraceLine(args),
+                "ChaseOnLineAndKillUnsafeCursor" => this.AIMoveOnPtsList(args),
                 _ => null
-            }; ;
+            };
         }
 
         public void OnTimeElapsed(Fix64 te)
