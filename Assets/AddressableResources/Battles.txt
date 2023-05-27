@@ -9,7 +9,7 @@
         units: [
 			{ type: "Slime01", x: 40, y: 40 },
 			{ type: "Slime02", x: 40, y: 40 },
-			{ type: "Tentacle01", x: 100, y: 100 }
+			{ type: "Tentacle01", x: 100, y: 100, isKeyUnit: true }
 		]
 	}
 }

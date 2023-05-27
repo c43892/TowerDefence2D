@@ -158,24 +158,7 @@ public partial class BattleSceneRender : MonoBehaviour
                 }
 
                 if ((!inMoving || bt.Map[x, y] == BattleMap.GridType.Uncovered) && forceUnsafe && TraceLine.Count > 0)
-                {
-                    // find a straight line at least having 3 pts
-                    var pt0 = TraceLine.Count > 1 ? TraceLine[^2] : bt.Cursor.StartPos;
-                    var pt1 = TraceLine[^1];
-
-                    // check the changes on x&y directions
-                    var onX = (int)(pt1.x - pt0.x);
-                    var onY = (int)(pt1.y - pt0.y);
-
-                    bt.Map.FillPts(TraceLine, BattleMap.GridType.Uncovered);
-
-                    TraceLine.Clear();
-
-                    if (onX != 0)
-                        bt.Map.CompeteFilling((int)pt1.x, (int)pt1.y - 1, (int)pt1.x, (int)pt1.y + 1);
-                    else if (onY != 0)
-                        bt.Map.CompeteFilling((int)pt1.x - 1, (int)pt1.y, (int)pt1.x + 1, (int)pt1.y);
-                }
+                    bt.DoTraceLineSplite();
             }
         }
 

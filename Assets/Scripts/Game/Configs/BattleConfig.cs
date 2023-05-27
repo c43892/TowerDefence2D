@@ -18,6 +18,9 @@ namespace GalPanic
 
             [JsonProperty("y")]
             public int y;
+
+            [JsonProperty("isKeyUnit")]
+            public bool isKeyUnit = false;
         }
 
         [JsonProperty("width")]

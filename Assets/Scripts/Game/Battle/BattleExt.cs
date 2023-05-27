@@ -11,7 +11,7 @@ namespace GalPanic
 {
     public static class BattleExt
     {
-        public static BattleUnit AddUnitAt(this Battle battle, string unitType, Vec2 pos)
+        public static BattleUnit AddUnitAt(this Battle battle, string unitType, Vec2 pos, bool isKeyUnit = false)
         {
             var cfg = ConfigManager.GetBattleUnitConfig(unitType);
             var unit = new BattleUnit(
@@ -19,16 +19,11 @@ namespace GalPanic
                 cfg.type
             )
             {
-                Pos = pos
+                Pos = pos,
+                IsKeyUnit = isKeyUnit
             };
 
             unit.BuildAI(cfg.ai);
-            battle.Map.AddUnit(unit);
-            return unit;
-        }
-
-        public static BattleUnit AddUnitAt(this Battle battle, BattleUnit unit)
-        {
             battle.Map.AddUnit(unit);
             return unit;
         }

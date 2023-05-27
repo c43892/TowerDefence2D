@@ -16,6 +16,7 @@ namespace GalPanic
         public Action OnLost = null;
         public Action OnCursorHurt = null;
         public Action OnCompletionChanged = null;
+        public Action OnTraceLineCompleted = null;
 
         public BattleMap Map { get; private set; }
         public float WinPrecentage { get; private set; } = 1;
@@ -37,7 +38,7 @@ namespace GalPanic
         public static Battle Create(BattleConfig cfg)
         {
             var bt = new Battle(cfg.width, cfg.height, cfg.cursorHp, cfg.winPercent);
-            bt.UnitsLoader = () => cfg.units.Travel(u => bt.AddUnitAt(u.type, new Vec2(u.x, u.y)));
+            bt.UnitsLoader = () => cfg.units.Travel(u => bt.AddUnitAt(u.type, new Vec2(u.x, u.y), u.isKeyUnit));
             return bt;
         }
 
@@ -84,10 +85,23 @@ namespace GalPanic
             Map.OnTimeElapsed(te);
             Cursor.OnTimeElapsed(te);
 
-            if (Map.Completion >= WinPrecentage)
+            CheckingEnding();
+        }
+
+        private void CheckingEnding()
+        {
+            if (Ended)
+                return;
+
+            if (Map.Completion >= WinPrecentage || !Map.AllUnits.Any(u => u.IsKeyUnit))
             {
                 Ended = true;
                 OnWon?.Invoke();
+            }
+            else if (Cursor.Hp <= 0)
+            {
+                Ended = true;
+                OnLost?.Invoke();
             }
         }
 
@@ -106,11 +120,35 @@ namespace GalPanic
 
             if (Cursor.Hp > 0)
                 Cursor.CoolDown = 1;
-            else
+        }
+
+        public void DoTraceLineSplite()
+        {
+            var traceLine = Cursor.TraceLine;
+
+            // find a straight line at least having 3 pts
+            var pt0 = traceLine.Count > 1 ? traceLine[^2] : Cursor.StartPos;
+            var pt1 = traceLine[^1];
+
+            // check the changes on x&y directions
+            var onX = (int)(pt1.x - pt0.x);
+            var onY = (int)(pt1.y - pt0.y);
+
+            Map.FillPts(traceLine, BattleMap.GridType.Uncovered);
+
+            OnTraceLineCompleted?.Invoke();
+            Cursor.TraceLine.Clear();
+
+            if (onX != 0)
+                Map.CompeteFilling((int)pt1.x, (int)pt1.y - 1, (int)pt1.x, (int)pt1.y + 1);
+            else if (onY != 0)
+                Map.CompeteFilling((int)pt1.x - 1, (int)pt1.y, (int)pt1.x + 1, (int)pt1.y);
+
+            Map.AllUnits.ToList().Travel(u =>
             {
-                Ended = true;
-                OnLost?.Invoke();
-            }
+                if (Map[u.Pos] == BattleMap.GridType.Uncovered)
+                    KillUnit(u);
+            });
         }
     }
 }

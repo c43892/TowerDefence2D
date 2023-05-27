@@ -60,6 +60,7 @@ namespace GalPanic
         }
 
         public GridType this[int x, int y] { get => grids[x, y]; }
+        public GridType this[Vec2 pos] { get => grids[(int)pos.x, (int)pos.y]; }
 
         public bool IsBlocked(Vec2 pos) => IsBlocked((int)pos.x, (int)pos.y);
         public bool IsBlocked(int x, int y) => x < 0 || x >= Width || y < 0 || y >= Height || grids[x, y] == GridType.Uncovered;

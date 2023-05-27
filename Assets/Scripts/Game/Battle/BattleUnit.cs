@@ -24,7 +24,9 @@ namespace GalPanic
 
         public Vec2 Pos { get; set; }
 
-        private List<StateMachine> sms = null;
+        public bool IsKeyUnit { get; set; }
+
+        private readonly List<StateMachine> sms = null;
 
         public BattleUnit(BattleMap map, string type)
         {
