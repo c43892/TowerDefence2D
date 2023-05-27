@@ -9,7 +9,6 @@ using GalPanic.Res;
 using UnityEngine.UI;
 using Unity.Collections;
 
-[RequireComponent(typeof(FrameAni))]
 public class BattleUnitRenderer : MonoBehaviour
 {
     public FrameAni Ani;

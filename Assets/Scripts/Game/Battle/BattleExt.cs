@@ -99,53 +99,45 @@ namespace GalPanic
             });
         }
 
-        public static StateMachine AIMoveAndTurnAndRush(this BattleUnit u, string args)
+        public static StateMachine AIMoveAndTurnAndSkill(this BattleUnit u, 
+            Vec2 movingDir, Fix64 movingTime, 
+            Fix64 turningSpeed, Fix64 turningAngleMin, Fix64 turningAngleMax,
+            Fix64 skillTime, 
+            Action<Fix64> runSkill)
         {
-            var vs = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(v => float.Parse(v)).ToArray();
-            var dir = new Vec2(vs[0], vs[1]);
-            var movingTime = vs[2];
-
-            var turningSpeed = (Fix64)vs[3];
-            var turningRange = new Vec2(vs[4], vs[5]);
-
-            var rushSpeedScale = vs[6];
-            var rushingTime = vs[7];
-            Vec2 getRushSpeed() => dir * rushSpeedScale;
-
             var sm = new StateMachine(u.UID);
 
             var movingTimer = (Fix64)movingTime;
-            var move = u.MoveForwardStateRunner(() => dir, (x, y) => !u.Map.IsBlocked(x, y), true, newDir =>
+            var move = u.MoveForwardStateRunner(() => movingDir, (x, y) => !u.Map.IsBlocked(x, y), true, newDir =>
             {
-                dir = newDir;
-                u.Dir = dir.ToAngle();
+                movingDir = newDir;
+                u.Dir = movingDir.ToAngle();
             });
 
             var dAngle = Fix64.Zero;
             var turningDir = 0;
 
-            var rushingTimer = Fix64.Zero;
-            var rush = u.MoveForwardStateRunner(getRushSpeed, (x, y) => !u.Map.IsBlocked(x, y));
+            var skillTimer = Fix64.Zero;
 
-            u.Dir = dir.ToAngle();
+            u.Dir = movingDir.ToAngle();
             sm.NewState("moving")
             .Run((_, te) =>
             {
                 move(te);
                 movingTimer -= te;
             })
-            .OnRunOut(_ => rushingTimer = rushingTime)
+            .OnRunOut(_ => skillTimer = skillTime)
             .AsDefault();
 
-            sm.NewState("rushing")
+            sm.NewState("skill")
             .Run((_, te) =>
             {
-                rush(te);
-                rushingTimer -= te;
+                runSkill(te);
+                skillTimer -= te;
             })
             .OnRunOut(_ =>
             {
-                dAngle = RandomUtils.RandomNext(turningRange.x, turningRange.y);
+                dAngle = RandomUtils.RandomNext(turningAngleMin, turningAngleMax);
                 turningDir = RandomUtils.RandomNOrP();
             });
 
@@ -157,19 +149,36 @@ namespace GalPanic
 
                 dAngle -= da;
 
-                var toAngle = dir.ToAngle() + da * turningDir;
-                dir = toAngle.ToV2Dir() * dir.Length;
+                var toAngle = movingDir.ToAngle() + da * turningDir;
+                movingDir = toAngle.ToV2Dir() * movingDir.Length;
                 u.Dir = toAngle;
             }
             sm.NewState("turning")
             .Run((_, te) => turn(te))
             .OnRunOut(_ => movingTimer = movingTime);
 
-            sm.Trans().From("moving").To("rushing").When(_ => movingTimer <= 0);
-            sm.Trans().From("rushing").To("turning").When(_ => rushingTimer <= 0);
+            sm.Trans().From("moving").To("skill").When(_ => movingTimer < 0);
+            sm.Trans().From("skill").To("turning").When(_ => skillTimer < 0);
             sm.Trans().From("turning").To("moving").When(_ => dAngle <= 0);
 
             return sm;
+        }
+
+        public static StateMachine AIMoveAndTurnAndRush(this BattleUnit u, string args)
+        {
+            var vs = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(v => float.Parse(v)).ToArray();
+            var dir = new Vec2(vs[0], vs[1]);
+            var movingTime = vs[2];
+
+            var turningAngleMin = vs[3];
+            var turningAngleMax = vs[4];
+            var turningSpeed = vs[5];
+
+            var rushSpeedScale = vs[6];
+            var rushingTime = vs[7];
+            var rush = u.MoveForwardStateRunner(() => u.Dir.ToV2Dir() * rushSpeedScale, (x, y) => !u.Map.IsBlocked(x, y));
+
+            return u.AIMoveAndTurnAndSkill(dir, movingTime, turningSpeed, turningAngleMin, turningAngleMax, rushingTime, rush);
         }
 
         public static bool CheckCollision(Vec2 pos, Vec2 targetPos, Fix64 radius)

@@ -22,9 +22,11 @@ namespace GalPanic
 
         public string UID { get; private set; }
 
-        public Vec2 Pos { get; set; }
+        public Vec2 Pos { get; set; } = Vec2.Zero;
 
-        public Fix64 Dir { get; set; }
+        public Fix64 Dir { get; set; } = 0;
+
+        public Fix64 Scale { get; set; } = 1;
 
         public bool IsKeyUnit { get; set; }
 

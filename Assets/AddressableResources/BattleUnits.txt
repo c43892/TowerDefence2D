@@ -2,8 +2,9 @@
 	Slime01: {
 		type: "SmallSlime",
 		ai: {
-			"MoveAndTurnAndRush": "10, 10, 3, 30, 30, 90, 5, 1",
-			"KillUnsafeCursorOnCollision": "6"
+			"MoveAndTurnAndRush": "10, 10, 3, 30, 90, 60, 100, 1",
+			"KillUnsafeCursorOnCollision": "6",
+			"ReleaseUnitWhenCollisionOnTraceLine": "6, SlimeOnPath, 5"
 		}
 	},
 

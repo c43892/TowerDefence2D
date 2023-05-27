@@ -19,6 +19,7 @@ namespace GalPanic
             string UID { get; }
             Vec2 Pos { get; set; }
             Fix64 Dir { get; set; }
+            Fix64 Scale { get; set; }
         }
 
         // 保持单一状态

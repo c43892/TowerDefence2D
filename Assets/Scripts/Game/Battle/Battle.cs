@@ -20,6 +20,7 @@ namespace GalPanic
 
         public BattleMap Map { get; private set; }
         public float WinPrecentage { get; private set; } = 1;
+        public bool WinOnAllKeyUnitsDead { get; private set; } = false;
         public bool Ended { get; private set; } = false;
         public Cursor Cursor;
 
@@ -37,8 +38,13 @@ namespace GalPanic
         private Action UnitsLoader = null;
         public static Battle Create(BattleConfig cfg)
         {
-            var bt = new Battle(cfg.width, cfg.height, cfg.cursorHp, cfg.winPercent);
+            var bt = new Battle(cfg.width, cfg.height, cfg.cursorHp, cfg.winPercent)
+            {
+                WinOnAllKeyUnitsDead = cfg.units.Any(u => u.isKeyUnit)
+            };
+
             bt.UnitsLoader = () => cfg.units.Travel(u => bt.AddUnitAt(u.type, new Vec2(u.x, u.y), u.isKeyUnit));
+            
             return bt;
         }
 
@@ -93,7 +99,7 @@ namespace GalPanic
             if (Ended)
                 return;
 
-            if (Map.Completion >= WinPrecentage || !Map.AllUnits.Any(u => u.IsKeyUnit))
+            if (Map.Completion >= WinPrecentage || (WinOnAllKeyUnitsDead && !Map.AllUnits.Any(u => u.IsKeyUnit)))
             {
                 Ended = true;
                 OnWon?.Invoke();

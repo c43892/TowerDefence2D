@@ -77,6 +77,7 @@ public partial class BattleSceneRender : MonoBehaviour
         {
             SetPos(obj.transform, obj.Unit.Pos);
             obj.transform.localRotation = Quaternion.Euler(0, 0, (float)obj.Unit.Dir);
+            // obj.transform.localScale = Vector3.one * (float)obj.Unit.Scale;
         });
     }
 
