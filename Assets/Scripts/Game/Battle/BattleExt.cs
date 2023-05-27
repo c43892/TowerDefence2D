@@ -41,7 +41,7 @@ namespace GalPanic
             var r = float.Parse(args);
             return u.SimpleState((st, te) =>
             {
-                if (!u.Battle.IsCursorSafe && CheckCollision(u.Pos, u.Battle.Cursor.Pos, r))
+                if (!u.Battle.IsCursorSafe && CheckCollision(u.Pos, u.Battle.Cursor.Pos, r * u.Scale))
                     u.Battle.CursorHurt();
             });
         }
@@ -49,7 +49,7 @@ namespace GalPanic
         public static StateMachine AIReleaseUnitWhenCollisionOnTraceLine(this BattleUnit u, string args)
         {
             var ps = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).ToArray();
-            Fix64 radius = float.Parse(ps[0]);
+            Fix64 r = float.Parse(ps[0]);
             var unitType = ps[1];
             Fix64 cooldown = float.Parse(ps[2]);
 
@@ -65,11 +65,13 @@ namespace GalPanic
                 var collisionPos = traceLine[0];
                 var collided = traceLine.Any((p) =>
                 {
-                    var r = CheckCollision(u.Pos, p, radius);
-                    if (r)
+                    if (CheckCollision(u.Pos, p, r * u.Scale))
+                    {
                         collisionPos = p;
-
-                    return r;
+                        return true;
+                    }
+                    else
+                        return false;
                 });
 
                 if (collided)
@@ -103,6 +105,7 @@ namespace GalPanic
             Vec2 movingDir, Fix64 movingTime, 
             Fix64 turningSpeed, Fix64 turningAngleMin, Fix64 turningAngleMax,
             Fix64 skillTime, 
+            Action<string> inSkill,
             Action<Fix64> runSkill)
         {
             var sm = new StateMachine(u.UID);
@@ -130,6 +133,7 @@ namespace GalPanic
             .AsDefault();
 
             sm.NewState("skill")
+            .OnRunIn(inSkill)
             .Run((_, te) =>
             {
                 runSkill(te);
@@ -178,7 +182,33 @@ namespace GalPanic
             var rushingTime = vs[7];
             var rush = u.MoveForwardStateRunner(() => u.Dir.ToV2Dir() * rushSpeedScale, (x, y) => !u.Map.IsBlocked(x, y));
 
-            return u.AIMoveAndTurnAndSkill(dir, movingTime, turningSpeed, turningAngleMin, turningAngleMax, rushingTime, rush);
+            return u.AIMoveAndTurnAndSkill(dir, movingTime, turningSpeed, turningAngleMin, turningAngleMax, rushingTime, null, rush);
+        }
+
+        public static StateMachine AIMoveAndTurnAndScale(this BattleUnit u, string args)
+        {
+            var vs = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(v => float.Parse(v)).ToArray();
+            var dir = new Vec2(vs[0], vs[1]);
+            var movingTime = vs[2];
+
+            var turningAngleMin = vs[3];
+            var turningAngleMax = vs[4];
+            var turningSpeed = vs[5];
+
+            var scaleMax = vs[6];
+            var scaleTime = vs[7];
+            var halfScaleTime = scaleTime / 2;
+
+            var scaleTimer = Fix64.Zero;
+            void resetScaleTimer() { scaleTimer = 0; }
+
+            void scaleRnner(Fix64 te)
+            {
+                scaleTimer += te;
+                u.Scale = (scaleMax - 1) * (1 - MathEx.Abs(scaleTimer - halfScaleTime) / halfScaleTime) + 1;
+            };
+
+            return u.AIMoveAndTurnAndSkill(dir, movingTime, turningSpeed, turningAngleMin, turningAngleMax, scaleTime, (_) => resetScaleTimer(), scaleRnner);
         }
 
         public static bool CheckCollision(Vec2 pos, Vec2 targetPos, Fix64 radius)
