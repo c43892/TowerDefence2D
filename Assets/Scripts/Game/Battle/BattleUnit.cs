@@ -59,6 +59,7 @@ namespace GalPanic
                 "KillUnsafeCursorOnCollision" => this.AIKillUnsafeCursorOnCollision(args),
                 "ReleaseUnitWhenCollisionOnTraceLine" => this.AIReleaseUnitWhenCollisionOnTraceLine(args),
                 "ChaseOnLineAndKillUnsafeCursor" => this.AIMoveOnPtsList(args),
+                "MoveAndRush" => this.AIMoveAndRush(args),
                 _ => null
             };
         }

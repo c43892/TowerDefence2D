@@ -6,6 +6,7 @@ using Swift;
 using System;
 using System.Linq;
 using static UnityEditor.PlayerSettings;
+using UnityEngine.UI;
 
 namespace GalPanic
 {
@@ -31,7 +32,8 @@ namespace GalPanic
         public static StateMachine AIMoveAndReflect(this BattleUnit u, string args)
         {
             var vs = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(v => float.Parse(v)).ToArray();
-            return u.MoveAndReflect(new Vec2(vs[0], vs[1]), (x, y) => !u.Map.IsBlocked(x, y));
+            var dir = new Vec2(vs[0], vs[1]);
+            return u.MoveForward(() => dir, (x, y) => !u.Map.IsBlocked(x, y), true, newDir => dir = newDir);
         }
 
         public static StateMachine AIKillUnsafeCursorOnCollision(this BattleUnit u, string args)
@@ -95,6 +97,44 @@ namespace GalPanic
 
                 u.Battle.KillUnit(u);
             });
+        }
+
+        public static StateMachine AIMoveAndRush(this BattleUnit u, string args)
+        {
+            var vs = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(v => float.Parse(v)).ToArray();
+            var dir = new Vec2(vs[0], vs[1]);
+            var movingTime = vs[2];
+
+            var rushSpeedScale = vs[3];
+            var rushingTime = vs[4];
+            Vec2 getRushSpeed() => dir * rushSpeedScale;
+
+            var sm = new StateMachine(u.UID);
+
+            var movingTimer = (Fix64)movingTime;
+            var move = u.MoveForwardStateRunner(() => dir, (x, y) => !u.Map.IsBlocked(x, y), true, newDir => dir = newDir);
+            sm.NewState("moving")
+            .OnRunIn((st) => movingTimer = (Fix64)movingTime)
+            .Run((_, te) =>
+            {
+                move(te);
+                movingTimer -= te;
+            }).AsDefault();
+
+            var rushingTimer = Fix64.Zero;
+            var rush = u.MoveForwardStateRunner(getRushSpeed, (x, y) => !u.Map.IsBlocked(x, y), false);
+            sm.NewState("rushing")
+            .OnRunIn((st) => rushingTimer = (Fix64)rushingTime)
+            .Run((_, te) =>
+            {
+                rush(te);
+                rushingTimer -= te;
+            });
+
+            sm.Trans().From("moving").To("rushing").When(_ => movingTimer <= 0);
+            sm.Trans().From("rushing").To("moving").When(_ => rushingTimer <= 0);
+
+            return sm;
         }
 
         public static bool CheckCollision(Vec2 pos, Vec2 targetPos, Fix64 radius)

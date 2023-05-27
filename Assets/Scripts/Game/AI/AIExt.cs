@@ -45,18 +45,24 @@ namespace GalPanic
             return sm;
         }
 
-        public static StateMachine MoveAndReflect(this IUnit u, Vec2 initDir, Func<int, int, bool> validPos)
+        public static StateMachine MoveForward(this IUnit u, Func<Vec2> getDir, Func<int, int, bool> validPos, bool refectable, Action<Vec2> onReflection = null)
         {
-            var dir = initDir;
-            return u.SimpleState((st, te) =>
+            var move = u.MoveForwardStateRunner(getDir, validPos, refectable, onReflection);
+            return u.SimpleState((_, te) => move(te));
+        }
+
+        public static Action<Fix64> MoveForwardStateRunner(this IUnit u, Func<Vec2> getDir, Func<int, int, bool> validPos, bool refectable, Action<Vec2> onReflection = null)
+        {
+            return (te) =>
             {
+                var dir = getDir();
                 var newPos = u.Pos + dir * te;
                 var x = (int)newPos.x;
                 var y = (int)newPos.y;
 
                 if (validPos(x, y))
                     u.Pos = newPos;
-                else
+                else if (refectable)
                 {
                     // check reflecting direction
 
@@ -69,8 +75,10 @@ namespace GalPanic
                         dir = new Vec2(-dir.x, dir.y);
                     else
                         dir = new Vec2(-dir.x, -dir.y);
+
+                    onReflection?.Invoke(dir);
                 }
-            });
+            };
         }
 
         public static StateMachine RunPeriodically(this IUnit u, Fix64 interval, Action run)
@@ -111,7 +119,7 @@ namespace GalPanic
                     ndx++;
                 }
 
-                u.Pos = ndx >= pst.Count ? pst[pst.Count - 1] : pst[ndx];
+                u.Pos = ndx >= pst.Count ? pst[^1] : pst[ndx];
             }).AsDefault();
 
             sm.NewState("ended").OnRunIn((st) =>
