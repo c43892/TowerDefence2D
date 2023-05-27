@@ -2,7 +2,7 @@
 	Slime01: {
 		type: "SmallSlime",
 		ai: {
-			"MoveAndRush": "-10, -10, 5, 5, 0.8",
+			"MoveAndTurnAndRush": "10, 10, 3, 30, 30, 90, 5, 1",
 			"KillUnsafeCursorOnCollision": "6"
 		}
 	},

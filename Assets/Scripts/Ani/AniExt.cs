@@ -18,7 +18,9 @@ namespace GalPanic
                 label = cfg.label,
                 scale = cfg.scale,
                 interval = cfg.interval,
-                loop = cfg.loop
+                loop = cfg.loop,
+                flipX = cfg.flipX,
+                flipY = cfg.flipY
             };
         }
     }

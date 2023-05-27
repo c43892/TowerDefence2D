@@ -18,5 +18,11 @@ namespace GalPanic
 
         [JsonProperty("loop")]
         public bool loop = false;
+
+        [JsonProperty("flipX")]
+        public bool flipX = false;
+
+        [JsonProperty("flipY")]
+        public bool flipY = false;
     }
 }

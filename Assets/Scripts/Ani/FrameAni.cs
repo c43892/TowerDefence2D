@@ -48,6 +48,8 @@ public class FrameAni : MonoBehaviour
             loadingProcess = ResManager.LoadSpritesFromGroup(Data.label, (spriteArr) =>
             {
                 sprites = spriteArr;
+                sr.flipX = Data.flipX;
+                sr.flipY = Data.flipY;
                 loadingProcess = null;
             });
 

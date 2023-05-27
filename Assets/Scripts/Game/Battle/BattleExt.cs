@@ -99,40 +99,75 @@ namespace GalPanic
             });
         }
 
-        public static StateMachine AIMoveAndRush(this BattleUnit u, string args)
+        public static StateMachine AIMoveAndTurnAndRush(this BattleUnit u, string args)
         {
             var vs = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(v => float.Parse(v)).ToArray();
             var dir = new Vec2(vs[0], vs[1]);
             var movingTime = vs[2];
 
-            var rushSpeedScale = vs[3];
-            var rushingTime = vs[4];
+            var turningSpeed = (Fix64)vs[3];
+            var turningRange = new Vec2(vs[4], vs[5]);
+
+            var rushSpeedScale = vs[6];
+            var rushingTime = vs[7];
             Vec2 getRushSpeed() => dir * rushSpeedScale;
 
             var sm = new StateMachine(u.UID);
 
             var movingTimer = (Fix64)movingTime;
-            var move = u.MoveForwardStateRunner(() => dir, (x, y) => !u.Map.IsBlocked(x, y), true, newDir => dir = newDir);
+            var move = u.MoveForwardStateRunner(() => dir, (x, y) => !u.Map.IsBlocked(x, y), true, newDir =>
+            {
+                dir = newDir;
+                u.Dir = dir.ToAngle();
+            });
+
+            var dAngle = Fix64.Zero;
+            var turningDir = 0;
+
+            var rushingTimer = Fix64.Zero;
+            var rush = u.MoveForwardStateRunner(getRushSpeed, (x, y) => !u.Map.IsBlocked(x, y));
+
+            u.Dir = dir.ToAngle();
             sm.NewState("moving")
-            .OnRunIn((st) => movingTimer = (Fix64)movingTime)
             .Run((_, te) =>
             {
                 move(te);
                 movingTimer -= te;
-            }).AsDefault();
+            })
+            .OnRunOut(_ => rushingTimer = rushingTime)
+            .AsDefault();
 
-            var rushingTimer = Fix64.Zero;
-            var rush = u.MoveForwardStateRunner(getRushSpeed, (x, y) => !u.Map.IsBlocked(x, y), false);
             sm.NewState("rushing")
-            .OnRunIn((st) => rushingTimer = (Fix64)rushingTime)
             .Run((_, te) =>
             {
                 rush(te);
                 rushingTimer -= te;
+            })
+            .OnRunOut(_ =>
+            {
+                dAngle = RandomUtils.RandomNext(turningRange.x, turningRange.y);
+                turningDir = RandomUtils.RandomNOrP();
             });
 
+            void turn(Fix64 te)
+            {
+                var da = turningSpeed * te;
+                if (da > dAngle)
+                    da = dAngle;
+
+                dAngle -= da;
+
+                var toAngle = dir.ToAngle() + da * turningDir;
+                dir = toAngle.ToV2Dir() * dir.Length;
+                u.Dir = toAngle;
+            }
+            sm.NewState("turning")
+            .Run((_, te) => turn(te))
+            .OnRunOut(_ => movingTimer = movingTime);
+
             sm.Trans().From("moving").To("rushing").When(_ => movingTimer <= 0);
-            sm.Trans().From("rushing").To("moving").When(_ => rushingTimer <= 0);
+            sm.Trans().From("rushing").To("turning").When(_ => rushingTimer <= 0);
+            sm.Trans().From("turning").To("moving").When(_ => dAngle <= 0);
 
             return sm;
         }

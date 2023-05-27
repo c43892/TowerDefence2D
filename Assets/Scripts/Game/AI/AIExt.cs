@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Numerics;
 using Newtonsoft.Json.Serialization;
 using Swift;
 using Swift.Math;
+using UnityEngine.UI;
 
 namespace GalPanic
 {
@@ -16,6 +18,7 @@ namespace GalPanic
         {
             string UID { get; }
             Vec2 Pos { get; set; }
+            Fix64 Dir { get; set; }
         }
 
         // 保持单一状态
@@ -51,7 +54,7 @@ namespace GalPanic
             return u.SimpleState((_, te) => move(te));
         }
 
-        public static Action<Fix64> MoveForwardStateRunner(this IUnit u, Func<Vec2> getDir, Func<int, int, bool> validPos, bool refectable, Action<Vec2> onReflection = null)
+        public static Action<Fix64> MoveForwardStateRunner(this IUnit u, Func<Vec2> getDir, Func<int, int, bool> validPos, bool refectable = false, Action<Vec2> onReflection = null)
         {
             return (te) =>
             {

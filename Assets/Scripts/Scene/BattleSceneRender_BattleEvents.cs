@@ -49,9 +49,4 @@ public partial class BattleSceneRender : MonoBehaviour
         unitObjs.Remove(u.UID);
         Destroy(obj);
     }
-
-    void UpdateUnitObjs()
-    {
-        unitObjs.Values.Travel(obj => SetPos(obj.transform, obj.Unit.Pos));
-    }
 }

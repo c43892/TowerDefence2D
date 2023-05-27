@@ -24,6 +24,8 @@ namespace GalPanic
 
         public Vec2 Pos { get; set; }
 
+        public Fix64 Dir { get; set; }
+
         public bool IsKeyUnit { get; set; }
 
         private readonly List<StateMachine> sms = null;
@@ -59,7 +61,7 @@ namespace GalPanic
                 "KillUnsafeCursorOnCollision" => this.AIKillUnsafeCursorOnCollision(args),
                 "ReleaseUnitWhenCollisionOnTraceLine" => this.AIReleaseUnitWhenCollisionOnTraceLine(args),
                 "ChaseOnLineAndKillUnsafeCursor" => this.AIMoveOnPtsList(args),
-                "MoveAndRush" => this.AIMoveAndRush(args),
+                "MoveAndTurnAndRush" => this.AIMoveAndTurnAndRush(args),
                 _ => null
             };
         }

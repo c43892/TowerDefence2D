@@ -18,4 +18,8 @@ public class AniData
     public bool loop;
 
     public float scale;
+
+    public bool flipX;
+
+    public bool flipY;
 }

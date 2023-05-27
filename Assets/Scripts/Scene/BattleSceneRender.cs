@@ -71,6 +71,15 @@ public partial class BattleSceneRender : MonoBehaviour
         UpdateUnitObjs();
     }
 
+    private void UpdateUnitObjs()
+    {
+        unitObjs.Values.Travel(obj =>
+        {
+            SetPos(obj.transform, obj.Unit.Pos);
+            obj.transform.localRotation = Quaternion.Euler(0, 0, (float)obj.Unit.Dir);
+        });
+    }
+
     #region cursor controlling
 
     void SetPos(Transform t, Vec2 pos)
