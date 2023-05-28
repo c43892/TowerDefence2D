@@ -20,7 +20,7 @@
 	Slime03: {
 		type: "SmallSlime",
 		ai: {
-			"MoveAndTurnAndScale": "0, 0, 3, 30, 90, 60, 3, 2",
+			"MoveAndTurnAndScale": "15, 15, 3, 30, 90, 60, 2, 2",
 			"KillUnsafeCursorOnCollision": "6",
 			"ReleaseUnitWhenCollisionOnTraceLine": "6, SlimeOnPath, 5"
 		}

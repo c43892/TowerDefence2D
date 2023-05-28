@@ -5,11 +5,11 @@
 		frontAni: "char1img1front",
 		backAni: "char1img1back",
         winPercent: 0.7,
-		cursorHp: 100,
+		cursorHp: 3,
         units: [
 			{ type: "Slime01", x: 40, y: 40 },
 			{ type: "Slime02", x: 40, y: 40 },
-			{ type: "Slime03", x: 40, y: 40, isKeyUnit: true },
+			{ type: "Slime03", x: 40, y: 40 },
 			{ type: "Tentacle01", x: 100, y: 100, isKeyUnit: true }
 		]
 	}

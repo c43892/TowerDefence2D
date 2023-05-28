@@ -12,11 +12,12 @@ namespace GalPanic
 {
     public class Battle : ITimeDriven
     {
-        public Action OnWon = null;
-        public Action OnLost = null;
-        public Action OnCursorHurt = null;
-        public Action OnCompletionChanged = null;
-        public Action OnTraceLineCompleted = null;
+        public event Action OnWon = null;
+        public event Action OnLost = null;
+        public event Action<int> OnCursorHurt = null;
+        public event Action<int> OnCursorHpChanged = null;
+        public event Action OnCompletionChanged = null;
+        public event Action OnTraceLineCompleted = null;
 
         public BattleMap Map { get; private set; }
         public float WinPrecentage { get; private set; } = 1;
@@ -31,10 +32,9 @@ namespace GalPanic
             WinPrecentage = winPrecent;
             Ended = false;
 
-            Map.OnCompletionChanged += () => OnCompletionChanged();
+            Map.OnCompletionChanged += () => OnCompletionChanged?.Invoke();
         }
 
-        public void Load() => UnitsLoader?.Invoke();
         private Action UnitsLoader = null;
         public static Battle Create(BattleConfig cfg)
         {
@@ -46,6 +46,13 @@ namespace GalPanic
             bt.UnitsLoader = () => cfg.units.Travel(u => bt.AddUnitAt(u.type, new Vec2(u.x, u.y), u.isKeyUnit));
             
             return bt;
+        }
+
+        public void Load()
+        {
+            UnitsLoader?.Invoke();
+            OnCursorHpChanged?.Invoke(0);
+            OnCompletionChanged?.Invoke();
         }
 
         public bool TryMovingCursor(int dx, int dy, out int toX, out int toY, bool forceUnsafe = false)
@@ -113,6 +120,7 @@ namespace GalPanic
 
         public void KillUnit(BattleUnit u)
         {
+            u.Kill();
             Map.RemoveUnit(u);
         }
 
@@ -120,9 +128,11 @@ namespace GalPanic
 
         public void CursorHurt(int dhp = -1)
         {
-            Cursor.CursorHurt(dhp);
             Cursor.Reset2StartPos();
-            OnCursorHurt?.Invoke();
+
+            Cursor.Hp += dhp;
+            OnCursorHurt?.Invoke(dhp);
+            OnCursorHpChanged?.Invoke(dhp);
 
             if (Cursor.Hp > 0)
                 Cursor.CoolDown = 1;

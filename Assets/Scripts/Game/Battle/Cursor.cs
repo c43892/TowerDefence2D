@@ -17,7 +17,7 @@ namespace GalPanic
         public List<Vec2> TraceLine { get; } = new List<Vec2>();
         public int X => (int)Pos.x;
         public int Y => (int)Pos.y;
-        public int Hp { get; private set; } = 0;
+        public int Hp { get; set; } = 0;
         public Fix64 CoolDown { get; set; }
 
         public Cursor(int maxHp)

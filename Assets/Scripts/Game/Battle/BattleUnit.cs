@@ -30,6 +30,8 @@ namespace GalPanic
 
         public bool IsKeyUnit { get; set; }
 
+        public event Action OnDied = null;
+
         private readonly List<StateMachine> sms = null;
 
         public BattleUnit(BattleMap map, string type)
@@ -67,6 +69,11 @@ namespace GalPanic
                 "MoveAndTurnAndScale" => this.AIMoveAndTurnAndScale(args),
                 _ => null
             };
+        }
+
+        public void Kill()
+        {
+            OnDied?.Invoke();
         }
 
         public void OnTimeElapsed(Fix64 te)

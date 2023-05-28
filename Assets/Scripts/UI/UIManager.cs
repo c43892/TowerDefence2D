@@ -8,7 +8,8 @@ public class UIManager : MonoBehaviour
 {
     public GameObject WinWnd;
     public GameObject LostWnd;
-    public Text Completion;
+    public Text CompletionValue;
+    public Text HpValue;
 
     public event Action OnRestartClicked;
 
@@ -27,5 +28,15 @@ public class UIManager : MonoBehaviour
     public void Restart()
     {
         OnRestartClicked?.Invoke();
+    }
+
+    public void SetHp(int hp)
+    {
+        HpValue.text = hp.ToString();
+    }
+
+    public void SetCompletion(float completion)
+    {
+        CompletionValue.text = string.Format("{0:.00}", completion * 100);
     }
 }

@@ -69,6 +69,8 @@ namespace GalPanic
         {
             FC.For2(left, left + width, top, top + height, (x, y) => grids[x, y] = fillType);
             completionCounter += width * height;
+
+            OnCompletionChanged?.Invoke();
         }
 
         public void FillPts(IEnumerable<Vec2> pts, GridType fillType)
@@ -78,6 +80,8 @@ namespace GalPanic
                 grids[(int)pt.x, (int)pt.y] = fillType;
                 completionCounter++;
             });
+
+            OnCompletionChanged?.Invoke();
         }
 
         public void CompeteFilling(int cx1, int cy1, int cx2, int cy2)

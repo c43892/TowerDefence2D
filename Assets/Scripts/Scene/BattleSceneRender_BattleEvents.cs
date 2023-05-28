@@ -24,7 +24,7 @@ public partial class BattleSceneRender : MonoBehaviour
         bt.Map.OnUnitRemoved += OnUnitRemoved;
         bt.OnWon += UpdateLineRender;
         bt.OnLost += UpdateLineRender;
-        bt.OnCursorHurt += UpdateLineRender;
+        bt.OnCursorHurt += (_) => UpdateLineRender();
     }
 
     private void ClearUnits()

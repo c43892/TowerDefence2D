@@ -19,24 +19,23 @@ namespace GalPanic
             void StartNewGame()
             {
                 var btCfg = ConfigManager.GetBattleConfig("Test01");
-
                 var bt = Battle.Create(btCfg);
-                bt.Map.FillArea(0, 10, 0, 10, BattleMap.GridType.Uncovered);
-                bt.Cursor.StartPos = new(9, 9);
-                bt.Cursor.SetPos(9, 9);
 
-
-                // register win/lose events
                 bt.OnWon += () => UIManager.ShowResult(true);
                 bt.OnLost += () => UIManager.ShowResult(false);
+                bt.OnCompletionChanged += () => UIManager.SetCompletion(bt.Map.Completion);
+                bt.OnCursorHpChanged += (_) => UIManager.SetHp(bt.Cursor.Hp);
 
                 // setup scene renderer
                 SceneRenderer.Bt = bt;
                 SceneRenderer.SetAvatar(btCfg.frontAni, btCfg.backAni);
                 SceneRenderer.UpdateMap();
                 SceneRenderer.GetCursorSpeed = () => 50;
-                
-                // load units
+
+                // init battle
+                bt.Map.FillArea(0, 10, 0, 10, BattleMap.GridType.Uncovered);
+                bt.Cursor.StartPos = new(9, 9);
+                bt.Cursor.SetPos(9, 9);
                 bt.Load();
             };
 
