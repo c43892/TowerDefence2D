@@ -2212,6 +2212,7 @@ GameObject:
   - component: {fileID: 1883576955}
   - component: {fileID: 1883576956}
   - component: {fileID: 1883576957}
+  - component: {fileID: 1883576958}
   m_Layer: 0
   m_Name: SceneRoot
   m_TagString: Untagged
@@ -2269,7 +2270,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SceneRenderer: {fileID: 1883576956}
+  GizmoManager: {fileID: 1883576958}
   UIManager: {fileID: 1638654642}
+--- !u!114 &1883576958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883576954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cac0241d2118c4439afbc03cf75b7d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1893273233
 GameObject:
   m_ObjectHideFlags: 0

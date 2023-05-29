@@ -18,7 +18,9 @@ public partial class BattleSceneRender : MonoBehaviour
 
     readonly Dictionary<string, BattleUnitRenderer> unitObjs = new();
 
-    void InitBattleEvents(Battle bt)
+    public BattleUnitRenderer GetUnitRenderer(string uid) => unitObjs[uid];
+
+    private void InitBattleEvents(Battle bt)
     {
         bt.Map.OnUnitAdded += OnUnitAdded;
         bt.Map.OnUnitRemoved += OnUnitRemoved;

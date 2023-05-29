@@ -8,6 +8,7 @@ using System.Linq;
 using GalPanic.Res;
 using UnityEngine.UI;
 using Unity.Collections;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class BattleUnitRenderer : MonoBehaviour
 {

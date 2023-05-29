@@ -10,8 +10,8 @@ namespace GalPanic
     {
         public class BattleConfigUnit
         {
-            [JsonProperty("type")]
-            public string type;
+            [JsonProperty("name")]
+            public string name;
 
             [JsonProperty("x")]
             public int x;

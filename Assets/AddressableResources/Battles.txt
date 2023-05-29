@@ -7,10 +7,10 @@
         winPercent: 0.7,
 		cursorHp: 3,
         units: [
-			{ type: "Slime01", x: 40, y: 40 },
-			{ type: "Slime02", x: 40, y: 40 },
-			{ type: "Slime03", x: 40, y: 40 },
-			{ type: "Tentacle01", x: 100, y: 100, isKeyUnit: true }
+			{ name: "Slime01", x: 40, y: 40 },
+			{ name: "Slime02", x: 40, y: 40 },
+			{ name: "Slime03", x: 40, y: 40 },
+			{ name: "Tentacle01", x: 100, y: 100, isKeyUnit: true }
 		]
 	}
 }

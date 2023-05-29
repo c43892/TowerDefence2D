@@ -30,7 +30,7 @@ namespace GalPanic
 
         public bool IsKeyUnit { get; set; }
 
-        public event Action OnDied = null;
+        public event Action OnKilled = null;
 
         private readonly List<StateMachine> sms = null;
 
@@ -73,7 +73,7 @@ namespace GalPanic
 
         public void Kill()
         {
-            OnDied?.Invoke();
+            OnKilled?.Invoke();
         }
 
         public void OnTimeElapsed(Fix64 te)

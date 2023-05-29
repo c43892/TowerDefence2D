@@ -12,9 +12,11 @@ namespace GalPanic
 {
     public static class BattleExt
     {
-        public static BattleUnit AddUnitAt(this Battle battle, string unitType, Vec2 pos, bool isKeyUnit = false)
+        public static Action<string, BattleUnit, object> OnAbortAddUnitAI = null;
+
+        public static BattleUnit AddUnitAt(this Battle battle, string unitName, Vec2 pos, bool isKeyUnit = false)
         {
-            var cfg = ConfigManager.GetBattleUnitConfig(unitType);
+            var cfg = ConfigManager.GetBattleUnitConfig(unitName);
             var unit = new BattleUnit(
                 battle.Map,
                 cfg.type
@@ -38,7 +40,10 @@ namespace GalPanic
 
         public static StateMachine AIKillUnsafeCursorOnCollision(this BattleUnit u, string args)
         {
-            var r = float.Parse(args);
+            Fix64 r = float.Parse(args);
+
+            OnAbortAddUnitAI?.Invoke("KillUnsafeCursorOnCollision", u, r);
+
             return u.SimpleState((st, te) =>
             {
                 if (!u.Battle.IsCursorSafe && CheckCollision(u.Pos, u.Battle.Cursor.Pos, r * u.Scale))
@@ -50,7 +55,7 @@ namespace GalPanic
         {
             var ps = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).ToArray();
             Fix64 r = float.Parse(ps[0]);
-            var unitType = ps[1];
+            var unitName = ps[1];
             Fix64 cooldown = float.Parse(ps[2]);
 
             var sm = new StateMachine(u.UID);
@@ -76,7 +81,7 @@ namespace GalPanic
 
                 if (collided)
                 {
-                    u.Battle.AddUnitAt(unitType, collisionPos);
+                    u.Battle.AddUnitAt(unitName, collisionPos);
                     cooldownTimer = cooldown;
                 }
             });
@@ -85,6 +90,8 @@ namespace GalPanic
 
             sm.Trans().From("cooldown").To("checking").When((st) => cooldownTimer <= 0);
             sm.Trans().From("checking").To("cooldown").When((st) => cooldownTimer > 0);
+
+            OnAbortAddUnitAI?.Invoke("ReleaseUnitWhenCollisionOnTraceLine", u, r);
 
             return sm;
         }

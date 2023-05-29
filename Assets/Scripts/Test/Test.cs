@@ -9,6 +9,7 @@ namespace GalPanic
     public class Test : MonoBehaviour
     {
         public BattleSceneRender SceneRenderer;
+        public GizmoManager GizmoManager;
         public UIManager UIManager;
 
         // Start is called before the first frame update
@@ -31,6 +32,10 @@ namespace GalPanic
                 SceneRenderer.SetAvatar(btCfg.frontAni, btCfg.backAni);
                 SceneRenderer.UpdateMap();
                 SceneRenderer.GetCursorSpeed = () => 50;
+
+                // setup gizmo manager
+                BattleExt.OnAbortAddUnitAI += GizmoManager.OnAbortAddUnitAI;
+                bt.Map.OnUnitRemoved += GizmoManager.OnBattleUnitRemoved;
 
                 // init battle
                 bt.Map.FillArea(0, 10, 0, 10, BattleMap.GridType.Uncovered);

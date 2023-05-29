@@ -43,7 +43,7 @@ namespace GalPanic
                 WinOnAllKeyUnitsDead = cfg.units.Any(u => u.isKeyUnit)
             };
 
-            bt.UnitsLoader = () => cfg.units.Travel(u => bt.AddUnitAt(u.type, new Vec2(u.x, u.y), u.isKeyUnit));
+            bt.UnitsLoader = () => cfg.units.Travel(u => bt.AddUnitAt(u.name, new Vec2(u.x, u.y), u.isKeyUnit));
             
             return bt;
         }

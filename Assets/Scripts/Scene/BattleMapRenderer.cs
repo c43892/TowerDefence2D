@@ -60,10 +60,4 @@ public class BattleMapRenderer : MonoBehaviour
 
         pixels.Dispose();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
