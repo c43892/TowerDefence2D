@@ -31,16 +31,15 @@ namespace GalPanic
             return unit;
         }
 
-        public static StateMachine AIMoveAndReflect(this BattleUnit u, string args)
+        public static StateMachine AIMoveAndReflect(this BattleUnit u, Dictionary<string, object> args)
         {
-            var vs = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(v => float.Parse(v)).ToArray();
-            var dir = new Vec2(vs[0], vs[1]);
-            return u.MoveForward(() => dir, (x, y) => !u.Map.IsBlocked(x, y), true, newDir => dir = newDir);
+            var v = args.GetV2("vx", "vy");
+            return u.MoveForward(() => v, (x, y) => !u.Map.IsBlocked(x, y), true, newDir => v = newDir);
         }
 
-        public static StateMachine AIKillUnsafeCursorOnCollision(this BattleUnit u, string args)
+        public static StateMachine AIKillUnsafeCursorOnCollision(this BattleUnit u, Dictionary<string, object> args)
         {
-            Fix64 r = float.Parse(args);
+            Fix64 r = args.GetFloat("radius");
 
             OnAbortAddUnitAI?.Invoke("KillUnsafeCursorOnCollision", u, r);
 
@@ -51,12 +50,11 @@ namespace GalPanic
             });
         }
 
-        public static StateMachine AIReleaseUnitWhenCollisionOnTraceLine(this BattleUnit u, string args)
+        public static StateMachine AIReleaseUnitWhenCollisionOnTraceLine(this BattleUnit u, Dictionary<string, object> args)
         {
-            var ps = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).ToArray();
-            Fix64 r = float.Parse(ps[0]);
-            var unitName = ps[1];
-            Fix64 cooldown = float.Parse(ps[2]);
+            Fix64 r = args.GetFloat("radius");
+            var bulletUnit = args.GetString("bulletUnit");
+            Fix64 cooldown = args.GetFloat("cooldown");
 
             var sm = new StateMachine(u.UID);
 
@@ -81,7 +79,7 @@ namespace GalPanic
 
                 if (collided)
                 {
-                    u.Battle.AddUnitAt(unitName, collisionPos);
+                    u.Battle.AddUnitAt(bulletUnit, collisionPos);
                     cooldownTimer = cooldown;
                 }
             });
@@ -96,9 +94,9 @@ namespace GalPanic
             return sm;
         }
 
-        public static StateMachine AIMoveOnPtsList(this BattleUnit u, string args)
+        public static StateMachine AIMoveOnPtsList(this BattleUnit u, Dictionary<string, object> args)
         {
-            var speed = float.Parse(args);
+            var speed = args.GetFloat("speed");
             return u.MoveOnPtsList(() => u.Battle.Cursor.TraceLine, () => speed, () =>
             {
                 if (!u.Battle.IsCursorSafe)
@@ -175,36 +173,34 @@ namespace GalPanic
             return sm;
         }
 
-        public static StateMachine AIMoveAndTurnAndRush(this BattleUnit u, string args)
+        public static StateMachine AIMoveAndTurnAndRush(this BattleUnit u, Dictionary<string, object> args)
         {
-            var vs = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(v => float.Parse(v)).ToArray();
-            var dir = new Vec2(vs[0], vs[1]);
-            var movingTime = vs[2];
+            var v = args.GetV2("vx", "vy");
+            var movingTime = args.GetFloat("movingTime");
 
-            var turningAngleMin = vs[3];
-            var turningAngleMax = vs[4];
-            var turningSpeed = vs[5];
+            var turningAngleMin = args.GetFloat("turningMin");
+            var turningAngleMax = args.GetFloat("turningMax");
+            var turningSpeed = args.GetFloat("turningSpeed");
 
-            var rushSpeedScale = vs[6];
-            var rushingTime = vs[7];
-            var rush = u.MoveForwardStateRunner(() => u.Dir.ToV2Dir() * rushSpeedScale, (x, y) => !u.Map.IsBlocked(x, y));
+            var rushSpeed = args.GetFloat("rushSpeed");
+            var rushingTime = args.GetFloat("rushingTime");
+            var rush = u.MoveForwardStateRunner(() => u.Dir.ToV2Dir() * rushSpeed, (x, y) => !u.Map.IsBlocked(x, y));
 
-            return u.AIMoveAndTurnAndSkill(dir, movingTime, turningSpeed, turningAngleMin, turningAngleMax, rushingTime, null, rush);
+            return u.AIMoveAndTurnAndSkill(v, movingTime, turningSpeed, turningAngleMin, turningAngleMax, rushingTime, null, rush);
         }
 
-        public static StateMachine AIMoveAndTurnAndScale(this BattleUnit u, string args)
+        public static StateMachine AIMoveAndTurnAndScale(this BattleUnit u, Dictionary<string, object> args)
         {
-            var vs = args.Split(", ".ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(v => float.Parse(v)).ToArray();
-            var dir = new Vec2(vs[0], vs[1]);
-            var movingTime = vs[2];
+            var v = args.GetV2("vx", "vy");
+            var movingTime = args.GetFloat("movingTime");
 
-            var turningAngleMin = vs[3];
-            var turningAngleMax = vs[4];
-            var turningSpeed = vs[5];
+            var turningAngleMin = args.GetFloat("turningMin");
+            var turningAngleMax = args.GetFloat("turningMax");
+            var turningSpeed = args.GetFloat("turningSpeed");
 
-            var scaleMax = vs[6];
-            var scaleTime = vs[7];
-            var halfScaleTime = scaleTime / 2;
+            var scale = args.GetFloat("scale");
+            var scalingTime = args.GetFloat("scalingTime");
+            var halfScaleTime = scalingTime / 2;
 
             var scaleTimer = Fix64.Zero;
             void resetScaleTimer() { scaleTimer = 0; }
@@ -212,10 +208,10 @@ namespace GalPanic
             void scaleRnner(Fix64 te)
             {
                 scaleTimer += te;
-                u.Scale = (scaleMax - 1) * (1 - MathEx.Abs(scaleTimer - halfScaleTime) / halfScaleTime) + 1;
+                u.Scale = (scale - 1) * (1 - MathEx.Abs(scaleTimer - halfScaleTime) / halfScaleTime) + 1;
             };
 
-            return u.AIMoveAndTurnAndSkill(dir, movingTime, turningSpeed, turningAngleMin, turningAngleMax, scaleTime, (_) => resetScaleTimer(), scaleRnner);
+            return u.AIMoveAndTurnAndSkill(v, movingTime, turningSpeed, turningAngleMin, turningAngleMax, scalingTime, (_) => resetScaleTimer(), scaleRnner);
         }
 
         public static bool CheckCollision(Vec2 pos, Vec2 targetPos, Fix64 radius)

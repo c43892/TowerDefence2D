@@ -43,7 +43,7 @@ namespace GalPanic
             sms = new();
         }
 
-        public void BuildAI(Dictionary<string, string> ai)
+        public void BuildAI(Dictionary<string, Dictionary<string, object>> ai)
         {
             ai?.Travel(ai => AddAI(CreateAI(ai.Key, ai.Value)));
         }
@@ -57,7 +57,7 @@ namespace GalPanic
             ai.Start();
         }
 
-        StateMachine CreateAI(string aiType, string args)
+        StateMachine CreateAI(string aiType, Dictionary<string, object> args)
         {
             return aiType switch
             {

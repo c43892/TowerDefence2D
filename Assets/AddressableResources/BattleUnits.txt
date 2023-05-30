@@ -2,44 +2,70 @@
 	Slime01: {
 		type: "SmallSlime",
 		ai: {
-			"MoveAndTurnAndRush": "10, 10, 3, 30, 90, 60, 100, 1",
-			"KillUnsafeCursorOnCollision": "6",
-			"ReleaseUnitWhenCollisionOnTraceLine": "6, SlimeOnPath, 5"
+			"MoveAndTurnAndRush": {
+				"vx": 10, "vy": 10, "movingTime": 3, 
+				"turningSpeed": 60, "turningMin": 30, "turningMax": 90,
+				"rushSpeed": 50, "rushingTime": 1
+
+			},
+			"KillUnsafeCursorOnCollision": { "radius": 6 },
+			"ReleaseUnitWhenCollisionOnTraceLine": {
+				"radius": 6,
+				"bulletUnit": "SlimeOnPath",
+				"cooldown": 5
+			}
 		}
 	},
 
 	Slime02: {
 		type: "BigSlime",
 		ai: {
-			"MoveAndReflect": "7, 7",
-			"KillUnsafeCursorOnCollision": "15",
-			"ReleaseUnitWhenCollisionOnTraceLine": "15, SlimeOnPath, 5"
+			"MoveAndReflect": { "vx": 7, "vy": 7 },
+			"KillUnsafeCursorOnCollision": { "radius": 15 },
+			"ReleaseUnitWhenCollisionOnTraceLine": {
+				"radius": 15, 
+				"bulletUnit": "SlimeOnPath",
+				"cooldown": 5
+			}
 		}
 	},
 
 	Slime03: {
 		type: "SmallSlime",
 		ai: {
-			"MoveAndTurnAndScale": "15, 15, 3, 30, 90, 60, 2, 2",
-			"KillUnsafeCursorOnCollision": "6",
-			"ReleaseUnitWhenCollisionOnTraceLine": "6, SlimeOnPath, 5"
+			"MoveAndTurnAndScale": {
+				"vx": 15, "vy": 15, "movingTime": 3,
+				"turningSpeed": 60, "turningMin": 30, "turningMax": 90,
+				"scale": 2,
+				"scalingTime": 2
+			},
+			"KillUnsafeCursorOnCollision": { "radius": 6 },
+			"ReleaseUnitWhenCollisionOnTraceLine": {
+				"radius": 6, 
+				"bulletUnit": "SlimeOnPath",
+				"cooldown": 5
+			}
 		}
 	},
 
 	Tentacle01: {
 		type: "Tentacle",
 		ai: {
-			"MoveAndReflect": "7, 7",
-			"KillUnsafeCursorOnCollision": "15",
-			"ReleaseUnitWhenCollisionOnTraceLine": "15, SlimeOnPath, 5",
+			"MoveAndReflect": {"vx": 7, "vy": 7},
+			"KillUnsafeCursorOnCollision": { "radius": 15 },
+			"ReleaseUnitWhenCollisionOnTraceLine": {
+				"radius": 15, 
+				"bulletUnit": "SlimeOnPath",
+				"cooldown": 5
+			}
 		}
 	},
 
 	SlimeOnPath: {
 		type: "TinySlime",
 		ai: {
-			"KillUnsafeCursorOnCollision": "2",
-			"ChaseOnLineAndKillUnsafeCursor": "50"
+			"KillUnsafeCursorOnCollision": { "radius": 2 },
+			"ChaseOnLineAndKillUnsafeCursor": { "speed": 50 }
 		}
 	},
 }

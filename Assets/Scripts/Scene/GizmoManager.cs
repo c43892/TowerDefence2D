@@ -16,6 +16,8 @@ public class GizmoManager : MonoBehaviour
 
     private readonly List<KeyValuePair<string, Func<Vector4>>> gizmoSphere = new();
 
+    public void OnBattleEnded() => gizmoSphere.Clear();
+
     public void OnAbortAddUnitAI(string evt, BattleUnit u, object args)
     {
         switch (evt)

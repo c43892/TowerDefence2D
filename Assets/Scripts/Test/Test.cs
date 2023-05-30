@@ -36,6 +36,8 @@ namespace GalPanic
                 // setup gizmo manager
                 BattleExt.OnAbortAddUnitAI += GizmoManager.OnAbortAddUnitAI;
                 bt.Map.OnUnitRemoved += GizmoManager.OnBattleUnitRemoved;
+                bt.OnWon += GizmoManager.OnBattleEnded;
+                bt.OnLost += GizmoManager.OnBattleEnded;
 
                 // init battle
                 bt.Map.FillArea(0, 10, 0, 10, BattleMap.GridType.Uncovered);
