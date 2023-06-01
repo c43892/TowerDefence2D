@@ -61,12 +61,14 @@ namespace GalPanic
         {
             return aiType switch
             {
+                "MoveAndTurn" => this.AIMoveAndTurn(args),
                 "MoveAndReflect" => this.AIMoveAndReflect(args),
                 "KillUnsafeCursorOnCollision" => this.AIKillUnsafeCursorOnCollision(args),
                 "ReleaseUnitWhenCollisionOnTraceLine" => this.AIReleaseUnitWhenCollisionOnTraceLine(args),
                 "ChaseOnLineAndKillUnsafeCursor" => this.AIMoveOnPtsList(args),
                 "MoveAndTurnAndRush" => this.AIMoveAndTurnAndRush(args),
                 "MoveAndTurnAndScale" => this.AIMoveAndTurnAndScale(args),
+                "CoverMap" => this.AICoverMap(args),
                 _ => null
             };
         }

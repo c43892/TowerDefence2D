@@ -1,9 +1,7 @@
-using Swift.Math;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Swift;
+using Swift.Math;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GalPanic
@@ -61,14 +59,27 @@ namespace GalPanic
 
         public GridType this[int x, int y] { get => grids[x, y]; }
         public GridType this[Vec2 pos] { get => grids[(int)pos.x, (int)pos.y]; }
+        public bool InMapArea(Vec2 pos) => InMapArea((int)pos.x, (int) pos.y);
+        public bool InMapArea(int x, int y) => x >= 0 && x < Width && y >= 0 && y < Height;
 
         public bool IsBlocked(Vec2 pos) => IsBlocked((int)pos.x, (int)pos.y);
         public bool IsBlocked(int x, int y) => x < 0 || x >= Width || y < 0 || y >= Height || grids[x, y] == GridType.Uncovered;
 
-        public void FillArea(int left, int width, int top, int height, GridType fillType)
+        public void FillArea(int left, int width, int top, int height, GridType fillType, Func<GridType, bool> filter = null)
         {
-            FC.For2(left, left + width, top, top + height, (x, y) => grids[x, y] = fillType);
-            completionCounter += width * height;
+            FC.For2(left, left + width, top, top + height, (x, y) =>
+            {
+                if (InMapArea(x, y) && (filter == null || filter(grids[x, y])))
+                {
+                    var oldValue = grids[x, y];
+                    grids[x, y] = fillType;
+
+                    if (oldValue == GridType.Covered && fillType == GridType.Uncovered)
+                        completionCounter++;
+                    else if (oldValue == GridType.Uncovered && fillType == GridType.Covered)
+                        completionCounter--;
+                }
+            });
 
             OnCompletionChanged?.Invoke();
         }
@@ -114,6 +125,24 @@ namespace GalPanic
                 completionCounter += toComplete.Current.Count;
 
             OnCompletionChanged?.Invoke();
+        }
+
+        public bool IsAroundBy(Vec2 pos, GridType type) => IsAroundBy((int)pos.x, (int)pos.y, type);
+        public bool IsAroundBy(int x, int y, GridType type)
+        {
+            var notAroundBy = false;
+            FC.For2(-1, 2, -1, 2, (offsetX, offsetY) =>
+            {
+                if (offsetX == 0 && offsetY == 0)
+                    return;
+
+                var tx = x + offsetX;
+                var ty = y + offsetY;
+
+                notAroundBy = InMapArea(tx, ty) && this[tx, ty] != type;
+            }, () => !notAroundBy);
+
+            return !notAroundBy;
         }
 
         public void OnTimeElapsed(Fix64 te)

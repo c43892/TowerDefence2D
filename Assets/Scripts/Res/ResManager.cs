@@ -62,5 +62,18 @@ namespace GalPanic.Res
             // Release the loaded assets when no longer needed
             Addressables.Release(assetsOp);
         }
+
+        public static IEnumerator LoadTexture2D(string label, Action<Texture2D> onLoaded)
+        {
+            yield return Addressables.InitializeAsync();
+
+            Addressables.LoadAssetAsync<Texture2D>(label).Completed += (obj) =>
+            {
+                 if (obj.Status == AsyncOperationStatus.Succeeded)
+                     onLoaded?.Invoke(obj.Result);
+                 else
+                     onLoaded?.Invoke(null);
+            };
+        }
     }
 }

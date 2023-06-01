@@ -6,13 +6,14 @@
 				"vx": 10, "vy": 10, "movingTime": 3, 
 				"turningSpeed": 60, "turningMin": 30, "turningMax": 90,
 				"rushSpeed": 50, "rushingTime": 1
-
 			},
-			"KillUnsafeCursorOnCollision": { "radius": 6 },
 			"ReleaseUnitWhenCollisionOnTraceLine": {
 				"radius": 6,
 				"bulletUnit": "SlimeOnPath",
 				"cooldown": 5
+			},
+			"CoverMap": {
+				"radius": 6
 			}
 		}
 	},

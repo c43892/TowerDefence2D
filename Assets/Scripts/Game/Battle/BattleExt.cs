@@ -141,7 +141,7 @@ namespace GalPanic
             .OnRunIn(inSkill)
             .Run((_, te) =>
             {
-                runSkill(te);
+                runSkill?.Invoke(te);
                 skillTimer -= te;
             })
             .OnRunOut(_ =>
@@ -171,6 +171,18 @@ namespace GalPanic
             sm.Trans().From("turning").To("moving").When(_ => dAngle <= 0);
 
             return sm;
+        }
+
+        public static StateMachine AIMoveAndTurn(this BattleUnit u, Dictionary<string, object> args)
+        {
+            var v = args.GetV2("vx", "vy");
+            var movingTime = args.GetFloat("movingTime");
+
+            var turningAngleMin = args.GetFloat("turningMin");
+            var turningAngleMax = args.GetFloat("turningMax");
+            var turningSpeed = args.GetFloat("turningSpeed");
+
+            return u.AIMoveAndTurnAndSkill(v, movingTime, turningSpeed, turningAngleMin, turningAngleMax, -1, null, null);
         }
 
         public static StateMachine AIMoveAndTurnAndRush(this BattleUnit u, Dictionary<string, object> args)
@@ -214,6 +226,22 @@ namespace GalPanic
             return u.AIMoveAndTurnAndSkill(v, movingTime, turningSpeed, turningAngleMin, turningAngleMax, scalingTime, (_) => resetScaleTimer(), scaleRnner);
         }
 
+        public static StateMachine AICoverMap(this BattleUnit u, Dictionary<string, object> args)
+        {
+            Fix64 r = args.GetFloat("radius");
+            OnAbortAddUnitAI?.Invoke("CoverMapOnCollision", u, r);
+
+            return u.SimpleState((st, te) =>
+            {
+                var l = (int)(u.Pos.x - r);
+                var w = (int)(r * 2);
+                var t = (int)(u.Pos.y - r);
+                var h = (int)(r * 2);
+
+                u.Map.FillArea(l, w, t, h, BattleMap.GridType.Covered, g => g == BattleMap.GridType.Uncovered);
+            });
+        }
+
         public static bool CheckCollision(Vec2 pos, Vec2 targetPos, Fix64 radius)
         {
             var l = (int)(pos.x - radius);
@@ -222,6 +250,20 @@ namespace GalPanic
             var b = (int)(pos.y + radius);
 
             return l <= targetPos.x && targetPos.x <= r && t <= targetPos.y && targetPos.y <= b;
+        }
+
+        public static KeyValuePair<bool, Vec2> FindNearestPoint(this BattleMap map, Vec2 center, Fix64 maxRadius, Func<int, int, bool> onCondition)
+        {
+            var found = false;
+            var foundPos = Vec2.Zero;
+            FC.SquareFor((int)center.x, (int)center.y, (int)maxRadius, (x, y) =>
+            {
+                found = map.InMapArea(x, y) && onCondition(x, y);
+                if (found)
+                    foundPos = new(x, y);
+            }, FC.SquareForSeq.PerpendicularFirst, () => !found);
+
+            return new(found, foundPos);
         }
     }
 }

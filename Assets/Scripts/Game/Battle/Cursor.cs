@@ -26,7 +26,14 @@ namespace GalPanic
             Hp = maxHp;
         }
 
-        public void SetPos(int x, int y) => Pos = new(x, y);
+        public void SetPos(Vec2 pos, bool clearTraceLine = false)
+        {
+            Pos = pos;
+            if (clearTraceLine)
+                TraceLine.Clear();
+        }
+
+        public void SetPos(int x, int y, bool clearTraceLine = false) => SetPos(new(x, y), clearTraceLine);
         public void AddTracePos(int x, int y) => TraceLine.Add(new(x, y));
 
         public void StepBack()

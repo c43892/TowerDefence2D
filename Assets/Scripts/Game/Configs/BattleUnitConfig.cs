@@ -18,9 +18,10 @@ namespace GalPanic
 
     public static class BattleUnitConfigExt
     {        
-        public static float GetFloat(this Dictionary<string, object> args, string aiKey) => Convert.ToSingle(args[aiKey]);
-        public static float GetInt(this Dictionary<string, object> args, string aiKey) => Convert.ToInt32(args[aiKey]);
-        public static string GetString(this Dictionary<string, object> args, string aiKey) => Convert.ToString(args[aiKey]);
-        public static Vec2 GetV2(this Dictionary<string, object> args, string keyX, string keyY) => new Vec2(args.GetFloat(keyX), args.GetFloat(keyY));
+        public static float GetFloat(this Dictionary<string, object> args, string key) => args.ContainsKey(key) ? Convert.ToSingle(args[key]) : 0f;
+        public static float GetInt(this Dictionary<string, object> args, string key) => args.ContainsKey(key) ? Convert.ToInt32(args[key]) : 0;
+        public static bool GetBool(this Dictionary<string, object> args, string key) => args.ContainsKey(key) ? Convert.ToBoolean(args[key]) : false;
+        public static string GetString(this Dictionary<string, object> args, string key) => Convert.ToString(args[key]);
+        public static Vec2 GetV2(this Dictionary<string, object> args, string keyX, string keyY) => new(args.GetFloat(keyX), args.GetFloat(keyY));
     }
 }

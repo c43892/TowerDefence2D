@@ -110,10 +110,9 @@ public partial class BattleSceneRender : MonoBehaviour
     {
         var rectSize = RectRightBottom.localPosition - RectTopLeft.localPosition;
         Vector3 Pos2V3(Vec2 pt) => new((float)pt.x * rectSize.x / bt.Map.Width, (float)pt.y * rectSize.y / bt.Map.Height, 0);
-        Trace.UpdateLine(Pos2V3(bt.Cursor.StartPos), TraceLine.ToList().Select(Pos2V3).ToList());
+        Trace.UpdateLine(Pos2V3(bt.Cursor.StartPos), bt.Cursor.TraceLine.ToList().Select(Pos2V3).ToList());
     }
 
-    private List<Vec2> TraceLine => bt.Cursor.TraceLine;
     private float tracingDelayTimer = 0;
 
     void CheckCursorAction()
@@ -139,38 +138,10 @@ public partial class BattleSceneRender : MonoBehaviour
         else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
             dy = -1;
             
-
         if (dx == 0 && dy == 0)
-        {
-            if (TraceLine.Count > 0)
-                bt.Cursor.StepBack();
-        }
+            bt.SetbackCursor();
         else
-        {
-            var x = bt.Cursor.X + dx;
-            var y = bt.Cursor.Y + dy;
-            var n = TraceLine.IndexOf(new(x, y));
-
-            if (n >= 0 && n == TraceLine.Count - 1)
-                bt.Cursor.StepBack();
-            else if (n < 0)
-            {
-                var inMoving = bt.TryMovingCursor(dx, dy, out int tx, out int ty, forceUnsafe);
-
-                if (inMoving)
-                {
-                    if (bt.Cursor.TraceLine.Count == 0)
-                        bt.Cursor.StartPos = bt.Cursor.Pos;
-
-                    bt.Cursor.SetPos(tx, ty);
-                    if (bt.Map[x, y] == BattleMap.GridType.Covered)
-                        bt.Cursor.AddTracePos(tx, ty);
-                }
-
-                if ((!inMoving || bt.Map[x, y] == BattleMap.GridType.Uncovered) && forceUnsafe && TraceLine.Count > 0)
-                    bt.DoTraceLineSplite();
-            }
-        }
+            bt.TryMoveCursor(dx, dy, forceUnsafe);
 
         UpdateLineRender();
 
