@@ -145,6 +145,11 @@ namespace GalPanic
         public void KillUnit(BattleUnit u)
         {
             u.Kill();
+            RemoveUnit(u);
+        }
+
+        public void RemoveUnit(BattleUnit u)
+        {
             Map.RemoveUnit(u);
         }
 

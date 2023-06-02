@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using static UnityEditor.PlayerSettings;
 using UnityEngine.UI;
+using Newtonsoft.Json.Linq;
 
 namespace GalPanic
 {
@@ -29,6 +30,17 @@ namespace GalPanic
             unit.BuildAI(cfg.ai);
             battle.Map.AddUnit(unit);
             return unit;
+        }
+
+        public static StateMachine AIMove(this BattleUnit u, Dictionary<string, object> args)
+        {
+            var v = args.GetV2("vx", "vy");
+            return u.SimpleState((_, te) =>
+            {
+                u.Pos += v * te;
+                if (!u.Map.InMapArea(u.Pos))
+                    u.Battle.RemoveUnit(u);
+            });
         }
 
         public static StateMachine AIMoveAndReflect(this BattleUnit u, Dictionary<string, object> args)
@@ -102,7 +114,7 @@ namespace GalPanic
                 if (!u.Battle.IsCursorSafe)
                     u.Battle.CursorHurt();
 
-                u.Battle.KillUnit(u);
+                u.Battle.RemoveUnit(u);
             });
         }
 
@@ -224,6 +236,47 @@ namespace GalPanic
             };
 
             return u.AIMoveAndTurnAndSkill(v, movingTime, turningSpeed, turningAngleMin, turningAngleMax, scalingTime, (_) => resetScaleTimer(), scaleRnner);
+        }
+
+        public static StateMachine AIMoveAndTurnAndCreateUnit(this BattleUnit u, Dictionary<string, object> args)
+        {
+            var v = args.GetV2("vx", "vy");
+            var movingTime = args.GetFloat("movingTime");
+
+            var turningAngleMin = args.GetFloat("turningMin");
+            var turningAngleMax = args.GetFloat("turningMax");
+            var turningSpeed = args.GetFloat("turningSpeed");
+
+            Fix64 duration = 0f;
+            List<Action<Fix64>> creationList = new();
+            List<Action> resetList = new();
+
+            var unitsJArray = args["units"] as JArray;
+            var units = unitsJArray.Select(jObj => (jObj as JObject).ToObject<Dictionary<string, object>>());
+            units?.Travel(child =>
+            {
+                var bulletUnity = child.GetString("unit");
+                Fix64 delay = child.GetFloat("delay");
+                duration += delay;
+
+                Fix64 delayTime = 0;
+                creationList.Add((st) =>
+                {
+                    if (delayTime > delay)
+                        return;
+
+                    delayTime += st;
+                    if (delayTime > delay)
+                        u.Battle.AddUnitAt(bulletUnity, u.Pos);
+                });
+
+                resetList.Add(() => delayTime = 0);
+            });
+
+            void reset(string _) => resetList.Travel(f => f());
+            void create(Fix64 te) => creationList.Travel(f => f(te));
+
+            return u.AIMoveAndTurnAndSkill(v, movingTime, turningSpeed, turningAngleMin, turningAngleMax, duration, reset, create);
         }
 
         public static StateMachine AICoverMap(this BattleUnit u, Dictionary<string, object> args)

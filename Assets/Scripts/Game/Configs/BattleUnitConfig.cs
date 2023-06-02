@@ -12,8 +12,13 @@ namespace GalPanic
         [JsonProperty("type")]
         public string type;
 
+        [JsonProperty("merges")]
+        public string[] merges;
+
         [JsonProperty("ai")]
         public Dictionary<string, Dictionary<string, object>> ai;
+
+        public bool merged = false;
     }
 
     public static class BattleUnitConfigExt

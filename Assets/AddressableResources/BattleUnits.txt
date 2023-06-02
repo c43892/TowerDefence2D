@@ -21,7 +21,23 @@
 	Slime02: {
 		type: "BigSlime",
 		ai: {
-			"MoveAndReflect": { "vx": 7, "vy": 7 },
+			"MoveAndTurnAndCreateUnit": {
+				"vx": 10, "vy": 10, "movingTime": 3, 
+				"turningSpeed": 60, "turningMin": 30, "turningMax": 90,
+				"units": [{
+					"unit": "BigSlimeBulletR",
+					"delay": 0.2
+				}, {
+					"unit": "BigSlimeBulletB",
+					"delay": 0.4
+				}, {
+					"unit": "BigSlimeBulletL",
+					"delay": 0.6
+				}, {
+					"unit": "BigSlimeBulletT",
+					"delay": 0.8
+				}]
+			},
 			"KillUnsafeCursorOnCollision": { "radius": 15 },
 			"ReleaseUnitWhenCollisionOnTraceLine": {
 				"radius": 15, 
@@ -69,4 +85,16 @@
 			"ChaseOnLineAndKillUnsafeCursor": { "speed": 50 }
 		}
 	},
+
+	BigSlimeBulletBase: {
+		type: "TinySlime", 
+		ai: {
+			"KillUnsafeCursorOnCollision": { "radius": 2 }
+		}
+	},
+
+	BigSlimeBulletL: { merges: [ "BigSlimeBulletBase" ], ai: { "Move": {"vx": -30, "vy": 0} } },
+	BigSlimeBulletR: { merges: [ "BigSlimeBulletBase" ], ai: { "Move": {"vx": 30, "vy": 0} } },
+	BigSlimeBulletT: { merges: [ "BigSlimeBulletBase" ], ai: { "Move": {"vx": 0, "vy": 30} } },
+	BigSlimeBulletB: { merges: [ "BigSlimeBulletBase" ], ai: { "Move": {"vx": 0, "vy": -30} } },
 }

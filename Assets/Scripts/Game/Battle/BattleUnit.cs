@@ -61,6 +61,7 @@ namespace GalPanic
         {
             return aiType switch
             {
+                "Move" => this.AIMove(args),
                 "MoveAndTurn" => this.AIMoveAndTurn(args),
                 "MoveAndReflect" => this.AIMoveAndReflect(args),
                 "KillUnsafeCursorOnCollision" => this.AIKillUnsafeCursorOnCollision(args),
@@ -69,6 +70,7 @@ namespace GalPanic
                 "MoveAndTurnAndRush" => this.AIMoveAndTurnAndRush(args),
                 "MoveAndTurnAndScale" => this.AIMoveAndTurnAndScale(args),
                 "CoverMap" => this.AICoverMap(args),
+                "MoveAndTurnAndCreateUnit" => this.AIMoveAndTurnAndCreateUnit(args),
                 _ => null
             };
         }
