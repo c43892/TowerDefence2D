@@ -6,7 +6,8 @@ Shader "GalPanic/Sprite"
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         [PerRendererData] _MaskTex ("Sprite Texture", 2D) = "white" {}
-        [PerRendererData] _MaskColor ("RendererColor", Color) = (0,0,0,0)
+        [PerRendererData] _MaskColor ("MaskColor", Color) = (0,0,0,0)
+        [HideInInspector] _EdgeColor ("EdgeColor", Color) = (1,1,1,1)
         _Color ("Tint", Color) = (1,1,1,1)
         [MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
         [HideInInspector] _RendererColor ("RendererColor", Color) = (1,1,1,1)
@@ -39,13 +40,23 @@ Shader "GalPanic/Sprite"
 
             sampler2D _MaskTex;
             float4 _MaskColor;
+            float4 _EdgeColor;
 
             fixed4 GalPanicSprite(v2f IN) : SV_Target
             {
-                fixed4 ma = tex2D(_MaskTex, IN.texcoord).a;
+                fixed ma = tex2D(_MaskTex, IN.texcoord).a;
                 fixed4 c = SampleSpriteTexture (IN.texcoord) * IN.color;
 
-                c.rgba = ma > 0 ? c.rgba : _MaskColor;
+                fixed mal = tex2D(_MaskTex, IN.texcoord + float2(-0.0001, 0)).a;
+                fixed mar = tex2D(_MaskTex, IN.texcoord + float2(0.0001, 0)).a;
+                fixed mat = tex2D(_MaskTex, IN.texcoord + float2(0, -0.0001)).a;
+                fixed mab = tex2D(_MaskTex, IN.texcoord + float2(0, 0.0001)).a;
+
+                if (mal == mar && mar == mat && mat == mab)
+                    c.rgba = ma > 0 ? c.rgba : _MaskColor;
+                else
+                    c.rgba = _EdgeColor;
+
                 return c;
             }
 

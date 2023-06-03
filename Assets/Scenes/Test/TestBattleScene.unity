@@ -398,6 +398,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaskTex: {fileID: 0}
   MaskColor: {r: 0, g: 0, b: 0, a: 1}
+  EdgeColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!212 &381432378
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -581,6 +582,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaskTex: {fileID: 0}
   MaskColor: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 1}
+  EdgeColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &622266419
 GameObject:
   m_ObjectHideFlags: 0
@@ -1125,6 +1127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaskTex: {fileID: 0}
   MaskColor: {r: 0, g: 0, b: 0, a: 0}
+  EdgeColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &997619785
 GameObject:
   m_ObjectHideFlags: 0
@@ -2510,3 +2513,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaskTex: {fileID: 0}
   MaskColor: {r: 0, g: 0, b: 0, a: 0}
+  EdgeColor: {r: 1, g: 1, b: 1, a: 1}
