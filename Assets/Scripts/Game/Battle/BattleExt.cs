@@ -279,6 +279,15 @@ namespace GalPanic
             return u.AIMoveAndTurnAndSkill(v, movingTime, turningSpeed, turningAngleMin, turningAngleMax, duration, reset, create);
         }
 
+        public static StateMachine AIRemoveOnEdge(this BattleUnit u, Dictionary<string, object> args)
+        {
+            return u.SimpleState((st, te) =>
+            {
+                if (!u.Map.InMapArea(u.Pos) || u.Map[u.Pos] == BattleMap.GridType.Uncovered)
+                    u.Battle.RemoveUnit(u);
+            });
+        }
+
         public static StateMachine AICoverMap(this BattleUnit u, Dictionary<string, object> args)
         {
             Fix64 r = args.GetFloat("radius");

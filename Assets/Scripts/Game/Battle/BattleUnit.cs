@@ -70,6 +70,7 @@ namespace GalPanic
                 "MoveAndTurnAndRush" => this.AIMoveAndTurnAndRush(args),
                 "MoveAndTurnAndScale" => this.AIMoveAndTurnAndScale(args),
                 "CoverMap" => this.AICoverMap(args),
+                "RemoveOnEdge" => this.AIRemoveOnEdge(args),
                 "MoveAndTurnAndCreateUnit" => this.AIMoveAndTurnAndCreateUnit(args),
                 _ => null
             };
@@ -82,7 +83,11 @@ namespace GalPanic
 
         public void OnTimeElapsed(Fix64 te)
         {
-            sms.Travel(sm => sm.Run(te));
+            sms.ToArray().Travel(sm =>
+            {
+                if (Battle.Map.AllUnits.Contains(this))
+                    sm.Run(te);
+            });
         }
     }
 }

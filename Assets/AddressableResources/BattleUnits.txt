@@ -89,6 +89,7 @@
 	BigSlimeBulletBase: {
 		type: "TinySlime", 
 		ai: {
+			"RemoveOnEdge": {},
 			"KillUnsafeCursorOnCollision": { "radius": 2 }
 		}
 	},
