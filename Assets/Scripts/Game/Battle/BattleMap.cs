@@ -101,7 +101,7 @@ namespace GalPanic
             return n;
         }
 
-        public int CompeteFilling(int cx1, int cy1, int cx2, int cy2)
+        public int CompeteFilling(List<KeyValuePair<int, int>> seedsLeft, List<KeyValuePair<int, int>> seedsRight)
         {
             bool fillable(int x, int y) => x >= 0 && x < Width && y >= 0 && y < Height && grids[x, y] == GridType.Covered;
             KeyValuePair<int, int>[] neighbours(int cx, int cy)
@@ -116,8 +116,8 @@ namespace GalPanic
             }
             void fill(int x, int y) => grids[x, y] = GridType.Uncovered;
 
-            var filler1 = GeoUtils.Fill2DAreaCoroutine(cx1, cy1, fillable, neighbours, fill);
-            var filler2 = GeoUtils.Fill2DAreaCoroutine(cx2, cy2, fillable, neighbours, fill);
+            var filler1 = GeoUtils.Fill2DAreaCoroutine(seedsLeft, fillable, neighbours, fill);
+            var filler2 = GeoUtils.Fill2DAreaCoroutine(seedsRight, fillable, neighbours, fill);
 
             while (filler1.MoveNext() && filler2.MoveNext())
                 ;
@@ -135,7 +135,7 @@ namespace GalPanic
             }
 
             OnCompletionChanged?.Invoke(n);
-            return toComplete.Current.Count;
+            return n;
         }
 
         public bool IsAroundBy(Vec2 pos, GridType type) => IsAroundBy((int)pos.x, (int)pos.y, type);

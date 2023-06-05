@@ -1,4 +1,4 @@
-using Swift.Math;
+﻿using Swift.Math;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -189,23 +189,39 @@ namespace GalPanic
         {
             var traceLine = Cursor.TraceLine;
 
-            // find a straight line at least having 3 pts
-            var pt0 = traceLine.Count > 1 ? traceLine[^2] : Cursor.StartPos;
-            var pt1 = traceLine[^1];
-
-            // check the changes on x&y directions
-            var onX = (int)(pt1.x - pt0.x);
-            var onY = (int)(pt1.y - pt0.y);
-
             var n = Map.FillPts(traceLine, BattleMap.GridType.Uncovered);
+
+            var setLeft = new List<KeyValuePair<int, int>>();
+            var setRight = new List<KeyValuePair<int, int>>();
+
+            FC.For(Cursor.TraceLine.Count(), (i) =>
+            {
+                var ptA = i == 0 ? Cursor.StartPos : Cursor.TraceLine[i - 1];
+                var ptB = Cursor.TraceLine[i];
+
+                int ax = (int)ptA.x;
+                int ay = (int)ptA.y;
+                int bx = (int)ptB.x;
+                int by = (int)ptB.y;
+
+                // Calculate the vector from a to b
+                var vLeft = new Vec2(by - ay, ax - bx);
+                var vRight = new Vec2(ay - by, bx- ax);
+
+                var ptLeft = ptB + vLeft;
+                var ptRight = ptB + vRight;
+
+                if (Map.InMapArea(ptLeft) && Map[ptLeft] == BattleMap.GridType.Covered)
+                    setLeft.Add(new((int)ptLeft.x, (int)ptLeft.y));
+
+                if (Map.InMapArea(ptRight) && Map[ptRight] == BattleMap.GridType.Covered)
+                    setRight.Add(new((int)ptRight.x, (int)ptRight.y));
+            });
 
             OnTraceLineCompleted?.Invoke();
             Cursor.TraceLine.Clear();
 
-            if (onX != 0)
-                n += Map.CompeteFilling((int)pt1.x, (int)pt1.y - 1, (int)pt1.x, (int)pt1.y + 1);
-            else if (onY != 0)
-                n += Map.CompeteFilling((int)pt1.x - 1, (int)pt1.y, (int)pt1.x + 1, (int)pt1.y);
+            Map.CompeteFilling(setLeft, setRight);
 
             Map.AllUnits.ToList().Travel(u =>
             {
