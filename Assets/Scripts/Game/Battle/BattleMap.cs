@@ -12,7 +12,7 @@ namespace GalPanic
         public Action<BattleUnit> OnAbortToAddUnit = null;
         public Action<BattleUnit> OnUnitRemoved = null;
         public Action<BattleUnit> OnAbortToRemoveUnit = null;
-        public Action OnCompletionChanged = null;
+        public Action<int> OnCompletionChanged = null;
 
         public enum GridType
         {
@@ -65,8 +65,9 @@ namespace GalPanic
         public bool IsBlocked(Vec2 pos) => IsBlocked((int)pos.x, (int)pos.y);
         public bool IsBlocked(int x, int y) => x < 0 || x >= Width || y < 0 || y >= Height || grids[x, y] == GridType.Uncovered;
 
-        public void FillArea(int left, int width, int top, int height, GridType fillType, Func<GridType, bool> filter = null)
+        public int FillArea(int left, int width, int top, int height, GridType fillType, Func<GridType, bool> filter = null)
         {
+            var n = 0;
             FC.For2(left, left + width, top, top + height, (x, y) =>
             {
                 if (InMapArea(x, y) && (filter == null || filter(grids[x, y])))
@@ -75,27 +76,32 @@ namespace GalPanic
                     grids[x, y] = fillType;
 
                     if (oldValue == GridType.Covered && fillType == GridType.Uncovered)
-                        completionCounter++;
+                        n++;
                     else if (oldValue == GridType.Uncovered && fillType == GridType.Covered)
-                        completionCounter--;
+                        n--;
                 }
             });
 
-            OnCompletionChanged?.Invoke();
+            completionCounter += n;
+            OnCompletionChanged?.Invoke(n);
+            return n;
         }
 
-        public void FillPts(IEnumerable<Vec2> pts, GridType fillType)
+        public int FillPts(IEnumerable<Vec2> pts, GridType fillType)
         {
+            var n = 0;
             pts.Travel(pt =>
             {
                 grids[(int)pt.x, (int)pt.y] = fillType;
-                completionCounter++;
+                n++;
             });
 
-            OnCompletionChanged?.Invoke();
+            completionCounter += n;
+            OnCompletionChanged?.Invoke(n);
+            return n;
         }
 
-        public void CompeteFilling(int cx1, int cy1, int cx2, int cy2)
+        public int CompeteFilling(int cx1, int cy1, int cx2, int cy2)
         {
             bool fillable(int x, int y) => x >= 0 && x < Width && y >= 0 && y < Height && grids[x, y] == GridType.Covered;
             KeyValuePair<int, int>[] neighbours(int cx, int cy)
@@ -121,10 +127,15 @@ namespace GalPanic
 
             toRevert?.Travel(pt => grids[pt.Key, pt.Value] = GridType.Covered);
 
+            var n = 0;
             if (toComplete.Current != null)
+            {
                 completionCounter += toComplete.Current.Count;
+                n = toComplete.Current.Count;
+            }
 
-            OnCompletionChanged?.Invoke();
+            OnCompletionChanged?.Invoke(n);
+            return toComplete.Current.Count;
         }
 
         public bool IsAroundBy(Vec2 pos, GridType type) => IsAroundBy((int)pos.x, (int)pos.y, type);

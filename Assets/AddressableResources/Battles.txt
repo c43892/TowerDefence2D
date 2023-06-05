@@ -5,7 +5,13 @@
 		frontAni: "char1img1front",
 		backAni: "char1img1back",
         winPercent: 0.7,
-		cursorHp: 3,
+		cursor: {
+			hp: 3,
+			armor: 100,
+			armorDec: -10,
+			armorHurtReset: 50,
+			armorCompletionBonus: [500, 0]
+		},
         units: [
 			{ name: "Slime01", x: 40, y: 40 },
 			{ name: "Slime02", x: 40, y: 40 },

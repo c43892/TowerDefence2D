@@ -16,7 +16,7 @@ namespace GalPanic
         public event Action OnLost = null;
         public event Action<int> OnCursorHurt = null;
         public event Action<int> OnCursorHpChanged = null;
-        public event Action OnCompletionChanged = null;
+        public event Action<int> OnCompletionChanged = null;
         public event Action OnTraceLineCompleted = null;
 
         public BattleMap Map { get; private set; }
@@ -25,20 +25,20 @@ namespace GalPanic
         public bool Ended { get; private set; } = false;
         public Cursor Cursor;
 
-        public Battle(int mapWidth, int mapHeight, int cursorHp = 1, float winPrecent = 0.5f)
+        public Battle(int mapWidth, int mapHeight, float winPrecent, BattleConfig.CursorConfig cursorCfg )
         {
-            Map = new BattleMap(this, mapWidth, mapHeight);
-            Cursor = new(cursorHp);
+            Map = new(this, mapWidth, mapHeight);
+            Cursor = new(cursorCfg.hp, cursorCfg.armor, cursorCfg.armorDec, cursorCfg.armorHurtReset, cursorCfg.armorCompletionBonus[0], cursorCfg.armorCompletionBonus[1]);
             WinPrecentage = winPrecent;
             Ended = false;
 
-            Map.OnCompletionChanged += () => OnCompletionChanged?.Invoke();
+            Map.OnCompletionChanged += (n) => OnCompletionChanged?.Invoke(n);
         }
 
         private Action UnitsLoader = null;
         public static Battle Create(BattleConfig cfg)
         {
-            var bt = new Battle(cfg.width, cfg.height, cfg.cursorHp, cfg.winPercent)
+            var bt = new Battle(cfg.width, cfg.height, cfg.winPercent, cfg.cursor)
             {
                 WinOnAllKeyUnitsDead = cfg.units.Any(u => u.isKeyUnit)
             };
@@ -52,7 +52,7 @@ namespace GalPanic
         {
             UnitsLoader?.Invoke();
             OnCursorHpChanged?.Invoke(0);
-            OnCompletionChanged?.Invoke();
+            OnCompletionChanged?.Invoke(0);
         }
 
         public void SetbackCursor()
@@ -145,6 +145,7 @@ namespace GalPanic
         public void KillUnit(BattleUnit u)
         {
             u.Kill();
+            RemoveUnit(u);
         }
 
         public void RemoveUnit(BattleUnit u)
@@ -170,13 +171,13 @@ namespace GalPanic
             }
         }
 
-        public bool IsCursorSafe => Map.IsBlocked(Cursor.Pos) || Cursor.CoolDown > 0;
+        public bool IsCursorSafe => (Map.IsBlocked(Cursor.Pos) && Cursor.Armor > 0) || Cursor.CoolDown > 0;
 
         public void CursorHurt(int dhp = -1)
         {
+            Cursor.CursorHurt(dhp);
             Cursor.Reset2StartPos();
 
-            Cursor.Hp += dhp;
             OnCursorHurt?.Invoke(dhp);
             OnCursorHpChanged?.Invoke(dhp);
 
@@ -196,21 +197,23 @@ namespace GalPanic
             var onX = (int)(pt1.x - pt0.x);
             var onY = (int)(pt1.y - pt0.y);
 
-            Map.FillPts(traceLine, BattleMap.GridType.Uncovered);
+            var n = Map.FillPts(traceLine, BattleMap.GridType.Uncovered);
 
             OnTraceLineCompleted?.Invoke();
             Cursor.TraceLine.Clear();
 
             if (onX != 0)
-                Map.CompeteFilling((int)pt1.x, (int)pt1.y - 1, (int)pt1.x, (int)pt1.y + 1);
+                n += Map.CompeteFilling((int)pt1.x, (int)pt1.y - 1, (int)pt1.x, (int)pt1.y + 1);
             else if (onY != 0)
-                Map.CompeteFilling((int)pt1.x - 1, (int)pt1.y, (int)pt1.x + 1, (int)pt1.y);
+                n += Map.CompeteFilling((int)pt1.x - 1, (int)pt1.y, (int)pt1.x + 1, (int)pt1.y);
 
             Map.AllUnits.ToList().Travel(u =>
             {
                 if (Map[u.Pos] == BattleMap.GridType.Uncovered)
                     KillUnit(u);
             });
+
+            Cursor.OnCompletion((Fix64)n / (Map.Width * Map.Height));
         }
     }
 }

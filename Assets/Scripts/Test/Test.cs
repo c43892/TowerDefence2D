@@ -22,10 +22,7 @@ namespace GalPanic
                 var btCfg = ConfigManager.GetBattleConfig("Test01");
                 var bt = Battle.Create(btCfg);
 
-                bt.OnWon += () => UIManager.ShowResult(true);
-                bt.OnLost += () => UIManager.ShowResult(false);
-                bt.OnCompletionChanged += () => UIManager.SetCompletion(bt.Map.Completion);
-                bt.OnCursorHpChanged += (_) => UIManager.SetHp(bt.Cursor.Hp);
+                UIManager.SetBattle(bt);
 
                 // setup scene renderer
                 SceneRenderer.Bt = bt;

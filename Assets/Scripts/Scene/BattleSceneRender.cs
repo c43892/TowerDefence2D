@@ -33,7 +33,7 @@ public partial class BattleSceneRender : MonoBehaviour
 
             MapRenderer.Map = bt.Map;
             InitBattleEvents(bt);
-            bt.OnCompletionChanged += UpdateMap;
+            bt.OnCompletionChanged += (_) => UpdateMap();
 
             var leftTop = new Vector3(-bt.Map.Width / 2, -bt.Map.Height / 2, 0) / 10;
             var rightBottom = new Vector3(bt.Map.Width / 2, bt.Map.Height / 2, 0) / 10;
@@ -97,7 +97,7 @@ public partial class BattleSceneRender : MonoBehaviour
     {
         SetPos(Cursor.transform, bt.Cursor.Pos);
 
-        var cursorStatus = bt.Cursor.CoolDown > 0 ? "CoolDown" : (bt.Map.IsBlocked(bt.Cursor.Pos) ? "SafeCursor" : "UnsafeCursor");
+        var cursorStatus = bt.Cursor.CoolDown > 0 ? "CoolDown" : (bt.IsCursorSafe ? "SafeCursor" : "UnsafeCursor");
         if (oldCursorStatus == cursorStatus)
             return;
 

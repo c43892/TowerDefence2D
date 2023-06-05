@@ -18,12 +18,26 @@ namespace GalPanic
         public int X => (int)Pos.x;
         public int Y => (int)Pos.y;
         public int Hp { get; set; } = 0;
+        public int MaxHp { get; } = 0;
+        public Fix64 Armor { get; set; } = 0;
+        public int MaxArmor { get; } = 0;
+        public Fix64 ArmorDec { get; set; } = 0;
+        public int ArmorHurtReset { get; set; } = 0;
+        public Fix64 ArmorCompletionBonusPercent { get; set; } = 0;
+        public Fix64 ArmorCompletionBonusConst { get; set; } = 0;
         public Fix64 CoolDown { get; set; }
 
-        public Cursor(int maxHp)
+        public Cursor(int maxHp, int maxArmor, Fix64 armorDec, int armorHurtReset, Fix64 armorCompletionBonusPercent, Fix64 armorCompletionBonusConst)
         {
             Pos = new(0, 0);
             Hp = maxHp;
+            MaxHp = maxHp;
+            Armor = maxArmor;
+            MaxArmor = maxArmor;
+            ArmorDec = armorDec;
+            ArmorHurtReset = armorHurtReset;
+            ArmorCompletionBonusPercent = armorCompletionBonusPercent;
+            ArmorCompletionBonusConst = armorCompletionBonusConst;
         }
 
         public void SetPos(Vec2 pos, bool clearTraceLine = false)
@@ -47,6 +61,7 @@ namespace GalPanic
         public void CursorHurt(int dhp = -1)
         {
             Hp += dhp;
+            Armor = ArmorHurtReset;
         }
 
         public void Reset2StartPos()
@@ -59,6 +74,16 @@ namespace GalPanic
         public void OnTimeElapsed(Fix64 te)
         {
             CoolDown = CoolDown <= te ? 0 : CoolDown - te;
+            Armor += ArmorDec * te;
+            if (Armor < 0)
+                Armor = 0;
+            else if (Armor > MaxArmor)
+                Armor = MaxArmor;
+        }
+
+        public void OnCompletion(Fix64 precent)
+        {
+            Armor = MathEx.Clamp(Armor + ArmorCompletionBonusConst + ArmorCompletionBonusPercent * precent, 0, MaxArmor);
         }
     }
 }

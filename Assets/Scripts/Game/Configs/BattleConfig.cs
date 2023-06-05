@@ -23,6 +23,24 @@ namespace GalPanic
             public bool isKeyUnit = false;
         }
 
+        public class CursorConfig
+        {
+            [JsonProperty("hp")]
+            public int hp;
+
+            [JsonProperty("armor")]
+            public int armor;
+
+            [JsonProperty("armorDec")]
+            public float armorDec;
+
+            [JsonProperty("armorHurtReset")]
+            public int armorHurtReset;
+
+            [JsonProperty("armorCompletionBonus")]
+            public float[] armorCompletionBonus;
+        }
+
         [JsonProperty("width")]
         public int width;
 
@@ -38,10 +56,10 @@ namespace GalPanic
         [JsonProperty("winPercent")]
         public float winPercent;
 
-        [JsonProperty("cursorHp")]
-        public int cursorHp;
-
         [JsonProperty("units")]
         public BattleConfigUnit[] units;
+
+        [JsonProperty("cursor")]
+        public CursorConfig cursor;
     }
 }
