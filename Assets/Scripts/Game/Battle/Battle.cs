@@ -65,6 +65,20 @@ namespace GalPanic
         {
             var x = Cursor.X + dx;
             var y = Cursor.Y + dy;
+
+            // can't be too close to the trace line
+            var around = new List<Vec2>() {
+                new(x - 1, y), new(x + 1, y), new(x, y - 1), new(x, y + 1),
+                new(x - 2, y), new(x + 2, y), new(x, y - 2), new(x, y + 2)
+            };
+
+            if (around.Any(pt =>
+            {
+                var n = Cursor.TraceLine.IndexOf(pt);
+                return n >= 0 && n != Cursor.TraceLine.Count - 1 && n != Cursor.TraceLine.Count - 2;
+            }))
+                return false;
+
             var n = Cursor.TraceLine.IndexOf(new(x, y));
 
             if (n >= 0 && n == Cursor.TraceLine.Count - 1)
@@ -204,7 +218,7 @@ namespace GalPanic
                 int bx = (int)ptB.x;
                 int by = (int)ptB.y;
 
-                // Calculate the vector from a to b
+                // Calculate the perpendicular vector from a to b
                 var vLeft = new Vec2(by - ay, ax - bx);
                 var vRight = new Vec2(ay - by, bx- ax);
 
