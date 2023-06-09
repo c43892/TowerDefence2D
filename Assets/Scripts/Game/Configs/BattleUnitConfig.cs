@@ -12,6 +12,9 @@ namespace GalPanic
         [JsonProperty("type")]
         public string type;
 
+        [JsonProperty("radius")]
+        public float radius;
+
         [JsonProperty("merges")]
         public string[] merges;
 

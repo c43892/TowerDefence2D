@@ -20,6 +20,7 @@ namespace GalPanic
             Vec2 Pos { get; set; }
             Fix64 Dir { get; set; }
             Fix64 Scale { get; set; }
+            Fix64 Radius { get; set; }
         }
 
         // 保持单一状态
@@ -61,26 +62,43 @@ namespace GalPanic
             {
                 var dir = getDir();
                 var newPos = u.Pos + dir * te;
-                var x = (int)newPos.x;
-                var y = (int)newPos.y;
 
-                if (validPos(x, y))
+                Fix64 cx = newPos.x;
+                Fix64 cy = newPos.y;
+                Fix64 hs = u.Radius; // half size
+
+                bool valid(Fix64 x, Fix64 y) => validPos((int)Math.Round((float)x), (int)Math.Round((float)y));
+                var l = valid(cx - hs, cy) && valid(cx - hs, cy - hs) && valid(cx - hs, cy + hs);
+                var r = valid(cx + hs, cy) && valid(cx + hs, cy - hs) && valid(cx + hs, cy + hs);
+                var t = valid(cx, cy - hs) && valid(cx - hs, cy - hs) && valid(cx + hs, cy - hs);
+                var b = valid(cx, cy + hs) && valid(cx - hs, cy + hs) && valid(cx + hs, cy + hs);
+
+
+                if (l && r && t && b)
                     u.Pos = newPos;
                 else if (refectable)
                 {
-                    // check reflecting direction
+                    var collided = false;
 
-                    var h = !validPos(x - 1, y) && !validPos(x + 1, y);
-                    var v = !validPos(x, y - 1) && !validPos(x, y + 1);
+                    if ((!l && dir.x < 0) || (!r && dir.x > 0))
+                    {
+                        collided = true;
+                        dir.x = -dir.x;
+                    }
 
-                    if (h && !v)
-                        dir = new Vec2(dir.x, -dir.y);
-                    else if (!h && v)
-                        dir = new Vec2(-dir.x, dir.y);
+                    if ((!t && dir.y < 0) || (!b && dir.y > 0))
+                    {
+                        collided = true;
+                        dir.y = -dir.y;
+                    }
+
+                    if (collided)
+                    {
+                        u.Pos += dir * te;
+                        onReflection?.Invoke(dir);
+                    }
                     else
-                        dir = new Vec2(-dir.x, -dir.y);
-
-                    onReflection?.Invoke(dir);
+                        u.Pos = newPos;
                 }
             };
         }

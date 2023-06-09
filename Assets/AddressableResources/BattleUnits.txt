@@ -1,6 +1,7 @@
 ﻿{
 	Slime01: {
 		type: "SmallSlime",
+		radius: 6,
 		ai: {
 			"MoveAndTurnAndRush": {
 				"vx": 10, "vy": 10, "movingTime": 3, 
@@ -8,18 +9,18 @@
 				"rushSpeed": 50, "rushingTime": 1
 			},
 			"ReleaseUnitWhenCollisionOnTraceLine": {
-				"radius": 6,
 				"bulletUnit": "SlimeOnPath",
 				"cooldown": 5
 			},
 			"CoverMap": {
-				"radius": 6
+				"radius": 8
 			}
 		}
 	},
 
 	Slime02: {
 		type: "BigSlime",
+		radius: 15,
 		ai: {
 			"MoveAndTurnAndCreateUnit": {
 				"vx": 10, "vy": 10, "movingTime": 3, 
@@ -38,9 +39,8 @@
 					"delay": 0.8
 				}]
 			},
-			"KillUnsafeCursorOnCollision": { "radius": 15 },
+			"KillUnsafeCursorOnCollision": {},
 			"ReleaseUnitWhenCollisionOnTraceLine": {
-				"radius": 15, 
 				"bulletUnit": "SlimeOnPath",
 				"cooldown": 5
 			}
@@ -49,6 +49,7 @@
 
 	Slime03: {
 		type: "SmallSlime",
+		radius: 6,
 		ai: {
 			"MoveAndTurnAndScale": {
 				"vx": 15, "vy": 15, "movingTime": 3,
@@ -56,9 +57,8 @@
 				"scale": 2,
 				"scalingTime": 2
 			},
-			"KillUnsafeCursorOnCollision": { "radius": 6 },
+			"KillUnsafeCursorOnCollision": {},
 			"ReleaseUnitWhenCollisionOnTraceLine": {
-				"radius": 6, 
 				"bulletUnit": "SlimeOnPath",
 				"cooldown": 5
 			}
@@ -67,11 +67,11 @@
 
 	Tentacle01: {
 		type: "Tentacle",
+		radius: 15,
 		ai: {
-			"MoveAndReflect": {"vx": 7, "vy": 7},
-			"KillUnsafeCursorOnCollision": { "radius": 15 },
+			"MoveAndReflect": { "vx": 7, "vy": 7 },
+			"KillUnsafeCursorOnCollision": {},
 			"ReleaseUnitWhenCollisionOnTraceLine": {
-				"radius": 15, 
 				"bulletUnit": "SlimeOnPath",
 				"cooldown": 5
 			}
@@ -80,17 +80,19 @@
 
 	SlimeOnPath: {
 		type: "TinySlime",
+		radius: 2,
 		ai: {
-			"KillUnsafeCursorOnCollision": { "radius": 2 },
+			"KillUnsafeCursorOnCollision": {},
 			"ChaseOnLineAndKillUnsafeCursor": { "speed": 50 }
 		}
 	},
 
 	BigSlimeBulletBase: {
 		type: "TinySlime", 
+		radius: 2,
 		ai: {
 			"RemoveOnEdge": {},
-			"KillUnsafeCursorOnCollision": { "radius": 2 }
+			"KillUnsafeCursorOnCollision": {}
 		}
 	},
 

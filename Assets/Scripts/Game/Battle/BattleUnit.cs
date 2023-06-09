@@ -26,6 +26,8 @@ namespace GalPanic
 
         public Fix64 Dir { get; set; } = 0;
 
+        public Fix64 Radius { get; set; } = 1;
+
         public Fix64 Scale { get; set; } = 1;
 
         public bool IsKeyUnit { get; set; }
@@ -34,9 +36,10 @@ namespace GalPanic
 
         private readonly List<StateMachine> sms = null;
 
-        public BattleUnit(BattleMap map, string type)
+        public BattleUnit(BattleMap map, string type, Fix64 radius)
         {
             Type = type;
+            Radius = radius;
             Map = map;
             UID = IDGen(IDGen($"unit_{type}_"));
 

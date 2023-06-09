@@ -20,7 +20,8 @@ namespace GalPanic
             var cfg = ConfigManager.GetBattleUnitConfig(unitName);
             var unit = new BattleUnit(
                 battle.Map,
-                cfg.type
+                cfg.type,
+                cfg.radius
             )
             {
                 Pos = pos,
@@ -51,7 +52,7 @@ namespace GalPanic
 
         public static StateMachine AIKillUnsafeCursorOnCollision(this BattleUnit u, Dictionary<string, object> args)
         {
-            Fix64 r = args.GetFloat("radius");
+            Fix64 r = args.ContainsKey("radius") ? args.GetFloat("radius") : u.Radius;
 
             OnAbortAddUnitAI?.Invoke("KillUnsafeCursorOnCollision", u, r);
 
@@ -64,7 +65,7 @@ namespace GalPanic
 
         public static StateMachine AIReleaseUnitWhenCollisionOnTraceLine(this BattleUnit u, Dictionary<string, object> args)
         {
-            Fix64 r = args.GetFloat("radius");
+            Fix64 r = args.ContainsKey("radius") ? args.GetFloat("radius") : u.Radius;
             var bulletUnit = args.GetString("bulletUnit");
             Fix64 cooldown = args.GetFloat("cooldown");
 
@@ -290,7 +291,7 @@ namespace GalPanic
 
         public static StateMachine AICoverMap(this BattleUnit u, Dictionary<string, object> args)
         {
-            Fix64 r = args.GetFloat("radius");
+            Fix64 r = args.ContainsKey("radius") ? args.GetFloat("radius") : u.Radius;
             OnAbortAddUnitAI?.Invoke("CoverMapOnCollision", u, r);
 
             return u.SimpleState((st, te) =>
