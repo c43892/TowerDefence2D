@@ -28,6 +28,12 @@ namespace GalPanic
             [JsonProperty("hp")]
             public int hp;
 
+            [JsonProperty("speed")]
+            public float speed;
+
+            [JsonProperty("backSpeed")]
+            public float backSpeed;
+
             [JsonProperty("armor")]
             public int armor;
 

@@ -18,22 +18,15 @@ public class GizmoManager : MonoBehaviour
 
     public void OnBattleEnded() => gizmoSphere.Clear();
 
-    public void OnAbortAddUnitAI(string evt, BattleUnit u, object args)
+    public void OnUnitAdded(BattleUnit u)
     {
-        switch (evt)
+        if (u.Radius > 0)
         {
-            case "ReleaseUnitWhenCollisionOnTraceLine":
-            case "KillUnsafeCursorOnCollision":
-                var r = (Fix64)args / 10;
-                AddGizmo(u.UID, () =>
-                {
-                    var pos = SceneRenderer.GetUnitRenderer(u.UID).transform.position;
-                    return new Vector4(pos.x, pos.y, pos.z, (float)(r * u.Scale));
-                });
-                break;
-
-            default:
-                break;
+            AddGizmo(u.UID, () =>
+            {
+                var pos = SceneRenderer.GetUnitRenderer(u.UID).transform.position;
+                return new Vector4(pos.x, pos.y, pos.z, (float)(u.Radius * u.Scale));
+            });
         }
     }
 
@@ -58,7 +51,7 @@ public class GizmoManager : MonoBehaviour
         gizmoSphere.Travel((kv) =>
         {
             var v = kv.Value.Invoke();
-            Gizmos.DrawWireSphere(new Vector3(v.x, v.y, v.z), v.w);
+            Gizmos.DrawWireSphere(new Vector3(v.x, v.y, v.z), v.w / 10);
         });
     }
 }

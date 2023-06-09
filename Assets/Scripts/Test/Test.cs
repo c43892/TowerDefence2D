@@ -28,10 +28,11 @@ namespace GalPanic
                 SceneRenderer.Bt = bt;
                 SceneRenderer.SetAvatar(btCfg.frontAni, btCfg.backAni);
                 SceneRenderer.UpdateMap();
-                SceneRenderer.GetCursorSpeed = () => 50;
+                SceneRenderer.GetCursorSpeed = () => btCfg.cursor.speed;
+                SceneRenderer.GetCursorBackSpeed = () => btCfg.cursor.backSpeed;
 
                 // setup gizmo manager
-                BattleExt.OnAbortAddUnitAI += GizmoManager.OnAbortAddUnitAI;
+                bt.Map.OnUnitAdded += GizmoManager.OnUnitAdded;
                 bt.Map.OnUnitRemoved += GizmoManager.OnBattleUnitRemoved;
                 bt.OnWon += GizmoManager.OnBattleEnded;
                 bt.OnLost += GizmoManager.OnBattleEnded;

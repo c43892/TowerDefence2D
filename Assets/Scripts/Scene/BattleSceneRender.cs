@@ -20,6 +20,7 @@ public partial class BattleSceneRender : MonoBehaviour
     public Transform RectRightBottom;
 
     public Func<float> GetCursorSpeed = null;
+    public Func<float> GetCursorBackSpeed = null;
 
     private Battle bt;
     public Battle Bt
@@ -113,18 +114,20 @@ public partial class BattleSceneRender : MonoBehaviour
         Trace.UpdateLine(Pos2V3(bt.Cursor.StartPos), bt.Cursor.TraceLine.ToList().Select(Pos2V3).ToList());
     }
 
-    private float tracingDelayTimer = 0;
+    private float movingTimer = 0;
+    private float backMovingTimer;
 
     void CheckCursorAction()
     {
         var forceUnsafe = Input.GetKey(KeyCode.Space);
         var cursorSpeed = GetCursorSpeed == null ? 0 : GetCursorSpeed();
+        var cursorBackSpeed = GetCursorBackSpeed == null ? 0 : GetCursorBackSpeed();
 
-        tracingDelayTimer += Time.deltaTime;
-        if (bt.Cursor.CoolDown > 0 || bt.Ended || tracingDelayTimer < 1 / cursorSpeed)
+        if (bt.Cursor.CoolDown > 0 || bt.Ended)
             return;
 
-        tracingDelayTimer %= 1 / cursorSpeed;
+        movingTimer += cursorSpeed * Time.deltaTime;
+        backMovingTimer += cursorBackSpeed * Time.deltaTime;
 
         var dx = 0;
         var dy = 0;
@@ -137,11 +140,22 @@ public partial class BattleSceneRender : MonoBehaviour
             dy = 1;
         else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
             dy = -1;
-            
-        if (dx == 0 && dy == 0)
-            bt.SetbackCursor();
-        else
-            bt.TryMoveCursor(dx, dy, forceUnsafe);
+
+        if (movingTimer >= 1)
+        {
+            if (dx != 0 || dy != 0)
+                bt.TryMoveCursor(dx, dy, forceUnsafe);
+
+            movingTimer %= 1;
+        }
+
+        if (backMovingTimer > 1)
+        {
+            if (dx == 0 && dy == 0)
+                bt.SetbackCursor();
+
+            backMovingTimer %= 1;
+        }
 
         UpdateLineRender();
 

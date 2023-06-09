@@ -7,6 +7,8 @@
         winPercent: 0.7,
 		cursor: {
 			hp: 3,
+			speed: 40,
+			backSpeed: 20,
 			armor: 100,
 			armorDec: -10,
 			armorHurtReset: 50,
