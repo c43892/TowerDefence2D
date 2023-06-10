@@ -11,7 +11,12 @@ namespace Swift
     public class GeoUtils
     {
         // 填充指定区域
-        public static IEnumerator<HashSet<KeyValuePair<int, int>>> Fill2DAreaCoroutine(List<KeyValuePair<int, int>> seeds, Func<int, int, bool> fillable, Func<int, int, KeyValuePair<int, int>[]> getNeighbours, Action<int, int> fill)
+        public static IEnumerator<HashSet<KeyValuePair<int, int>>> Fill2DAreaCoroutine(
+            List<KeyValuePair<int, int>> seeds, 
+            Func<int, int, bool> fillable,
+            Func<int, int, bool> cancelChecker,
+            Func<int, int, KeyValuePair<int, int>[]> getNeighbours, 
+            Action<int, int> fill)
         {
             var filled = new HashSet<KeyValuePair<int, int>>();
             Queue<KeyValuePair<int, int>> q = new();
@@ -39,9 +44,14 @@ namespace Swift
                 var neighbours = getNeighbours(cur.Key, cur.Value);
                 foreach (var n in neighbours)
                 {
-                    if (fillable(n.Key, n.Value))
+                    var x = n.Key;
+                    var y = n.Value;
+                    if (cancelChecker != null && cancelChecker(x, y))
+                        break;
+
+                    if (fillable(x, y))
                     {
-                        internalFill(n.Key, n.Value);
+                        internalFill(x, y);
                         yield return filled;
                     }
                 }
@@ -51,7 +61,7 @@ namespace Swift
         // 填充指定区域
         public static HashSet<KeyValuePair<int, int>> Fill2DArea(int cx, int cy, Func<int, int, bool> fillable, Func<int, int, KeyValuePair<int, int>[]> getNeighbours, Action<int, int> fill)
         {
-            var iter = Fill2DAreaCoroutine(new() { new(cx, cy) }, fillable, getNeighbours, fill);
+            var iter = Fill2DAreaCoroutine(new() { new(cx, cy) }, fillable, null, getNeighbours, fill);
             while (iter.MoveNext())
                 ;
             return iter.Current;

@@ -52,7 +52,18 @@ public class BattleMapRenderer : MonoBehaviour
         Color32 Uncovered = new(255, 255, 255, 255);
 
         NativeArray<Color32> pixels = new(Map.Width * Map.Height, Allocator.Temp);
-        FC.For2(Map.Width, Map.Height, (x, y) => pixels[y * Map.Width + x] = Map[x, y] == BattleMap.GridType.Uncovered ? Uncovered : Covered);
+        FC.For2(Map.Width, Map.Height, (x, y) =>
+        {
+            var c = Color.white;
+            switch (Map[x, y])
+            {
+                case BattleMap.GridType.Uncovered: c = Uncovered; break;
+                case BattleMap.GridType.Covered: c = Covered; break;
+                default:
+                    throw new System.Exception($"unexpected map grid value: {Map[x, y]} at ({x}, {y})");
+            }
+            pixels[y * Map.Width + x] = c;
+        });
 
         // Use SetPixelData to apply the pixel data to the texture.
         MaskTex.SetPixelData(pixels, 0);

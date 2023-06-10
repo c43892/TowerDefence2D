@@ -220,7 +220,7 @@ namespace GalPanic
 
                 // Calculate the perpendicular vector from a to b
                 var vLeft = new Vec2(by - ay, ax - bx);
-                var vRight = new Vec2(ay - by, bx- ax);
+                var vRight = new Vec2(ay - by, bx - ax);
 
                 var ptLeft = ptB + vLeft;
                 var ptRight = ptB + vRight;

@@ -18,6 +18,9 @@ namespace GalPanic
         {
             Covered,
             Uncovered,
+
+            TmpUncover1,
+            TmpUncover2,
         }
 
         public int Width { get; private set; }
@@ -103,35 +106,64 @@ namespace GalPanic
 
         public int CompeteFilling(List<KeyValuePair<int, int>> seedsLeft, List<KeyValuePair<int, int>> seedsRight)
         {
-            bool fillable(int x, int y) => x >= 0 && x < Width && y >= 0 && y < Height && grids[x, y] == GridType.Covered;
+            bool fillable(int x, int y) => InMapArea(x, y) && grids[x, y] == GridType.Covered;
             KeyValuePair<int, int>[] neighbours(int cx, int cy)
             {
-                var ns = new List<KeyValuePair<int, int>>();
-                if (fillable(cx - 1, cy)) ns.Add(new KeyValuePair<int, int>(cx - 1, cy));
-                if (fillable(cx + 1, cy)) ns.Add(new KeyValuePair<int, int>(cx + 1, cy));
-                if (fillable(cx, cy - 1)) ns.Add(new KeyValuePair<int, int>(cx, cy - 1));
-                if (fillable(cx, cy + 1)) ns.Add(new KeyValuePair<int, int>(cx, cy + 1));
-
-                return ns.ToArray();
+                return new KeyValuePair<int, int>[]
+                {
+                    new KeyValuePair<int, int>(cx - 1, cy),
+                    new KeyValuePair<int, int>(cx + 1, cy),
+                    new KeyValuePair<int, int>(cx, cy - 1),
+                    new KeyValuePair<int, int>(cx, cy + 1)
+                };
             }
-            void fill(int x, int y) => grids[x, y] = GridType.Uncovered;
 
-            var filler1 = GeoUtils.Fill2DAreaCoroutine(seedsLeft, fillable, neighbours, fill);
-            var filler2 = GeoUtils.Fill2DAreaCoroutine(seedsRight, fillable, neighbours, fill);
+            var cancelled = false;
+
+            void fill1(int x, int y) => grids[x, y] = GridType.TmpUncover1;
+            void fill2(int x, int y) => grids[x, y] = GridType.TmpUncover2;
+
+            bool cancelCheck1(int x, int y)
+            {
+                if (InMapArea(x, y) && grids[x, y] == GridType.TmpUncover2)
+                    cancelled = true;
+
+                return cancelled;
+            }
+
+            bool cancelCheck2(int x, int y)
+            {
+                if (InMapArea(x, y) && grids[x, y] == GridType.TmpUncover1)
+                    cancelled = true;
+
+                return cancelled;
+            }
+
+            var filler1 = GeoUtils.Fill2DAreaCoroutine(seedsLeft, fillable, cancelCheck1, neighbours, fill1);
+            var filler2 = GeoUtils.Fill2DAreaCoroutine(seedsRight, fillable, cancelCheck2, neighbours, fill2);
 
             while (filler1.MoveNext() && filler2.MoveNext())
                 ;
 
-            var toRevert = filler1.MoveNext() ? filler1.Current : filler2.Current;
-            var toComplete = toRevert == filler1 ? filler2 : filler1;
-
-            toRevert?.Travel(pt => grids[pt.Key, pt.Value] = GridType.Covered);
-
             var n = 0;
-            if (toComplete.Current != null)
+            if (cancelled)
             {
-                completionCounter += toComplete.Current.Count;
-                n = toComplete.Current.Count;
+                filler1.Current?.Travel(pt => grids[pt.Key, pt.Value] = GridType.Covered);
+                filler2.Current?.Travel(pt => grids[pt.Key, pt.Value] = GridType.Covered);
+            }
+            else
+            {
+                var toRevert = filler1.MoveNext() ? filler1.Current : filler2.Current;
+                var toComplete = toRevert == filler1.Current ? filler2.Current : filler1.Current;
+
+                toRevert?.Travel(pt => grids[pt.Key, pt.Value] = GridType.Covered);
+                toComplete?.Travel(pt => grids[pt.Key, pt.Value] = GridType.Uncovered);
+
+                if (toComplete != null)
+                {
+                    completionCounter += toComplete.Count;
+                    n = toComplete.Count;
+                }
             }
 
             OnCompletionChanged?.Invoke(n);
