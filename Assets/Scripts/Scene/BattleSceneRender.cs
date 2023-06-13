@@ -84,13 +84,19 @@ public partial class BattleSceneRender : MonoBehaviour
 
     #region cursor controlling
 
+    public Vector3 GetScenePos(Vec2 pos) => GetScenePos((int)pos.x, (int)pos.y);
+    public Vector3 GetScenePos(int x, int y)
+    {
+        var divX = (float)x / (bt.Map.Width - 1);
+        var divY = (float)y / (bt.Map.Height - 1);
+        var sx = RectTopLeft.localPosition.x + (RectRightBottom.localPosition.x - RectTopLeft.localPosition.x) * divX;
+        var sy = RectTopLeft.localPosition.y + (RectRightBottom.localPosition.y - RectTopLeft.localPosition.y) * divY;
+        return new Vector3(sx, sy, 0);
+    }
+
     void SetPos(Transform t, Vec2 pos)
     {
-        var divX = (float)(pos.x) / (bt.Map.Width - 1);
-        var divY = (float)(pos.y) / (bt.Map.Height - 1);
-        var x = RectTopLeft.localPosition.x + (RectRightBottom.localPosition.x - RectTopLeft.localPosition.x) * divX;
-        var y = RectTopLeft.localPosition.y + (RectRightBottom.localPosition.y - RectTopLeft.localPosition.y) * divY;
-        t.localPosition = new Vector3(x, y, 0);
+        t.localPosition = GetScenePos(pos);
     }
 
     string oldCursorStatus = "";

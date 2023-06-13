@@ -22,6 +22,8 @@ namespace GalPanic
 
         public string UID { get; private set; }
 
+        public bool Unkillable { get; private set; }
+
         public Vec2 Pos { get; set; } = Vec2.Zero;
 
         public Fix64 Dir { get; set; } = 0;
@@ -36,10 +38,11 @@ namespace GalPanic
 
         private readonly List<StateMachine> sms = null;
 
-        public BattleUnit(BattleMap map, string type, Fix64 radius)
+        public BattleUnit(BattleMap map, string type, Fix64 radius, bool unkillable)
         {
             Type = type;
             Radius = radius;
+            Unkillable = unkillable;
             Map = map;
             UID = IDGen(IDGen($"unit_{type}_"));
 
@@ -75,6 +78,7 @@ namespace GalPanic
                 "CoverMap" => this.AICoverMap(args),
                 "RemoveOnEdge" => this.AIRemoveOnEdge(args),
                 "MoveAndTurnAndCreateUnit" => this.AIMoveAndTurnAndCreateUnit(args),
+                "StaticObstacle" => this.StaticObstacle(args),
                 _ => null
             };
         }

@@ -88,8 +88,9 @@ namespace GalPanic
             }
             else if (n < 0)
             {
-                var inMoving = CanMoveCursorTo(dx, dy, out int tx, out int ty, forceUnsafe);
-                if (inMoving)
+                var endWithEdge = false;
+                var moved = CanMoveCursorTo(dx, dy, out int tx, out int ty, out endWithEdge, forceUnsafe);
+                if (moved)
                 {
                     if (Cursor.TraceLine.Count == 0)
                         Cursor.StartPos = Cursor.Pos;
@@ -99,30 +100,34 @@ namespace GalPanic
                         Cursor.AddTracePos(tx, ty);
                 }
 
-                if ((!inMoving || Map[x, y] == BattleMap.GridType.Uncovered) && forceUnsafe && Cursor.TraceLine.Count > 0)
+                if (endWithEdge && forceUnsafe && Cursor.TraceLine.Count > 0)
                     DoTraceLineSplite();
 
-                return inMoving;
+                return moved;
             }
 
             return false;
         }
 
-        public bool CanMoveCursorTo(int dx, int dy, out int toX, out int toY, bool forceUnsafe = false)
+        public bool CanMoveCursorTo(int dx, int dy, out int toX, out int toY, out bool endWithEdge, bool forceUnsafe = false)
         {
+            endWithEdge = false;
             var tx = toX = Cursor.X + dx;
             var ty = toY = Cursor.Y + dy;
             if (tx < 0 || tx >= Map.Width || ty < 0 || ty >= Map.Height)
+                return false;
+
+            if (Map.IsObstacle(tx, ty))
                 return false;
 
             if (!forceUnsafe && Map[tx, ty] != BattleMap.GridType.Uncovered)
                 return false;
 
             // not on the inside of uncoverd areas
-            var onEdge = tx == 0 || tx == Map.Width - 1 || ty == 0 || ty == Map.Height - 1;
+            endWithEdge = tx == 0 || tx == Map.Width - 1 || ty == 0 || ty == Map.Height - 1;
 
             // can move to the target position
-            var canMoveTo = onEdge || !Map.IsAroundBy(tx, ty, BattleMap.GridType.Uncovered);
+            var canMoveTo = endWithEdge || !Map.IsAroundBy(tx, ty, BattleMap.GridType.Uncovered);
             return canMoveTo;
         }
 
@@ -158,6 +163,9 @@ namespace GalPanic
 
         public void KillUnit(BattleUnit u)
         {
+            if (u.Unkillable)
+                return;
+
             u.Kill();
             RemoveUnit(u);
         }
@@ -239,7 +247,7 @@ namespace GalPanic
 
             Map.AllUnits.ToList().Travel(u =>
             {
-                if (Map[u.Pos] == BattleMap.GridType.Uncovered)
+                if (Map[u.Pos] == BattleMap.GridType.Uncovered && !u.Unkillable)
                     KillUnit(u);
             });
 

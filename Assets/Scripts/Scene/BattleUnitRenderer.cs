@@ -22,7 +22,7 @@ public class BattleUnitRenderer : MonoBehaviour
 
     public void UpdateUnit()
     {
-        if (Unit == null)
+        if (Unit?.Type == null)
             return;
 
         var cfgs = ConfigManager.GetUnitAnimationConfigs(Unit.Type);

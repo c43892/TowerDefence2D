@@ -15,7 +15,7 @@
 			armorCompletionBonus: [500, 0]
 		},
         units: [
-			{ name: "Slime01", x: 40, y: 40 },
+			{ name: "ObstacleBase" },
 			{ name: "Slime02", x: 40, y: 40 },
 			{ name: "Slime03", x: 40, y: 40 },
 			{ name: "Tentacle01", x: 100, y: 100, isKeyUnit: true }

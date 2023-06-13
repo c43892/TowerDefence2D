@@ -13,6 +13,7 @@ namespace GalPanic
         public Action<BattleUnit> OnUnitRemoved = null;
         public Action<BattleUnit> OnAbortToRemoveUnit = null;
         public Action<int> OnCompletionChanged = null;
+        public Action<int, int, int, int, bool> OnObstaclesChanged = null;
 
         public enum GridType
         {
@@ -31,6 +32,7 @@ namespace GalPanic
         private int completionCounter = 0;
         private readonly Dictionary<string, BattleUnit> units = new();
         private readonly GridType[,] grids;
+        private readonly bool[,] obLayer;
 
         public BattleMap(Battle bt, int width, int height)
         {
@@ -38,6 +40,7 @@ namespace GalPanic
             Width = width;
             Height = height;
             grids = new GridType[width, height];
+            obLayer = new bool[width, height];
         }
 
         public IEnumerable<BattleUnit> AllUnits => units.Values;
@@ -66,7 +69,25 @@ namespace GalPanic
         public bool InMapArea(int x, int y) => x >= 0 && x < Width && y >= 0 && y < Height;
 
         public bool IsBlocked(Vec2 pos) => IsBlocked((int)pos.x, (int)pos.y);
-        public bool IsBlocked(int x, int y) => x < 0 || x >= Width || y < 0 || y >= Height || grids[x, y] == GridType.Uncovered;
+        public bool IsBlocked(int x, int y) => x < 0 || x >= Width || y < 0 || y >= Height || grids[x, y] == GridType.Uncovered || obLayer[x, y];
+
+        public bool IsObstacle(int x, int y) => obLayer[x, y];
+
+        public int FillObstacleArea(int left, int width, int top, int height, bool isObstacle = true, Func<int, int, bool> filter = null)
+        {
+            var n = 0;
+            FC.For2(left, left + width, top, top + height, (x, y) =>
+            {
+                if (InMapArea(x, y) && (filter == null || filter(x, y)))
+                {
+                    obLayer[x, y] = isObstacle;
+                    n++;
+                }
+            });
+
+            OnObstaclesChanged?.Invoke(left, width, top, height, isObstacle);
+            return n;
+        }
 
         public int FillArea(int left, int width, int top, int height, GridType fillType, Func<GridType, bool> filter = null)
         {

@@ -100,4 +100,11 @@
 	BigSlimeBulletR: { merges: [ "BigSlimeBulletBase" ], ai: { "Move": {"vx": 30, "vy": 0} } },
 	BigSlimeBulletT: { merges: [ "BigSlimeBulletBase" ], ai: { "Move": {"vx": 0, "vy": 30} } },
 	BigSlimeBulletB: { merges: [ "BigSlimeBulletBase" ], ai: { "Move": {"vx": 0, "vy": -30} } },
+
+	ObstacleBase: {
+		unkillable: true,
+		ai: {
+			"StaticObstacle": {"x": 75, "y": 75, "w": 50, "h": 50}
+		}
+	}
 }

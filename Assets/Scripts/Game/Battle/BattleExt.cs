@@ -21,7 +21,8 @@ namespace GalPanic
             var unit = new BattleUnit(
                 battle.Map,
                 cfg.type,
-                cfg.radius
+                cfg.radius,
+                cfg.unkillable
             )
             {
                 Pos = pos,
@@ -278,6 +279,19 @@ namespace GalPanic
             void create(Fix64 te) => creationList.Travel(f => f(te));
 
             return u.AIMoveAndTurnAndSkill(v, movingTime, turningSpeed, turningAngleMin, turningAngleMax, duration, reset, create);
+        }
+
+        public static StateMachine StaticObstacle(this BattleUnit u, Dictionary<string, object> args)
+        {
+            var x = args.GetInt("x");
+            var y = args.GetInt("y");
+            var w = args.GetInt("w");
+            var h = args.GetInt("h");
+            u.Map.FillObstacleArea(x, w, y, h, true);
+
+            OnAbortAddUnitAI?.Invoke("StaticObstacle", u, new int[] { x, y, w, h });
+
+            return null;
         }
 
         public static StateMachine AIRemoveOnEdge(this BattleUnit u, Dictionary<string, object> args)
