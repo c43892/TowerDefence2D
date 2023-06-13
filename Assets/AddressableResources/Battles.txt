@@ -16,9 +16,7 @@
 		},
         units: [
 			{ name: "BigCenterObstacle" },
-			{ name: "Slime02", x: 40, y: 40 },
-			{ name: "Slime03", x: 40, y: 40 },
-			{ name: "Tentacle01", x: 100, y: 100, isKeyUnit: true }
+			{ name: "Slime02", x: 40, y: 40 }
 		]
 	}
 }

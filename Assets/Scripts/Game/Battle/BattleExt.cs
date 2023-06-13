@@ -73,7 +73,7 @@ namespace GalPanic
             var sm = new StateMachine(u.UID);
 
             Fix64 cooldownTimer = 0;
-            sm.NewState("checking").AsDefault().Run((st, te) =>
+            sm.NewState("checking").Run((st, te) =>
             {
                 var traceLine = u.Battle.Cursor.TraceLine;
                 if (traceLine.Count == 0)
@@ -96,7 +96,7 @@ namespace GalPanic
                     u.Battle.AddUnitAt(bulletUnit, collisionPos);
                     cooldownTimer = cooldown;
                 }
-            });
+            }).AsDefault();
 
             sm.NewState("cooldown").Run((st, te) => cooldownTimer -= te);
 

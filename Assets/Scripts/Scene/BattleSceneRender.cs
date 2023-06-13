@@ -84,8 +84,8 @@ public partial class BattleSceneRender : MonoBehaviour
 
     #region cursor controlling
 
-    public Vector3 GetScenePos(Vec2 pos) => GetScenePos((int)pos.x, (int)pos.y);
-    public Vector3 GetScenePos(int x, int y)
+    public Vector3 GetScenePos(Vec2 pos) => GetScenePos(pos.x, pos.y);
+    public Vector3 GetScenePos(Fix64 x, Fix64 y)
     {
         var divX = (float)x / (bt.Map.Width - 1);
         var divY = (float)y / (bt.Map.Height - 1);
