@@ -74,8 +74,8 @@ public class GizmoManager : MonoBehaviour
         gizmoRect.Travel((kv) =>
         {
             var v = kv.Value.Invoke();
-            var x = v.x + v.z / 2 + 0.5f;
-            var y = v.y + v.z / 2 + 0.5f;
+            var x = v.x + v.z / 2;
+            var y = v.y + v.z / 2;
             var w = v.z / 10f;
             var h = v.w / 10f;
             Gizmos.DrawCube(SceneRenderer.GetScenePos(new Vec2(x, y)), new Vector3(w, h, 0));
