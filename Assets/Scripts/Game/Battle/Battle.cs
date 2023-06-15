@@ -88,8 +88,8 @@ namespace GalPanic
             }
             else if (n < 0)
             {
-                var endWithEdge = false;
-                var moved = CanMoveCursorTo(dx, dy, out int tx, out int ty, out endWithEdge, forceUnsafe);
+                var endOnEdge = false;
+                var moved = CanMoveCursorTo(dx, dy, out int tx, out int ty, out endOnEdge, forceUnsafe);
                 if (moved)
                 {
                     if (Cursor.TraceLine.Count == 0)
@@ -100,7 +100,7 @@ namespace GalPanic
                         Cursor.AddTracePos(tx, ty);
                 }
 
-                if (endWithEdge && forceUnsafe && Cursor.TraceLine.Count > 0)
+                if (endOnEdge && forceUnsafe && Cursor.TraceLine.Count > 0)
                     DoTraceLineSplite();
 
                 return moved;
@@ -109,9 +109,9 @@ namespace GalPanic
             return false;
         }
 
-        public bool CanMoveCursorTo(int dx, int dy, out int toX, out int toY, out bool endWithEdge, bool forceUnsafe = false)
+        public bool CanMoveCursorTo(int dx, int dy, out int toX, out int toY, out bool endOnEdge, bool forceUnsafe = false)
         {
-            endWithEdge = false;
+            endOnEdge = false;
             var tx = toX = Cursor.X + dx;
             var ty = toY = Cursor.Y + dy;
             if (tx < 0 || tx >= Map.Width || ty < 0 || ty >= Map.Height)
@@ -124,10 +124,11 @@ namespace GalPanic
                 return false;
 
             // not on the inside of uncoverd areas
-            endWithEdge = tx == 0 || tx == Map.Width - 1 || ty == 0 || ty == Map.Height - 1;
+            endOnEdge = Map[tx, ty] == BattleMap.GridType.Uncovered && !Map.IsAroundBy(tx, ty, BattleMap.GridType.Uncovered);
+            endOnEdge = endOnEdge || tx == 0 || tx == Map.Width - 1 || ty == 0 || ty == Map.Height - 1;
 
             // can move to the target position
-            var canMoveTo = endWithEdge || !Map.IsAroundBy(tx, ty, BattleMap.GridType.Uncovered);
+            var canMoveTo = endOnEdge || Map[tx, ty] != BattleMap.GridType.Uncovered;
             return canMoveTo;
         }
 

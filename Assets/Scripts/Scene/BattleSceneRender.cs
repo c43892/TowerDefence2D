@@ -23,12 +23,16 @@ public partial class BattleSceneRender : MonoBehaviour
     public Func<float> GetCursorBackSpeed = null;
 
     private Battle bt;
+    private LocalDriver driver = new();
+
     public Battle Bt
     {
         get => bt;
         set
         {
             bt = value;
+            driver.SetBattle(bt);
+
             if (bt == null)
                 return;
 
@@ -66,7 +70,7 @@ public partial class BattleSceneRender : MonoBehaviour
 
         CheckCursorAction();
 
-        bt.OnTimeElapsed(Time.deltaTime);
+        driver.OnTimeElapsed(Time.deltaTime);
 
         UpdateCursor();
         UpdateUnitObjs();
