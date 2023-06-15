@@ -8,6 +8,7 @@ namespace GalPanic
 {
     public interface IGameDriver
     {
-        void SetBattle(Battle bt);
+        void SetBattle(Battle battle);
+        void SetCursorSpeed(Func<float> cursorSpeed, Func<float> cursorBackspeed);
     }
 }

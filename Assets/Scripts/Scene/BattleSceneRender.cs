@@ -19,9 +19,6 @@ public partial class BattleSceneRender : MonoBehaviour
     public Transform RectTopLeft;
     public Transform RectRightBottom;
 
-    public Func<float> GetCursorSpeed = null;
-    public Func<float> GetCursorBackSpeed = null;
-
     private Battle bt;
     private LocalDriver driver = new();
 
@@ -44,6 +41,11 @@ public partial class BattleSceneRender : MonoBehaviour
             var rightBottom = new Vector3(bt.Map.Width / 2, bt.Map.Height / 2, 0) / 10;
             SetRectArea(leftTop, rightBottom);
         }
+    }
+
+    public void SetCursorSpeed(Func<float> cursorSpeed, Func<float> cursorBackspeed)
+    {
+        driver.SetCursorSpeed(cursorSpeed, cursorBackspeed);
     }
 
     private void SetRectArea(Vector3 topLeft, Vector3 rightBottom)
@@ -124,23 +126,11 @@ public partial class BattleSceneRender : MonoBehaviour
         Trace.UpdateLine(Pos2V3(bt.Cursor.StartPos), bt.Cursor.TraceLine.ToList().Select(Pos2V3).ToList());
     }
 
-    private float movingTimer = 0;
-    private float backMovingTimer;
-
     void CheckCursorAction()
     {
-        var forceUnsafe = Input.GetKey(KeyCode.Space);
-        var cursorSpeed = GetCursorSpeed == null ? 0 : GetCursorSpeed();
-        var cursorBackSpeed = GetCursorBackSpeed == null ? 0 : GetCursorBackSpeed();
-
-        if (bt.Cursor.CoolDown > 0 || bt.Ended)
-            return;
-
-        movingTimer += cursorSpeed * Time.deltaTime;
-        backMovingTimer += cursorBackSpeed * Time.deltaTime;
-
         var dx = 0;
         var dy = 0;
+        var forceUnsafe = Input.GetKey(KeyCode.Space);
 
         if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
             dx = -1;
@@ -151,21 +141,7 @@ public partial class BattleSceneRender : MonoBehaviour
         else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
             dy = -1;
 
-        if (movingTimer >= 1)
-        {
-            if (dx != 0 || dy != 0)
-                bt.TryMoveCursor(dx, dy, forceUnsafe);
-
-            movingTimer %= 1;
-        }
-
-        if (backMovingTimer > 1)
-        {
-            if (dx == 0 && dy == 0)
-                bt.SetbackCursor();
-
-            backMovingTimer %= 1;
-        }
+        driver.Input(dx, dy, forceUnsafe);
 
         UpdateLineRender();
 

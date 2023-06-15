@@ -28,8 +28,7 @@ namespace GalPanic
                 SceneRenderer.Bt = bt;
                 SceneRenderer.SetAvatar(btCfg.frontAni, btCfg.backAni);
                 SceneRenderer.UpdateMap();
-                SceneRenderer.GetCursorSpeed = () => btCfg.cursor.speed;
-                SceneRenderer.GetCursorBackSpeed = () => btCfg.cursor.backSpeed;
+                SceneRenderer.SetCursorSpeed(() => btCfg.cursor.speed, () => btCfg.cursor.backSpeed);
 
                 // setup gizmo manager
                 bt.Map.OnUnitAdded += GizmoManager.OnUnitAdded;
