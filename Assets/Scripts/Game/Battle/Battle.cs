@@ -63,24 +63,23 @@ namespace GalPanic
 
         public bool TryMoveCursor(int dx, int dy, bool forceUnsafe)
         {
-            var x = Cursor.X + dx;
-            var y = Cursor.Y + dy;
+            int tx = Cursor.X + dx;
+            int ty = Cursor.Y + dy;
 
             // can't be too close to the trace line
             var around = new List<Vec2>() {
-                new(x - 1, y), new(x + 1, y), new(x, y - 1), new(x, y + 1),
-                new(x - 2, y), new(x + 2, y), new(x, y - 2), new(x, y + 2)
+                new(tx - 1, ty), new(tx + 1, ty), new(tx, ty - 1), new(tx, ty + 1),
+                new(tx - 2, ty), new(tx + 2, ty), new(tx, ty - 2), new(tx, ty + 2)
             };
 
             if (around.Any(pt =>
             {
-                var n = Cursor.TraceLine.IndexOf(pt);
+                int n = Cursor.TraceLine.IndexOf(pt);
                 return n >= 0 && n != Cursor.TraceLine.Count - 1 && n != Cursor.TraceLine.Count - 2;
             }))
                 return false;
 
-            var n = Cursor.TraceLine.IndexOf(new(x, y));
-
+            var n = Cursor.TraceLine.IndexOf(new(tx, ty));
             if (n >= 0 && n == Cursor.TraceLine.Count - 1)
             {
                 Cursor.StepBack();
@@ -88,15 +87,14 @@ namespace GalPanic
             }
             else if (n < 0)
             {
-                var endOnEdge = false;
-                var moved = CanMoveCursorTo(dx, dy, out int tx, out int ty, out endOnEdge, forceUnsafe);
+                var moved = CanMoveCursorTo(dx, dy, out tx, out ty, out bool endOnEdge, forceUnsafe);
                 if (moved)
                 {
                     if (Cursor.TraceLine.Count == 0)
                         Cursor.StartPos = Cursor.Pos;
 
                     Cursor.SetPos(tx, ty);
-                    if (Map[x, y] == BattleMap.GridType.Covered)
+                    if (Map[tx, ty] == BattleMap.GridType.Covered)
                         Cursor.AddTracePos(tx, ty);
                 }
 
