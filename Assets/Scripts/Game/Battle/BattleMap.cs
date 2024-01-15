@@ -9,7 +9,7 @@ namespace GalPanic
     public class BattleMap : ITimeDriven
     {
         public Action<BattleUnit> OnUnitAdded = null;
-        public Action<BattleUnit> OnAbortToAddUnit = null;
+        // public Action<BattleUnit> OnAbortToAddUnit = null;
         public Action<BattleUnit> OnUnitRemoved = null;
         public Action<BattleUnit> OnAbortToRemoveUnit = null;
         public Action<GridType, List<Vec2>> OnCompletionChanged = null;

@@ -23,9 +23,13 @@ namespace Swift
 
             void internalFill(int x, int y)
             {
-                fill(x, y);
                 var pt = new KeyValuePair<int, int>(x, y);
                 q.Enqueue(pt);
+
+                if (filled.Contains(pt))
+                    return;
+
+                fill(x, y);
                 filled.Add(pt);
             }
 

@@ -38,8 +38,8 @@ public partial class BattleSceneRender : MonoBehaviour
             InitBattleEvents(bt);
             bt.OnCompletionChanged += (fillType, ptsChanged) => UpdateMap(fillType, ptsChanged);
 
-            var leftTop = new Vector3(-bt.Map.Width / 2, -bt.Map.Height / 2, 0) / 10;
-            var rightBottom = new Vector3(bt.Map.Width / 2, bt.Map.Height / 2, 0) / 10;
+            var leftTop = new Vector3(-bt.Map.Width, -bt.Map.Height, 0) / 10;
+            var rightBottom = new Vector3(bt.Map.Width, bt.Map.Height, 0) / 10;
             SetRectArea(leftTop, rightBottom);
         }
     }
