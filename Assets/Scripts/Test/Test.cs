@@ -27,7 +27,7 @@ namespace GalPanic
                 // setup scene renderer
                 SceneRenderer.Bt = bt;
                 SceneRenderer.SetAvatar(btCfg.frontAni, btCfg.backAni);
-                SceneRenderer.UpdateMap();
+                // SceneRenderer.UpdateMap(BattleMap.GridType.Covered, null);
                 SceneRenderer.SetCursorSpeed(() => btCfg.cursor.speed, () => btCfg.cursor.backSpeed);
 
                 // setup gizmo manager
@@ -38,10 +38,10 @@ namespace GalPanic
                 BattleExt.OnAbortAddUnitAI += GizmoManager.OnAiAdded;
 
                 // init battle
-                bt.Map.FillArea(0, 10, 0, 10, BattleMap.GridType.Uncovered);
                 bt.Cursor.StartPos = new(9, 9);
                 bt.Cursor.SetPos(9, 9);
                 bt.Load();
+                bt.Map.FillArea(0, 10, 0, 10, BattleMap.GridType.Uncovered);
             };
 
             UIManager.OnRestartClicked += () =>

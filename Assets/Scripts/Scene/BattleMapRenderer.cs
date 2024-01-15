@@ -8,6 +8,7 @@ using System.Linq;
 using GalPanic.Res;
 using UnityEngine.UI;
 using Unity.Collections;
+using static GalPanic.BattleMap;
 
 public class BattleMapRenderer : MonoBehaviour
 {
@@ -32,17 +33,16 @@ public class BattleMapRenderer : MonoBehaviour
         ForegroundAni.Play();
     }
 
-    public void UpdateMap()
+    NativeArray<Color32> pixels = default;
+    bool dirty = false;
+    public void UpdateMap(GridType fillType, List<Vec2> ptsChanged)
     {
-        if (Map == null)
+        if (Map == null || (ptsChanged != null && ptsChanged.Count == 0))
             return;
 
         if (MaskTex == null || MaskColors == null)
         {
-            MaskTex = new(Map.Width, Map.Height, TextureFormat.ARGB32, 0, false)
-            {
-                wrapMode = TextureWrapMode.Clamp
-            };
+            MaskTex = new(Map.Width, Map.Height, TextureFormat.ARGB32, 0, false) { wrapMode = TextureWrapMode.Clamp };
             MaskColors = new Color[Map.Width * Map.Height];
             BackgroundAni.MaskTex = MaskTex;
             ForegroundAni.MaskTex = MaskTex;
@@ -51,24 +51,38 @@ public class BattleMapRenderer : MonoBehaviour
         Color32 Covered = new(0, 0, 0, 0);
         Color32 Uncovered = new(255, 255, 255, 255);
 
-        NativeArray<Color32> pixels = new(Map.Width * Map.Height, Allocator.Temp);
-        FC.For2(Map.Width, Map.Height, (x, y) =>
-        {
-            var c = Color.white;
-            switch (Map[x, y])
-            {
-                case BattleMap.GridType.Uncovered: c = Uncovered; break;
-                case BattleMap.GridType.Covered: c = Covered; break;
-                default:
-                    throw new System.Exception($"unexpected map grid value: {Map[x, y]} at ({x}, {y})");
-            }
-            pixels[y * Map.Width + x] = c;
-        });
+        if (pixels == default)
+            pixels = new(Map.Width * Map.Height, Allocator.Persistent);
 
-        // Use SetPixelData to apply the pixel data to the texture.
+        if (ptsChanged != null)
+            ptsChanged.Travel(pt => pixels[(int)pt.y * Map.Width + (int)pt.x] = fillType == GridType.Uncovered ? Uncovered : Covered);
+        else
+            FC.For2(Map.Width, Map.Height, (x, y) => pixels[y * Map.Width + x] = Covered);
+
+        dirty = true;
+    }
+
+    void Redraw()
+    {
+        if (!dirty || pixels == default)
+            return;
+
         MaskTex.SetPixelData(pixels, 0);
         MaskTex.Apply();
+        dirty = false;
+    }
 
-        pixels.Dispose();
+    void LateUpdate()
+    {
+        Redraw();
+    }
+
+    private void OnDestroy()
+    {
+        if (pixels != default)
+        {
+            pixels.Dispose();
+            pixels = default;
+        }
     }
 }

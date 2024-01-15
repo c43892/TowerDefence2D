@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using Unity.VisualScripting;
 using System.Diagnostics;
+using static GalPanic.BattleMap;
 
 namespace GalPanic
 {
@@ -16,7 +17,7 @@ namespace GalPanic
         public event Action OnLost = null;
         public event Action<int> OnCursorHurt = null;
         public event Action<int> OnCursorHpChanged = null;
-        public event Action<int> OnCompletionChanged = null;
+        public event Action<GridType, List<Vec2>> OnCompletionChanged = null;
         public event Action OnTraceLineCompleted = null;
 
         public BattleMap Map { get; private set; }
@@ -32,7 +33,7 @@ namespace GalPanic
             WinPrecentage = winPrecent;
             Ended = false;
 
-            Map.OnCompletionChanged += (n) => OnCompletionChanged?.Invoke(n);
+            Map.OnCompletionChanged += (fillType, ptsChanged) => OnCompletionChanged?.Invoke(fillType, ptsChanged);
         }
 
         private Action UnitsLoader = null;
@@ -52,7 +53,7 @@ namespace GalPanic
         {
             UnitsLoader?.Invoke();
             OnCursorHpChanged?.Invoke(0);
-            OnCompletionChanged?.Invoke(0);
+            OnCompletionChanged?.Invoke(GridType.Covered, null);
         }
 
         public void SetbackCursor()

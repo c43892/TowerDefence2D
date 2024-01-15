@@ -9,6 +9,7 @@ using GalPanic.Res;
 using UnityEngine.UI;
 using Unity.Collections;
 using System;
+using static GalPanic.BattleMap;
 
 public partial class BattleSceneRender : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public partial class BattleSceneRender : MonoBehaviour
 
             MapRenderer.Map = bt.Map;
             InitBattleEvents(bt);
-            bt.OnCompletionChanged += (_) => UpdateMap();
+            bt.OnCompletionChanged += (fillType, ptsChanged) => UpdateMap(fillType, ptsChanged);
 
             var leftTop = new Vector3(-bt.Map.Width / 2, -bt.Map.Height / 2, 0) / 10;
             var rightBottom = new Vector3(bt.Map.Width / 2, bt.Map.Height / 2, 0) / 10;
@@ -62,7 +63,7 @@ public partial class BattleSceneRender : MonoBehaviour
         ClearUnits();
     }
 
-    public void UpdateMap() => MapRenderer.UpdateMap();
+    public void UpdateMap(GridType fillType, List<Vec2> ptsChanged) => MapRenderer.UpdateMap(fillType, ptsChanged);
     public void SetAvatar(string frontAni, string backAni) => MapRenderer.SetAvatar(frontAni, backAni);
 
     private void Update()
